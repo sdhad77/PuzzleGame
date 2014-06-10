@@ -22,16 +22,4 @@
 		<nature>com.adobe.flexbuilder.project.apollonature</nature>
 		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>[source path] greensock-as3</name>
-			<type>2</type>
-			<location>C:/Users/신동환/Desktop/greensock-as3/greensock-as3</location>
-		</link>
-		<link>
-			<name>[source path] src</name>
-			<type>2</type>
-			<location>C:/Users/신동환/Desktop/Gamua-Starling-Framework-v1.5.1-0-gdef24cc/Gamua-Starling-Framework-def24cc/starling/src</location>
-		</link>
-	</linkedResources>
 </projectDescription>

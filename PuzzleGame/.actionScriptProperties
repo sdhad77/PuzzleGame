@@ -2,9 +2,7 @@
 <actionScriptProperties analytics="false" mainApplicationPath="PuzzleGame.as" projectUUID="13bc70a5-87d0-484a-a3cc-30da7804c91c" version="11">
   <compiler additionalCompilerArguments="-locale en_US -swf-version=14" advancedTelemetry="false" autoRSLOrdering="true" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin-debug" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="true" useDebugRSLSwfs="true" useFlashSDK="true" verifyDigests="true" warn="true">
     <compilerSourcePath>
-      <compilerSourcePathEntry kind="1" linkType="1" path="C:/Users/신동환/Desktop/Gamua-Starling-Framework-v1.5.1-0-gdef24cc/Gamua-Starling-Framework-def24cc/starling/src"/>
       <compilerSourcePathEntry kind="1" linkType="1" path="bin"/>
-      <compilerSourcePathEntry kind="1" linkType="1" path="C:/Users/신동환/Desktop/greensock-as3/greensock-as3"/>
     </compilerSourcePath>
     <libraryPath defaultLinkType="0">
       <libraryPathEntry kind="4" path="">
