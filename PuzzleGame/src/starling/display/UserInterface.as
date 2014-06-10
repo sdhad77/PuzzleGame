@@ -97,11 +97,12 @@ package starling.display
         }
         
         /**
-         * this이 child를 제거하고 this의 부모에서 this를 제거
+         * this의 child, 이벤트리스너를 제거하고, this의 부모에서 this를 제거
          */
         override public function dispose():void
         {
             removeAllChild();
+            this.removeEventListeners();
             if(this.parent != null && this.parent != this) this.parent.removeChild(this);
         }
     }
