@@ -42,7 +42,7 @@ package N2P2
             addChild(_worldMap);
         }
         
-        private function startInGame():void
+        public function startInGame():void
         {
             _inGame = new InGame;
             _inGame.start(_assetManager);
