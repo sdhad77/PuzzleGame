@@ -1,5 +1,6 @@
 package N2P2
 {
+    import starling.display.DisplayObject;
     import starling.display.Sprite;
     import starling.display.UserInterface;
     import starling.events.Touch;
@@ -68,7 +69,29 @@ package N2P2
         private function stageButtonClick(event:TouchEvent):void
         {
             var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
-            if(touch != null) trace("clicked");
+            if(touch != null) 
+            {
+                var name:String = (event.target as DisplayObject).name;
+                
+                if(name == "worldMap_3.png")
+                {
+                    (this.root as Game).startInGame();
+                    clear();
+                }
+                else if(name == "worldMap_4.png") trace("clicked4");
+                else if(name == "worldMap_5.png") trace("clicked5");
+                else if(name == "worldMap_6.png") trace("clicked6");
+                else trace("누구냐");
+            }
+        }
+        
+        private function clear():void
+        {
+            _ui.dispose();
+            _ui = null;
+            this.removeEventListeners();
+            this.parent.removeChild(this);
+            this.dispose();
         }
     }
 }
