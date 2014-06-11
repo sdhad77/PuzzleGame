@@ -18,6 +18,8 @@ package starling.display
          */
         private function init(textureAtlas:TextureAtlas, name:String):void
         {
+            this.name = name;
+            
             var mTextures:Vector.<Texture> = textureAtlas.getTextures(name);
             var mNames:Vector.<String> = textureAtlas.getNames(name);
             
