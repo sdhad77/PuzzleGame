@@ -3,6 +3,7 @@ package N2P2
     import starling.display.DisplayObject;
     import starling.display.Sprite;
     import starling.display.UserInterface;
+    import starling.events.Event;
     import starling.events.Touch;
     import starling.events.TouchEvent;
     import starling.events.TouchPhase;
@@ -12,6 +13,8 @@ package N2P2
     {
         private var _ui:UserInterface;
         private var _sbp:UserInterface; //stage Button Popup
+        private var _mb:UserInterface;  //menu Button
+        private var _mp:UserInterface;  //menu Popup
         private var _mouseButtonDown:Boolean;
         private var _rightSide:Number;
         private var _selectStageNum:int;
@@ -34,21 +37,71 @@ package N2P2
             addChild(_ui);
             
             _sbp = new UserInterface(assetManager.getTextureAtlas("ui"), "worldMapSBP_");
+            _sbp.visible = false;
+            _sbp.touchable = false;
             addChild(_sbp);
-            this.getChildByName("worldMapSBP_").visible = false;
-            this.getChildByName("worldMapSBP_").touchable = false;
             
-            _rightSide = _ui.getChildByName("worldMap_01.png").width + _ui.getChildByName("worldMap_02.png").width;
+            _mb = new UserInterface(assetManager.getTextureAtlas("ui"), "worldMapMB_");
+            addChild(_mb);
             
-            _ui.addTouchEventByName("worldMap_0.png", mapClick);
+            _mp = new UserInterface(assetManager.getTextureAtlas("ui"), "worldMapMP_");
+            _mp.visible = false;
+            _mp.touchable = false;
+            addChild(_mp);
+            
+            //================================================================================
+            
+            _ui.addTouchEventByName("worldMap_00.png", mapClick);
             _ui.addTouchEventByName("worldMap_01.png", mapClick);
             _ui.addTouchEventByName("worldMap_02.png", mapClick);
+            
+            for(var i:int=3; i<10; i++) _ui.addTouchEventByName("worldMap_0" + i + ".png", stageButtonClick);
+            for(i=10; i<18; i++)        _ui.addTouchEventByName("worldMap_" + i + ".png", stageButtonClick);
             
             _sbp.addTouchEventByName("worldMapSBP_1.png", gameStart);
             _sbp.addTouchEventByName("worldMapSBP_2.png", gameStartCancle);
             
-            for(var i:int=3; i<10; i++) _ui.addTouchEventByName("worldMap_0" + i + ".png", stageButtonClick);
-            for(i=10; i<18; i++) _ui.addTouchEventByName("worldMap_" + i + ".png", stageButtonClick);
+            _mb.addTouchEventByName("worldMapMB_0.png", heartClick);
+            _mb.addTouchEventByName("worldMapMB_1.png", heartClick);
+            _mb.addTouchEventByName("worldMapMB_2.png", heartClick);
+            _mb.addTouchEventByName("worldMapMB_3.png", heartClick);
+            _mb.addTouchEventByName("worldMapMB_4.png", heartClick);
+            
+            _mp.addTouchEventByName("worldMapMP_1.png", menuPopupCloseClick);
+            
+            //================================================================================
+            
+            _rightSide = _ui.getChildByName("worldMap_01.png").width + _ui.getChildByName("worldMap_02.png").width;
+            
+            this.addEventListener(starling.events.Event.ENTER_FRAME, onEnterFrame);
+        }
+        
+        private function onEnterFrame():void
+        {
+            if(_mb != null) _mb.x = -this.root.x;
+        }
+        
+        private function menuPopupCloseClick(event:TouchEvent):void
+        {
+            var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
+            if(touch != null) 
+            {
+                _mp.visible = false;
+                _mp.touchable = false;
+                _ui.touchable = true;
+            }
+        }
+        
+        private function heartClick(event:TouchEvent):void
+        {
+            var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
+            if(touch != null) 
+            {
+                _mp.x = -this.root.x;
+                _mp.visible = true;
+                _mp.touchable = true;
+                _ui.touchable = false;
+            }
         }
         
         private function gameStartCancle(event:TouchEvent):void
@@ -117,6 +170,10 @@ package N2P2
             _ui = null;
             _sbp.dispose();
             _sbp = null;
+            _mp.dispose();
+            _mp = null;
+            _mb.dispose();
+            _mb = null;
             this.removeEventListeners();
             this.parent.removeChild(this);
             this.dispose();
