@@ -1,7 +1,6 @@
 package N2P2
 {
     import starling.display.Sprite;
-    import starling.events.Event;
     import starling.utils.AssetManager;
     
     public class Game extends Sprite
@@ -24,26 +23,22 @@ package N2P2
             startTitle();
         }
         
-        private function startTitle():void
+        public function startTitle():void
         {
             _title = new Title;
             _title.start(_assetManager);
-            _title.addEventListener(Event.REMOVED_FROM_STAGE, startWorldMap);
             addChild(_title);
         }
         
-        private function startWorldMap():void
+        public function startWorldMap():void
         {
-            _title.removeEventListener(Event.REMOVED_FROM_STAGE, startWorldMap);
-            _title = null;
-            
             _worldMap = new WorldMap;
             _worldMap.start(_assetManager);
             addChild(_worldMap);
         }
         
-        public function startInGame():void
-        {
+        public function startInGame(stageNum:Number):void
+        {trace("stage" + stageNum);
             _inGame = new InGame;
             _inGame.start(_assetManager);
             addChild(_inGame);
