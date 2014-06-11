@@ -52,12 +52,18 @@ package N2P2
         {
             if(event.getTouch(_ui, TouchPhase.BEGAN))
             {
-                _ui.removeTouchEventByName("title_4.png", startButtonClick);
-                _ui.dispose();
-                _ui = null;
-                this.parent.removeChild(this);
-                this.dispose();
+                (this.root as Game).startWorldMap();
+                clear();
             }
+        }
+        
+        private function clear():void
+        {
+            _ui.dispose();
+            _ui = null;
+            this.removeEventListeners();
+            this.parent.removeChild(this);
+            this.dispose();
         }
     }
 }
