@@ -38,9 +38,9 @@ package N2P2
         }
         
         public function startInGame(stageNum:Number):void
-        {trace("stage" + stageNum);
+        {
             _inGame = new InGame;
-            _inGame.start(_assetManager);
+            _inGame.start(_assetManager, stageNum);
             addChild(_inGame);
         }
     }
