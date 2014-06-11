@@ -1,8 +1,7 @@
 package
 {
     import flash.display.Sprite;
-    import flash.display.StageAlign;
-    import flash.display.StageScaleMode;
+    import flash.geom.Rectangle;
     
     import N2P2.EmbeddedAssets;
     import N2P2.Game;
@@ -13,7 +12,7 @@ package
     import starling.textures.TextureAtlas;
     import starling.utils.AssetManager;
     
-    [SWF(frameRate="60", width="768", height="1024", backgroundColor="0xffffff")]
+    [SWF(frameRate="60")]
     public class PuzzleGame extends Sprite
     {
         private var myStarling:Starling;
@@ -21,11 +20,7 @@ package
         
         public function PuzzleGame()
         {
-            // support autoOrients
-            stage.align = StageAlign.TOP_LEFT;
-            stage.scaleMode = StageScaleMode.NO_SCALE;
-            
-            myStarling = new Starling(Game, stage);
+            myStarling = new Starling(Game, stage, new Rectangle(0,0,stage.fullScreenWidth,stage.fullScreenHeight));
             myStarling.addEventListener(Event.ROOT_CREATED, onRootCreated);
             myStarling.showStats = true;
             myStarling.start();
