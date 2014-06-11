@@ -31,16 +31,14 @@ package N2P2
             _ui = new UserInterface(assetManager.getTextureAtlas("ui"), "worldMap");
             addChild(_ui);
             
-            _rightSide = _ui.getChildByName("worldMap_1.png").height + _ui.getChildByName("worldMap_2.png").width;
+            _rightSide = _ui.getChildByName("worldMap_01.png").height + _ui.getChildByName("worldMap_02.png").width;
             
             _ui.addTouchEventByName("worldMap_0.png", mapClick);
-            _ui.addTouchEventByName("worldMap_1.png", mapClick);
-            _ui.addTouchEventByName("worldMap_2.png", mapClick);
+            _ui.addTouchEventByName("worldMap_01.png", mapClick);
+            _ui.addTouchEventByName("worldMap_02.png", mapClick);
             
-            _ui.addTouchEventByName("worldMap_3.png", stageButtonClick);
-            _ui.addTouchEventByName("worldMap_4.png", stageButtonClick);
-            _ui.addTouchEventByName("worldMap_5.png", stageButtonClick);
-            _ui.addTouchEventByName("worldMap_6.png", stageButtonClick);
+            for(var i:int=3; i<10; i++) _ui.addTouchEventByName("worldMap_0" + i + ".png", stageButtonClick);
+            for(i=10; i<18; i++) _ui.addTouchEventByName("worldMap_" + i + ".png", stageButtonClick);
         }
         
         private function mapClick(event:TouchEvent):void
@@ -72,16 +70,10 @@ package N2P2
             if(touch != null) 
             {
                 var name:String = (event.target as DisplayObject).name;
-                
-                if(name == "worldMap_3.png")
-                {
-                    (this.root as Game).startInGame();
-                    clear();
-                }
-                else if(name == "worldMap_4.png") trace("clicked4");
-                else if(name == "worldMap_5.png") trace("clicked5");
-                else if(name == "worldMap_6.png") trace("clicked6");
-                else trace("누구냐");
+                var stageNum:Number = Number(name.substring(name.indexOf("_")+1,name.indexOf("."))) - 2;
+
+                (this.root as Game).startInGame(stageNum);
+                clear();
             }
         }
         
