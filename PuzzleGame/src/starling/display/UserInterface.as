@@ -30,10 +30,10 @@ package starling.display
             }
             
             //메모리 해제
-            while(mTextures.length > 0) mTextures.pop();
+            mTextures.length = 0;
             mTextures = null;
             
-            while(mNames.length > 0) mNames.pop();
+            mNames.length = 0;
             mNames = null;
         }
         
