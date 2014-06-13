@@ -72,13 +72,6 @@ package N2P2
             //================================================================================
             
             _rightSide = _ui.getChildByName("worldMap_01.png").width + _ui.getChildByName("worldMap_02.png").width;
-            
-            this.addEventListener(starling.events.Event.ENTER_FRAME, onEnterFrame);
-        }
-        
-        private function onEnterFrame():void
-        {
-            if(_mb != null) _mb.x = -this.root.x;
         }
         
         private function menuPopupCloseClick(event:TouchEvent):void
@@ -97,7 +90,6 @@ package N2P2
             var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
             if(touch != null) 
             {
-                _mp.x = -this.root.x;
                 _mp.visible = true;
                 _mp.touchable = true;
                 _ui.touchable = false;
@@ -120,7 +112,6 @@ package N2P2
             var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
             if(touch != null) 
             {
-                this.root.x = 0;
                 (this.root as Game).startInGame(_selectStageNum);
                 clear();
             }
@@ -141,10 +132,10 @@ package N2P2
                 }
                 else if(touch.phase == TouchPhase.MOVED && _mouseButtonDown == true)
                 {
-                    var temp:Number = this.root.x + touch.globalX - touch.previousGlobalX;
-                    if(temp > 0) this.root.x = 0;
-                    else if(temp < -_rightSide) this.root.x = -_rightSide;
-                    else this.root.x += touch.globalX - touch.previousGlobalX;
+                    var temp:Number = _ui.x + touch.globalX - touch.previousGlobalX;
+                    if(temp > 0) _ui.x = 0;
+                    else if(temp < -_rightSide) _ui.x = -_rightSide;
+                    else _ui.x += touch.globalX - touch.previousGlobalX;
                 }
             }
         }
@@ -159,7 +150,6 @@ package N2P2
                 
                 _ui.touchable = false;
                 _sbp.touchable = true;
-                _sbp.x = -this.root.x;
                 _sbp.visible = true;
             }
         }
