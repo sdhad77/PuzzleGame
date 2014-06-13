@@ -19,5 +19,11 @@ package N2P2
         
         [Embed(source="../../bin/res/character/char2.xml", mimeType="application/octet-stream")]
         public static const Char2Xml:Class;
+        
+        [Embed(source="../../bin/res/character/char3.png")]
+        public static const Char3Sheet:Class;
+        
+        [Embed(source="../../bin/res/character/char3.xml", mimeType="application/octet-stream")]
+        public static const Char3Xml:Class;
     }
 }
