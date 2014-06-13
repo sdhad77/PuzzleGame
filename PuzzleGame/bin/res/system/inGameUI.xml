@@ -1,0 +1,17 @@
+<atlas>
+  <SubTexture name="inGameUI_0.png" x="0" y="0" width="768" height="1024" frameX="0" frameY="0" frameWidth="768" frameHeight="1024" rotated="false"/>
+  <SubTexture name="inGameUI_1.png" x="530" y="1026" width="130" height="600" frameX="-22" frameY="-16.8" frameWidth="600" frameHeight="130" rotated="true"/>
+  <SubTexture name="inGameUI_2.png" x="662" y="1026" width="100" height="100" frameX="-639.8" frameY="-36.2" frameWidth="100" frameHeight="100" rotated="false"/>
+  <SubTexture name="inGameUI_3.png" x="0" y="1707" width="734" height="188" frameX="-17.4" frameY="-805" frameWidth="734" frameHeight="188" rotated="false"/>
+  <SubTexture name="inGameUI_4.png" x="662" y="1318" width="90" height="94" frameX="-430.6" frameY="-874.2" frameWidth="90" frameHeight="94" rotated="false"/>
+  <SubTexture name="inGameUI_5.png" x="662" y="1223" width="92" height="94" frameX="-529.6" frameY="-874.2" frameWidth="92" frameHeight="94" rotated="false"/>
+  <SubTexture name="inGameUI_6.png" x="662" y="1128" width="94" height="94" frameX="-629" frameY="-874.2" frameWidth="94" frameHeight="94" rotated="false"/>
+  <SubTexture name="inGameUIItemPopup_0.png" x="0" y="1026" width="528" height="680" frameX="-120" frameY="-172.8" frameWidth="528" frameHeight="680" rotated="false"/>
+  <SubTexture name="inGameUIItemPopup_1.png" x="530" y="1628" width="64" height="64" frameX="-592.4" frameY="-162.4" frameWidth="64" frameHeight="64" rotated="false"/>
+  <SubTexture name="character_0.png" x="1414" y="322" width="320" height="320" frameX="-4.2" frameY="0" frameWidth="320" frameHeight="320" rotated="false"/>
+  <SubTexture name="character_1.png" x="770" y="322" width="320" height="320" frameX="-403.2" frameY="0" frameWidth="320" frameHeight="320" rotated="false"/>
+  <SubTexture name="character_2.png" x="770" y="0" width="320" height="320" frameX="0" frameY="-333.2" frameWidth="320" frameHeight="320" rotated="false"/>
+  <SubTexture name="character_3.png" x="1414" y="0" width="320" height="320" frameX="-410.2" frameY="-348.2" frameWidth="320" frameHeight="320" rotated="false"/>
+  <SubTexture name="character_4.png" x="1092" y="0" width="320" height="320" frameX="-448" frameY="-697.2" frameWidth="320" frameHeight="320" rotated="false"/>
+  <SubTexture name="character_5.png" x="1092" y="322" width="320" height="320" frameX="-17.2" frameY="-676.2" frameWidth="320" frameHeight="320" rotated="false"/>
+</atlas>

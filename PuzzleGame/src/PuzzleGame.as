@@ -23,6 +23,7 @@ package
             myStarling = new Starling(Game, stage, new Rectangle(0,0,stage.fullScreenWidth,stage.fullScreenHeight));
             myStarling.addEventListener(Event.ROOT_CREATED, onRootCreated);
             myStarling.showStats = true;
+   //         myStarling.viewPort = new Rectangle(0,0,stage.fullScreenWidth,stage.fullScreenHeight);
             myStarling.start();
         }
         
@@ -31,8 +32,7 @@ package
             assetManager = new AssetManager();
             
             assetManager.addTextureAtlas("ui", new TextureAtlas(Texture.fromBitmap(new EmbeddedAssets.UISheet()), XML(new EmbeddedAssets.UIXml())));
-            assetManager.addTextureAtlas("char", new TextureAtlas(Texture.fromBitmap(new EmbeddedAssets.CharSheet()), XML(new EmbeddedAssets.CharXml())));
-            assetManager.addTextureAtlas("char2", new TextureAtlas(Texture.fromBitmap(new EmbeddedAssets.Char2Sheet()), XML(new EmbeddedAssets.Char2Xml())));
+            assetManager.addTextureAtlas("inGameUI", new TextureAtlas(Texture.fromBitmap(new EmbeddedAssets.inGameUISheet()), XML(new EmbeddedAssets.inGameUIXml())));
             
             game.start(assetManager);
         }

@@ -3,7 +3,6 @@ package N2P2
     import starling.display.DisplayObject;
     import starling.display.Sprite;
     import starling.display.UserInterface;
-    import starling.events.Event;
     import starling.events.Touch;
     import starling.events.TouchEvent;
     import starling.events.TouchPhase;
