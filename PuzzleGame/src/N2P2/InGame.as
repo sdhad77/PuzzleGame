@@ -2,8 +2,12 @@ package N2P2
 {
     import com.greensock.TweenLite;
     
+    import flash.geom.Point;
+    
+    import starling.core.Starling;
     import starling.display.Image;
     import starling.display.Sprite;
+    import starling.display.UserInterface;
     import starling.events.Touch;
     import starling.events.TouchEvent;
     import starling.events.TouchPhase;
@@ -11,11 +15,24 @@ package N2P2
 
     public class InGame extends Sprite
     {
-        private const FIELDSIZE:int = 8;
-        private const TILETYPE:int = 8;
-        private var tileArr:Array = new Array("ani_0.png","ari_0.png","blue_0.png","heart_0.png","lucy_0.png","micky_0.png","mongyi_0.png","pinky_0.png");
-        private var tileTextureArr:Array = new Array(TILETYPE);
-        private var gameArray:Array = new Array(FIELDSIZE);
+        private var tileArr:Array = new Array("character_0.png","character_1.png","character_2.png","character_3.png","character_4.png","character_5.png");
+        private var tileTextures:Array = new Array(TILE_TYPE);
+        
+        private const INGAME_STAGE_SCALE:Number = 0.2;
+        private const FIELD_WIDTH:int = 10;
+        private const FIELD_HEIGTH:int = 10;
+        private const TILE_TYPE:int = 6;
+        private const TILE_LENGTH:int = 320;
+        private const TILE_LENGTH_SCALED:Number = TILE_LENGTH * INGAME_STAGE_SCALE;
+        
+        private var _inGameStage:Sprite;
+        private var _inGameUI:UserInterface;
+        
+        private var stageTileNum:Array       = new Array(FIELD_HEIGTH);
+        private var stageTileImage:Array     = new Array(FIELD_HEIGTH);
+        private var stageTileChanged:Array   = new Array(FIELD_HEIGTH);
+        private var stageTilePos:Array       = new Array(FIELD_HEIGTH);
+        private var stageTileMinusPos:Array  = new Array(FIELD_HEIGTH);
         
         private var _mouseButtonDown:Boolean;
         private var _tileChecking:Boolean;
@@ -32,54 +49,226 @@ package N2P2
         
         public function start(assetManager:AssetManager, stageNum:Number):void
         {
-            drawGame(assetManager, stageNum);
+            loadStageInfo(stageNum);
+            init(assetManager);
         }
         
-        private function drawGame(assetManager:AssetManager, stageNum:Number):void
+        private function loadStageInfo(stageNum:Number):void
         {
-            for(var i:int=0; i < TILETYPE; i++) tileTextureArr[i] = assetManager.getTextureAtlas("char2").getTexture(tileArr[i]);
-            for(i=0; i < FIELDSIZE; i++) gameArray[i] = new Array(FIELDSIZE);
-            for(i=0; i < FIELDSIZE; i++)
+            
+        }
+        
+        private function init(assetManager:AssetManager):void
+        {
+            _inGameUI = new UserInterface(assetManager.getTextureAtlas("inGameUI"), "inGameUI_");
+            _inGameUI.addTouchEventByName("inGameUI_2.png", returnWorldMap);
+            addChild(_inGameUI);
+            
+            _inGameStage = new Sprite;
+            _inGameStage.scaleX = _inGameStage.scaleY = INGAME_STAGE_SCALE;
+            _inGameStage.x = (Starling.current.viewPort.width >> 1) - ((FIELD_WIDTH * TILE_LENGTH_SCALED) >> 1);
+            _inGameStage.y = (Starling.current.viewPort.height >> 1) - ((FIELD_HEIGTH * TILE_LENGTH_SCALED) >> 1);
+            
+            var upTileNum:int;
+            var leftTileNum:int;
+            
+            for(var i:int=0; i < TILE_TYPE; i++) tileTextures[i] = assetManager.getTextureAtlas("inGameUI").getTexture(tileArr[i]);
+            for(i=0; i < FIELD_HEIGTH; i++)
             {
-                for(var j:int=0; j < FIELDSIZE; j++)
+                stageTileNum[i]       = new Array(FIELD_WIDTH);
+                stageTileImage[i]     = new Array(FIELD_WIDTH);
+                stageTileChanged[i]   = new Array(FIELD_WIDTH);
+                stageTilePos[i]       = new Array(FIELD_WIDTH);
+                stageTileMinusPos[i]  = new Array(FIELD_WIDTH);
+                
+                for(var j:int=0; j < FIELD_WIDTH; j++)
                 {
-                    gameArray[i][j] = new TileInfo(Math.floor((Math.random())*TILETYPE));
-                    
-                    if(i != 0 && j != 0)
+                    if(i == 0 || j == 0)
                     {
-                        while(gameArray[i][j].tileNum == gameArray[i][j-1].tileNum && gameArray[i][j].tileNum == gameArray[i-1][j].tileNum)
-                        {
-                            gameArray[i][j].tileNum = Math.floor((Math.random())*TILETYPE);
-                        }
+                        if(i == 0) upTileNum   = -1;
+                        else       upTileNum   = stageTileNum[i-1][j];
+                        if(j == 0) leftTileNum = -1;
+                        else       leftTileNum = stageTileNum[i][j-1];
                     }
-                    else if(i != 0) while(gameArray[i][j].tileNum == gameArray[i-1][j].tileNum) gameArray[i][j].tileNum = Math.floor((Math.random())*TILETYPE);
-                    else if(j != 0) while(gameArray[i][j].tileNum == gameArray[i][j-1].tileNum) gameArray[i][j].tileNum = Math.floor((Math.random())*TILETYPE);
+                    else
+                    {
+                        upTileNum = stageTileNum[i-1][j];
+                        leftTileNum = stageTileNum[i][j-1];
+                    }
                     
-                    gameArray[i][j].img = new Image(tileTextureArr[gameArray[i][j].tileNum]);
-                    gameArray[i][j].img.x = j * gameArray[i][j].img.width;
-                    gameArray[i][j].img.y = i * gameArray[i][j].img.height;
-                    gameArray[i][j].img.addEventListener(starling.events.TouchEvent.TOUCH, clicked);
-                    addChild(gameArray[i][j].img);
+                    stageTileNum[i][j] = Math.floor((Math.random())*TILE_TYPE);
+                    while(stageTileNum[i][j] == upTileNum || stageTileNum[i][j] == leftTileNum) stageTileNum[i][j] = Math.floor((Math.random())*TILE_TYPE);
+                    
+                    stageTileChanged[i][j] = false;
+                    stageTileImage[i][j] = new Image(tileTextures[stageTileNum[i][j]]);
+                    stageTilePos[i][j] = new Point(j * stageTileImage[i][j].width, i * stageTileImage[i][j].height);
+                    stageTileMinusPos[i][j] = new Point(j * stageTileImage[i][j].width, -(i+1) * stageTileImage[i][j].height);
+                    stageTileImage[i][j].x = stageTilePos[i][j].x;
+                    stageTileImage[i][j].y = stageTilePos[i][j].y;
+                    
+                    stageTileImage[i][j].addEventListener(starling.events.TouchEvent.TOUCH, inGameStageTouch);
+                    _inGameStage.addChild(stageTileImage[i][j]);
                 }
             }
             
-            addChild(new Image(assetManager.getTextureAtlas("char2").getTexture("heart_0.png")));
-            this.getChildAt(this.numChildren-1).x = 550;
-            this.getChildAt(this.numChildren-1).y = 550;
-            this.getChildAt(this.numChildren-1).addEventListener(starling.events.TouchEvent.TOUCH, returnWorldMap);
+            addChild(_inGameStage);
         }
         
-        private function clicked(event:TouchEvent):void
+        private function stageTileChange():void
         {
-            var touch:Touch = event.getTouch(this);
+            var isUpTileExist:Boolean;
+            var minusLineIdx:int;
+            var maxTweenTime:Number=-1;
+            
+            for(var i:int=0; i < FIELD_WIDTH; i++)
+            {
+                minusLineIdx = 0;
+                
+                for(var j:int=FIELD_HEIGTH-1; 0 <= j; j--)
+                {
+                    isUpTileExist = false;
+                    
+                    if(stageTileChanged[j][i])
+                    {
+                        for(var q:int=j; 0 <= q; q--)
+                        {
+                            if(!stageTileChanged[q][i])
+                            {
+                                stageTileNum[j][i] = stageTileNum[q][i];
+                                stageTileImage[j][i].texture = tileTextures[stageTileNum[j][i]];
+                                TweenLite.from(stageTileImage[j][i], 0.2*(j-q), {x:stageTilePos[q][i].x, y: stageTilePos[q][i].y});
+                                if(maxTweenTime < 0.2*(j-q)) maxTweenTime = 0.2*(j-q);
+                                stageTileChanged[j][i] = false;
+                                stageTileChanged[q][i] = true;
+                                isUpTileExist = true;
+                                break;
+                            }
+                        }
+                        if(!isUpTileExist)
+                        {
+                            stageTileNum[j][i] = Math.floor((Math.random())*TILE_TYPE);
+                            stageTileImage[j][i].texture = tileTextures[stageTileNum[j][i]];
+                            TweenLite.from(stageTileImage[j][i], 0.2*(minusLineIdx+j+1), {x:stageTileMinusPos[minusLineIdx][i].x, y: stageTileMinusPos[minusLineIdx][i].y});
+                            if(maxTweenTime < 0.2*(minusLineIdx+j+1)) maxTweenTime = 0.2*(minusLineIdx+j+1);
+                            stageTileChanged[j][i] = false;
+                            minusLineIdx++;
+                        }
+                    }
+                }
+            }
+            
+            TweenLite.delayedCall(maxTweenTime, resetTouch);
+        }
+        
+        private function horizonTileCheck(index:int):Boolean
+        {
+            var cnt:int = 0;
+            var tileNum:int = stageTileNum[index][0];
+            var result:Boolean = false;
+            
+            for(var i:int=0; i < FIELD_WIDTH; i++)
+            {
+                if(tileNum == stageTileNum[index][i]) cnt++;
+                else if(cnt >= 3)
+                {
+                    result = true;
+                    
+                    while(cnt > 0)
+                    {
+                        stageTileChanged[index][i-cnt] = true;
+                        cnt--;
+                    }
+                }
+                else
+                {
+                    cnt = 1;
+                    tileNum = stageTileNum[index][i];
+                }
+            }
+            
+            if(cnt >= 3)
+            {
+                result = true;
+                while(cnt > 0)
+                {
+                    stageTileChanged[index][i-cnt] = true;
+                    cnt--;
+                }
+            }
+            
+            return result;
+        }
+        
+        private function verticalTileCheck(index:int):Boolean
+        {
+            var cnt:int = 0;
+            var tileNum:int = stageTileNum[0][index];
+            var result:Boolean = false;
+            
+            for(var i:int=0; i < FIELD_HEIGTH; i++)
+            {
+                if(tileNum == stageTileNum[i][index]) cnt++;
+                else if(cnt >= 3)
+                {
+                    result = true;
+                    while(cnt > 0)
+                    {
+                        stageTileChanged[i-cnt][index] = true;
+                        cnt--;
+                    }
+                }
+                else
+                {
+                    cnt = 1;
+                    tileNum = stageTileNum[i][index];
+                }
+            }
+            
+            if(cnt >= 3)
+            {
+                result = true;
+                while(cnt > 0)
+                {
+                    stageTileChanged[i-cnt][index] = true;
+                    cnt--;
+                }
+            }
+            
+            return result;
+        }
+        
+        private function allTileCheck():Boolean
+        {
+            var cnt:int;
+            var tileNum:int;
+            var result:Boolean = false;
+            
+            _inGameStage.touchable = false;
+            
+            for(var i:int=0; i < FIELD_HEIGTH; i++)
+            {
+                if(horizonTileCheck(i)) result = true;
+            }
+            
+            for(i=0; i < FIELD_WIDTH; i++)
+            {
+                if(verticalTileCheck(i)) result = true;
+            }
+            
+            return result;
+        }
+        
+        private function inGameStageTouch(event:TouchEvent):void
+        {
+            var touch:Touch = event.getTouch(_inGameStage);
             if(touch != null)
             {
                 if(touch.phase == TouchPhase.BEGAN)
                 {
                     _mouseButtonDown = true;
                     
-                    _currentTileX = touch.globalX >> 6;
-                    _currentTileY = touch.globalY >> 6;
+                    _currentTileX = (touch.globalX - _inGameStage.x) / TILE_LENGTH_SCALED;
+                    _currentTileY = (touch.globalY - _inGameStage.y) / TILE_LENGTH_SCALED;
                 }
                 else if(touch.phase == TouchPhase.ENDED)
                 {
@@ -87,21 +276,16 @@ package N2P2
                 }
                 else if(touch.phase == TouchPhase.MOVED && _mouseButtonDown == true)
                 {
-                    _newTileX = touch.globalX >> 6;
-                    _newTileY = touch.globalY >> 6;
+                    _newTileX = (touch.globalX - _inGameStage.x) / TILE_LENGTH_SCALED;
+                    _newTileY = (touch.globalY - _inGameStage.y) / TILE_LENGTH_SCALED;
                     
-                    if(_newTileX < 0 || _newTileX >= FIELDSIZE || _newTileY < 0 || _newTileY >= FIELDSIZE)
+                    if(_newTileX < 0 || _newTileX >= FIELD_WIDTH || _newTileY < 0 || _newTileY >= FIELD_HEIGTH) _mouseButtonDown = false;
+                    else if(_currentTileX != _newTileX || _currentTileY != _newTileY)
                     {
                         _mouseButtonDown = false;
-                        return;
-                    }
-
-                    if(_currentTileX != _newTileX || _currentTileY != _newTileY)
-                    {
-                        _mouseButtonDown = false;
-                        this.touchable = false;
-                        
+                        _inGameStage.touchable = false;
                         _tileChecking = true;
+                        
                         touchTileChange(_currentTileX, _currentTileY, _newTileX, _newTileY);
                     }
                 }
@@ -110,32 +294,15 @@ package N2P2
         
         private function touchTileChange(idx1:int, idx2:int, idx3:int, idx4:int):void
         {
-            var tile1:TileInfo = gameArray[idx2][idx1];
-            var tile2:TileInfo = gameArray[idx4][idx3];
+            var temp:int = stageTileNum[idx2][idx1];
+            stageTileNum[idx2][idx1] = stageTileNum[idx4][idx3];
+            stageTileNum[idx4][idx3] = temp;
             
-            if((Math.abs(idx1 - idx3) == 1 && Math.abs(idx2 - idx4) == 1))
-            {
-                trace("버그");
-                this.touchable = true;
-                _tileChecking = false;
-                return;
-            }
-            else if(Math.abs(idx1 - idx3) == 1)
-            {
-                TweenLite.to(tile1.img, 0.1, {x:tile2.img.x});
-                TweenLite.to(tile2.img, 0.1, {x:tile1.img.x, onComplete:touchTileChangeComplete});
-            }
-            else if(Math.abs(idx2 - idx4) == 1)
-            {
-                TweenLite.to(tile1.img, 0.1, {y:tile2.img.y});
-                TweenLite.to(tile2.img, 0.1, {y:tile1.img.y, onComplete:touchTileChangeComplete});
-            }
+            stageTileImage[idx2][idx1].texture = tileTextures[stageTileNum[idx2][idx1]];
+            stageTileImage[idx4][idx3].texture = tileTextures[stageTileNum[idx4][idx3]];
             
-            gameArray[idx2][idx1] = tile2;
-            gameArray[idx4][idx3] = tile1;
-            
-            tile1 = null;
-            tile2 = null;
+            TweenLite.from(stageTileImage[idx2][idx1], 0.2, {x:stageTilePos[idx4][idx3].x, y: stageTilePos[idx4][idx3].y});
+            TweenLite.from(stageTileImage[idx4][idx3], 0.2, {x:stageTilePos[idx2][idx1].x, y: stageTilePos[idx2][idx1].y, onComplete:touchTileChangeComplete});
         }
         
         private function touchTileChangeComplete():void
@@ -148,19 +315,20 @@ package N2P2
                 {
                     touchTileChange(_currentTileX, _currentTileY, _newTileX, _newTileY);
                 }
-                else this.touchable = true;
             }
-            else this.touchable = true;
+            else _inGameStage.touchable = true;
         }
         
         private function tileListCheck(tileList:Array):Boolean
         {
             var result:Boolean = false;
             
-            for(var i:int=0; i<tileList.length; i+=2)
-            {
-                if(tileCheck(tileList[i], tileList[i+1])) result = true;
-            }
+            if(horizonTileCheck(tileList[0])) result = true;
+            if(verticalTileCheck(tileList[1])) result = true;
+            if(horizonTileCheck(tileList[2])) result = true;
+            if(verticalTileCheck(tileList[3])) result = true;
+            
+            if(result) stageTileChange();
             
             tileList.length = 0;
             tileList = null;
@@ -168,134 +336,13 @@ package N2P2
             return result;
         }
         
-        private function tileCheck(i:int, j:int):Boolean
+        private function resetTouch():void
         {
-            var up:int    = i-1 != -1        ? i-1 : -1;
-            var down:int  = i+1 != FIELDSIZE ? i+1 : -1;
-            var left:int  = j-1 != -1        ? j-1 : -1;
-            var right:int = j+1 != FIELDSIZE ? j+1 : -1;
-            
-            var horizontalArr:Array = new Array(i,j);
-            var verticalArr:Array = new Array(i,j);
-            
-            if(up    != -1 && gameArray[i][j].tileNum == gameArray[up][j].tileNum)    tileCheck2(up,    j, 0, verticalArr);
-            if(down  != -1 && gameArray[i][j].tileNum == gameArray[down][j].tileNum)  tileCheck2(down,  j, 1, verticalArr);
-            if(left  != -1 && gameArray[i][j].tileNum == gameArray[i][left].tileNum)  tileCheck2(i,  left, 2, horizontalArr);
-            if(right != -1 && gameArray[i][j].tileNum == gameArray[i][right].tileNum) tileCheck2(i, right, 3, horizontalArr);
-            
-            var result:Boolean = tileRemove(horizontalArr, verticalArr);
-            
-            horizontalArr.length = 0;
-            horizontalArr = null;
-            verticalArr.length = 0;
-            verticalArr = null;
-            
-            return result;
-        }
-        
-        private function tileCheck2(i:int, j:int, direction:int, resultArr:Array):Array
-        {
-            var targetIdxI:int = i;
-            var targetIdxJ:int = j;
-            
-            if     (direction == 0) targetIdxI = (i-1) != -1 ? i-1 : -1;
-            else if(direction == 1) targetIdxI = (i+1) != FIELDSIZE ? i+1 : -1;
-            else if(direction == 2) targetIdxJ = (j-1) != -1 ? j-1 : -1;
-            else                    targetIdxJ = (j+1) != FIELDSIZE ? j+1 : -1;
-            
-            resultArr[resultArr.length] = i;
-            resultArr[resultArr.length] = j;
-            
-            if(targetIdxI != -1 && targetIdxJ != -1 && gameArray[i][j].tileNum == gameArray[targetIdxI][targetIdxJ].tileNum)
+            if(allTileCheck())
             {
-                tileCheck2(targetIdxI, targetIdxJ, direction, resultArr);
+                stageTileChange();
             }
-            
-            return resultArr;
-        }
-        
-        private function tileRemove(horizontalArr:Array, verticalArr:Array):Boolean
-        {
-            var idxI:int;
-            var idxJ:int;
-            var tempTile:TileInfo;
-            var tempTileArr:Array;
-            
-            if(verticalArr.length >= 6)
-            {
-                var minIdxI:int = 100;
-                var minIdxI2:int;
-                var maxIdxI:int = -1;
-                
-                tempTileArr = new Array(verticalArr.length >> 1);
-                
-                for(var i:int=0; i<verticalArr.length; i+=2)
-                {
-                    idxI = verticalArr[i];
-                    idxJ = verticalArr[i+1];
-                    
-                    if(idxI < minIdxI) minIdxI = idxI;
-                    if(idxI > maxIdxI) maxIdxI = idxI;
-                    
-                    tempTileArr[i>>1] = gameArray[idxI][idxJ];
-                }
-                
-                minIdxI2 = minIdxI;
-                    
-                while(minIdxI-1 >= 0)
-                {
-                    gameArray[minIdxI+tempTileArr.length-1][idxJ] = gameArray[minIdxI-1][idxJ];
-                    TweenLite.to(gameArray[minIdxI+tempTileArr.length-1][idxJ].img, 0.3*tempTileArr.length, {y:(tempTileArr.length << 6).toString()});
-                    minIdxI--;
-                }
-                
-                for(i=0; i<verticalArr.length; i+=2)
-                {
-                    idxI = verticalArr[i];
-                    idxJ = verticalArr[i+1];
-                    
-                    tempTileArr[i>>1].img.y -= 64*(maxIdxI+1);
-                    tempTileArr[i>>1].tileNum = Math.floor((Math.random())*TILETYPE);
-                    tempTileArr[i>>1].img.texture = tileTextureArr[tempTileArr[i>>1].tileNum];
-                    
-                    gameArray[idxI-minIdxI2][idxJ] = tempTileArr[i>>1];
-                    TweenLite.to(gameArray[idxI-minIdxI2][idxJ].img, 0.3*tempTileArr.length, {y:(tempTileArr.length << 6).toString()});
-                }
-                
-                tempTileArr.length = 0;
-                tempTileArr = null;
-                
-                return true;
-            }
-            else if(horizontalArr.length >= 6)
-            {
-                for(i=0; i<horizontalArr.length; i+=2)
-                {
-                    idxI = horizontalArr[i];
-                    idxJ = horizontalArr[i+1];
-                 
-                    gameArray[idxI][idxJ].tileNum = Math.floor((Math.random())*TILETYPE);
-                    gameArray[idxI][idxJ].img.y = -64;
-                    gameArray[idxI][idxJ].img.texture = tileTextureArr[gameArray[idxI][idxJ].tileNum];
-                    tempTile = gameArray[idxI][idxJ];
-                    
-                    while(idxI-1 >= 0)
-                    {
-                        gameArray[idxI][idxJ] = gameArray[idxI-1][idxJ];
-                        TweenLite.to(gameArray[idxI][idxJ].img, 0.3, {y:"64"});
-                        idxI--;
-                    }
-                    
-                    gameArray[0][idxJ] = tempTile;
-                    TweenLite.to(gameArray[0][idxJ].img, 0.3, {y:"64"});
-                }
-
-                tempTile = null;
-                
-                return true;
-            }
-            
-            return false;
+            else _inGameStage.touchable = true;
         }
         
         private function returnWorldMap(event:TouchEvent):void
@@ -312,34 +359,28 @@ package N2P2
         {
             tileArr.length = 0;
             tileArr = null;
-            tileTextureArr.length = 0;
-            tileTextureArr = null;
-            for(var i:int=0; i<gameArray.length; i++) gameArray[i].img = null;
-            gameArray.length = 0;
-            gameArray = null;
+            tileTextures.length = 0;
+            tileTextures = null;
+            stageTileNum.length = 0;
+            stageTileNum = null;
+            stageTileImage.length = 0;
+            stageTileImage = null;
+            stageTileChanged.length = 0;
+            stageTileChanged = null;
+            stageTilePos.length = 0;
+            stageTilePos = null;
+            stageTileMinusPos.length = 0;
+            stageTileMinusPos = null;
+            _inGameStage.removeEventListeners();
+            while(_inGameStage.numChildren > 0) _inGameStage.removeChildAt(0);
+            this.removeChild(_inGameStage);
+            _inGameStage.dispose();
+            _inGameUI.dispose();
+            _inGameUI = null;
             this.removeEventListeners();
             while(this.numChildren > 0) this.removeChildAt(0);
             this.parent.removeChild(this);
             this.dispose();
         }
     }
-}
-
-import starling.display.Image;
-
-class TileInfo
-{
-    private var _tileNum:int;
-    private var _img:Image;
-    
-    public function TileInfo(tileNum:int)
-    {
-        _tileNum = tileNum;
-    }
-    
-    public function get tileNum():int { return _tileNum; }
-    public function get img():Image   { return _img;     }
-    
-    public function set tileNum(value:int):void { _tileNum = value; }
-    public function set img(value:Image):void   { _img     = value; }
 }
