@@ -15,14 +15,15 @@ package N2P2
 
     public class InGame extends Sprite
     {
-        private var tileArr:Array = new Array("character_0.png","character_1.png","character_2.png","character_3.png","character_4.png","character_5.png");
+        private var tileArr:Array = new Array(TILE_TOTAL);
         private var tileTextures:Array = new Array(TILE_TYPE);
         
-        private const INGAME_STAGE_SCALE:Number = 0.2;
-        private const FIELD_WIDTH:int = 10;
-        private const FIELD_HEIGTH:int = 10;
+        private const INGAME_STAGE_SCALE:Number = 0.4;
+        private const FIELD_WIDTH:int = 8;
+        private const FIELD_HEIGTH:int = 8;
         private const TILE_TYPE:int = 6;
-        private const TILE_LENGTH:int = 320;
+        private const TILE_TOTAL:int = 19;
+        private const TILE_LENGTH:int = 160;
         private const TILE_LENGTH_SCALED:Number = TILE_LENGTH * INGAME_STAGE_SCALE;
         
         private var _inGameStage:Sprite;
@@ -30,7 +31,6 @@ package N2P2
         
         private var stageTileNum:Array       = new Array(FIELD_HEIGTH);
         private var stageTileImage:Array     = new Array(FIELD_HEIGTH);
-        private var stageTileChanged:Array   = new Array(FIELD_HEIGTH);
         private var stageTilePos:Array       = new Array(FIELD_HEIGTH);
         private var stageTileMinusPos:Array  = new Array(FIELD_HEIGTH);
         
@@ -72,12 +72,13 @@ package N2P2
             var upTileNum:int;
             var leftTileNum:int;
             
-            for(var i:int=0; i < TILE_TYPE; i++) tileTextures[i] = assetManager.getTextureAtlas("inGameUI").getTexture(tileArr[i]);
+            for(var i:int=0; i < 10; i++) tileArr[i] = "character_0" + i + ".png";
+            for(i=10; i < TILE_TOTAL; i++) tileArr[i] = "character_" + i + ".png";
+            for(i=0; i < TILE_TOTAL; i++) tileTextures[i] = assetManager.getTextureAtlas("inGameUI").getTexture(tileArr[i]);
             for(i=0; i < FIELD_HEIGTH; i++)
             {
                 stageTileNum[i]       = new Array(FIELD_WIDTH);
                 stageTileImage[i]     = new Array(FIELD_WIDTH);
-                stageTileChanged[i]   = new Array(FIELD_WIDTH);
                 stageTilePos[i]       = new Array(FIELD_WIDTH);
                 stageTileMinusPos[i]  = new Array(FIELD_WIDTH);
                 
@@ -99,7 +100,6 @@ package N2P2
                     stageTileNum[i][j] = Math.floor((Math.random())*TILE_TYPE);
                     while(stageTileNum[i][j] == upTileNum || stageTileNum[i][j] == leftTileNum) stageTileNum[i][j] = Math.floor((Math.random())*TILE_TYPE);
                     
-                    stageTileChanged[i][j] = false;
                     stageTileImage[i][j] = new Image(tileTextures[stageTileNum[i][j]]);
                     stageTilePos[i][j] = new Point(j * stageTileImage[i][j].width, i * stageTileImage[i][j].height);
                     stageTileMinusPos[i][j] = new Point(j * stageTileImage[i][j].width, -(i+1) * stageTileImage[i][j].height);
@@ -128,18 +128,17 @@ package N2P2
                 {
                     isUpTileExist = false;
                     
-                    if(stageTileChanged[j][i])
+                    if(stageTileNum[j][i] == -1)
                     {
                         for(var q:int=j; 0 <= q; q--)
                         {
-                            if(!stageTileChanged[q][i])
+                            if(stageTileNum[q][i] != -1)
                             {
                                 stageTileNum[j][i] = stageTileNum[q][i];
                                 stageTileImage[j][i].texture = tileTextures[stageTileNum[j][i]];
                                 TweenLite.from(stageTileImage[j][i], 0.2*(j-q), {x:stageTilePos[q][i].x, y: stageTilePos[q][i].y});
                                 if(maxTweenTime < 0.2*(j-q)) maxTweenTime = 0.2*(j-q);
-                                stageTileChanged[j][i] = false;
-                                stageTileChanged[q][i] = true;
+                                stageTileNum[q][i] = -1;
                                 isUpTileExist = true;
                                 break;
                             }
@@ -150,7 +149,6 @@ package N2P2
                             stageTileImage[j][i].texture = tileTextures[stageTileNum[j][i]];
                             TweenLite.from(stageTileImage[j][i], 0.2*(minusLineIdx+j+1), {x:stageTileMinusPos[minusLineIdx][i].x, y: stageTileMinusPos[minusLineIdx][i].y});
                             if(maxTweenTime < 0.2*(minusLineIdx+j+1)) maxTweenTime = 0.2*(minusLineIdx+j+1);
-                            stageTileChanged[j][i] = false;
                             minusLineIdx++;
                         }
                     }
@@ -160,7 +158,7 @@ package N2P2
             TweenLite.delayedCall(maxTweenTime, resetTouch);
         }
         
-        private function horizonTileCheck(index:int):Boolean
+        private function tileCheckHorizon(index:int):Boolean
         {
             var cnt:int = 0;
             var tileNum:int = stageTileNum[index][0];
@@ -168,38 +166,45 @@ package N2P2
             
             for(var i:int=0; i < FIELD_WIDTH; i++)
             {
-                if(tileNum == stageTileNum[index][i]) cnt++;
-                else if(cnt >= 3)
+                if(tileNum == stageTileNum[index][i])
                 {
-                    result = true;
+                    cnt++;
                     
-                    while(cnt > 0)
+                    if(i == (FIELD_WIDTH-1) && cnt >= 3)
                     {
-                        stageTileChanged[index][i-cnt] = true;
-                        cnt--;
+                        result = true;
+                        
+                        while(cnt != 0)
+                        {
+                            cnt--;
+                            stageTileNum[index][i-cnt] = -1;
+                        }
                     }
                 }
                 else
                 {
-                    cnt = 1;
-                    tileNum = stageTileNum[index][i];
-                }
-            }
-            
-            if(cnt >= 3)
-            {
-                result = true;
-                while(cnt > 0)
-                {
-                    stageTileChanged[index][i-cnt] = true;
-                    cnt--;
+                    if(cnt >= 3)
+                    {
+                        result = true;
+                        
+                        while(cnt > 0)
+                        {
+                            stageTileNum[index][i-cnt] = -1;
+                            cnt--;
+                        }
+                    }
+                    else
+                    {
+                        cnt = 1;
+                        tileNum = stageTileNum[index][i];
+                    }
                 }
             }
             
             return result;
         }
         
-        private function verticalTileCheck(index:int):Boolean
+        private function tileCheckVertical(index:int):Boolean
         {
             var cnt:int = 0;
             var tileNum:int = stageTileNum[0][index];
@@ -207,37 +212,45 @@ package N2P2
             
             for(var i:int=0; i < FIELD_HEIGTH; i++)
             {
-                if(tileNum == stageTileNum[i][index]) cnt++;
-                else if(cnt >= 3)
+                if(tileNum == stageTileNum[i][index])
                 {
-                    result = true;
-                    while(cnt > 0)
+                    cnt++;
+                    
+                    if(i == (FIELD_HEIGTH-1) && cnt >= 3)
                     {
-                        stageTileChanged[i-cnt][index] = true;
-                        cnt--;
+                        result = true;
+                        
+                        while(cnt != 0)
+                        {
+                            cnt--;
+                            stageTileNum[i-cnt][index] = -1;
+                        }
                     }
                 }
                 else
                 {
-                    cnt = 1;
-                    tileNum = stageTileNum[i][index];
-                }
-            }
-            
-            if(cnt >= 3)
-            {
-                result = true;
-                while(cnt > 0)
-                {
-                    stageTileChanged[i-cnt][index] = true;
-                    cnt--;
+                    if(cnt >= 3)
+                    {
+                        result = true;
+                        
+                        while(cnt > 0)
+                        {
+                            stageTileNum[i-cnt][index] = -1;
+                            cnt--;
+                        }
+                    }
+                    else
+                    {
+                        cnt = 1;
+                        tileNum = stageTileNum[i][index];
+                    }
                 }
             }
             
             return result;
         }
         
-        private function allTileCheck():Boolean
+        private function tileCheckAll():Boolean
         {
             var cnt:int;
             var tileNum:int;
@@ -247,12 +260,12 @@ package N2P2
             
             for(var i:int=0; i < FIELD_HEIGTH; i++)
             {
-                if(horizonTileCheck(i)) result = true;
+                if(tileCheckHorizon(i)) result = true;
             }
             
             for(i=0; i < FIELD_WIDTH; i++)
             {
-                if(verticalTileCheck(i)) result = true;
+                if(tileCheckVertical(i)) result = true;
             }
             
             return result;
@@ -311,7 +324,7 @@ package N2P2
             {
                 _tileChecking = false;
                 
-                if(!tileListCheck([_currentTileY, _currentTileX, _newTileY, _newTileX]))
+                if(!touchTileCheck(_currentTileY, _currentTileX, _newTileY, _newTileX))
                 {
                     touchTileChange(_currentTileX, _currentTileY, _newTileX, _newTileY);
                 }
@@ -319,26 +332,23 @@ package N2P2
             else _inGameStage.touchable = true;
         }
         
-        private function tileListCheck(tileList:Array):Boolean
+        private function touchTileCheck(idx1:int, idx2:int, idx3:int, idx4:int):Boolean
         {
             var result:Boolean = false;
             
-            if(horizonTileCheck(tileList[0])) result = true;
-            if(verticalTileCheck(tileList[1])) result = true;
-            if(horizonTileCheck(tileList[2])) result = true;
-            if(verticalTileCheck(tileList[3])) result = true;
+            if(tileCheckHorizon(idx1)) result = true;
+            if(tileCheckVertical(idx2)) result = true;
+            if(tileCheckHorizon(idx3)) result = true;
+            if(tileCheckVertical(idx4)) result = true;
             
             if(result) stageTileChange();
-            
-            tileList.length = 0;
-            tileList = null;
             
             return result;
         }
         
         private function resetTouch():void
         {
-            if(allTileCheck())
+            if(tileCheckAll())
             {
                 stageTileChange();
             }
@@ -365,8 +375,6 @@ package N2P2
             stageTileNum = null;
             stageTileImage.length = 0;
             stageTileImage = null;
-            stageTileChanged.length = 0;
-            stageTileChanged = null;
             stageTilePos.length = 0;
             stageTilePos = null;
             stageTileMinusPos.length = 0;
