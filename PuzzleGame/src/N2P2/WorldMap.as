@@ -32,18 +32,18 @@ package N2P2
         
         private function drawWorldMap(assetManager:AssetManager):void
         {
-            _ui = new UserInterface(assetManager.getTextureAtlas("ui"), "worldMap_");
+            _ui = new UserInterface(assetManager.getTextureAtlas("worldMapUI"), "worldMap_");
             addChild(_ui);
             
-            _sbp = new UserInterface(assetManager.getTextureAtlas("ui"), "worldMapSBP_");
+            _sbp = new UserInterface(assetManager.getTextureAtlas("worldMapUI"), "worldMapSBP_");
             _sbp.visible = false;
             _sbp.touchable = false;
             addChild(_sbp);
             
-            _mb = new UserInterface(assetManager.getTextureAtlas("ui"), "worldMapMB_");
+            _mb = new UserInterface(assetManager.getTextureAtlas("worldMapUI"), "worldMapMB_");
             addChild(_mb);
             
-            _mp = new UserInterface(assetManager.getTextureAtlas("ui"), "worldMapMP_");
+            _mp = new UserInterface(assetManager.getTextureAtlas("worldMapUI"), "worldMapMP_");
             _mp.visible = false;
             _mp.touchable = false;
             addChild(_mp);

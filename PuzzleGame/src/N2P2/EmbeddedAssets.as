@@ -2,11 +2,17 @@ package N2P2
 {
     public class EmbeddedAssets
     {
-        [Embed(source="../../bin/res/system/ui.png")]
-        public static const UISheet:Class;
+        [Embed(source="../../bin/res/system/titleUI.png")]
+        public static const titleUISheet:Class;
         
-        [Embed(source="../../bin/res/system/ui.xml", mimeType="application/octet-stream")]
-        public static const UIXml:Class;
+        [Embed(source="../../bin/res/system/titleUI.xml", mimeType="application/octet-stream")]
+        public static const titleUIXml:Class;
+        
+        [Embed(source="../../bin/res/system/worldMapUI.png")]
+        public static const worldMapUISheet:Class;
+        
+        [Embed(source="../../bin/res/system/worldMapUI.xml", mimeType="application/octet-stream")]
+        public static const worldMapUIXml:Class;
         
         [Embed(source="../../bin/res/system/inGameUI.png")]
         public static const inGameUISheet:Class;

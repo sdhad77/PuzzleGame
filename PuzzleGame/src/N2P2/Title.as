@@ -23,7 +23,7 @@ package N2P2
         
         private function drawTitle(assetManager:AssetManager):void
         {
-            _ui = new UserInterface(assetManager.getTextureAtlas("ui"), "title");
+            _ui = new UserInterface(assetManager.getTextureAtlas("titleUI"), "title_");
             addChild(_ui);
             
             _ui.addTouchEventByName("title_3.png", noticeCloseButtonClick);
