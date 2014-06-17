@@ -51,8 +51,8 @@ package starling.display
         {
             this.visible = true;
             
-            if(func == null) TweenLite.from(this, 0.2, {x: 384-this.width/10, y:512-this.height/10, scaleX:0.1 , scaleY:0.1, onComplete:touchOn});
-            else TweenLite.from(this, 0.2, {x: 384-this.width/10, y:512-this.height/10, scaleX:0.1 , scaleY:0.1, onComplete:func});
+            if(func == null) TweenLite.from(this, 0.2, {x: stage.stageWidth/2-this.width/10, y:stage.stageHeight/2-this.height/10, scaleX:0.1 , scaleY:0.1, onComplete:touchOn});
+            else             TweenLite.from(this, 0.2, {x: stage.stageWidth/2-this.width/10, y:stage.stageHeight/2-this.height/10, scaleX:0.1 , scaleY:0.1, onComplete:func});
         }
         
         /**
