@@ -65,13 +65,6 @@ package starling.display
                 mSmoothing = TextureSmoothing.BILINEAR;
                 mVertexDataCache = new VertexData(4, pma);
                 mVertexDataCacheInvalid = true;
-                
-                //추가한 부분.
-                if(frame)
-                {
-                    this.x = -texture.frame.x; this.y = -texture.frame.y;
-                    texture.frame.x = 0; texture.frame.y = 0;
-                }
             }
             else
             {

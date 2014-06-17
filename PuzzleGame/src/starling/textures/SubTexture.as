@@ -95,7 +95,7 @@ package starling.textures
             
             adjustTexCoords(vertexData.rawData, startIndex, stride, count);
             
-            if (mFrame)
+  /*          if (mFrame)
             {
                 if (count != 4)
                     throw new ArgumentError("Textures with a frame can only be used on quads");
@@ -107,7 +107,7 @@ package starling.textures
                 vertexData.translateVertex(vertexID + 1, -deltaRight, -mFrame.y);
                 vertexData.translateVertex(vertexID + 2, -mFrame.x, -deltaBottom);
                 vertexData.translateVertex(vertexID + 3, -deltaRight, -deltaBottom);
-            }
+            }*/
         }
 
         /** @inheritDoc */
