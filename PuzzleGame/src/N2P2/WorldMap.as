@@ -89,8 +89,7 @@ package N2P2
             var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
             if(touch != null) 
             {
-                _mp.visible = true;
-                _mp.touchable = true;
+                _mp.appearanceAnimation();
                 _ui.touchable = false;
             }
         }
@@ -148,8 +147,7 @@ package N2P2
                 _selectStageNum = Number(name.substring(name.indexOf("_")+1,name.indexOf("."))) - 2;
                 
                 _ui.touchable = false;
-                _sbp.touchable = true;
-                _sbp.visible = true;
+                _sbp.appearanceAnimation();
             }
         }
         

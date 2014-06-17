@@ -57,8 +57,7 @@ package N2P2
             var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
             if(touch != null)
             {
-                _pausePopupUI.visible = true;
-                _pausePopupUI.touchable = true;
+                _pausePopupUI.appearanceAnimation();
                 _inGameUI.touchable = false;
                 _inGameBoard.touchable = false;
             }

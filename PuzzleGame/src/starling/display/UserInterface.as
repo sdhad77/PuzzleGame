@@ -1,5 +1,7 @@
 package starling.display
 {
+    import com.greensock.TweenLite;
+    
     import starling.events.TouchEvent;
     import starling.textures.Texture;
     import starling.textures.TextureAtlas;
@@ -39,6 +41,18 @@ package starling.display
             
             mNames.length = 0;
             mNames = null;
+        }
+        
+        /**
+         * UI의 등장 애니메이션 효과. 팝업창에서 사용하면 됩니다.
+         * @param func callBack 함수
+         */
+        public function appearanceAnimation(func:Function = null):void
+        {
+            this.visible = true;
+            
+            if(func == null) TweenLite.from(this, 0.2, {x: 384-this.width/10, y:512-this.height/10, scaleX:0.1 , scaleY:0.1, onComplete:touchOn});
+            else TweenLite.from(this, 0.2, {x: 384-this.width/10, y:512-this.height/10, scaleX:0.1 , scaleY:0.1, onComplete:func});
         }
         
         /**
@@ -111,5 +125,9 @@ package starling.display
             this.removeEventListeners();
             if(this.parent != null && this.parent != this) this.parent.removeChild(this);
         }
+        
+        //터치 관련 함수
+        public function touchOn():void  { this.touchable = true;  }
+        public function touchOff():void { this.touchable = false; }
     }
 }
