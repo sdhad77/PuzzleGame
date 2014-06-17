@@ -22,10 +22,14 @@ package starling.display
             
             var mTextures:Vector.<Texture> = textureAtlas.getTextures(name);
             var mNames:Vector.<String> = textureAtlas.getNames(name);
+            var tempFrameX:Number;
+            var tempFrameY:Number;
             
             for(var i:int=0; i< mTextures.length; i++)
             {
                 this.addChild(new Image(mTextures[i]));
+                this.getChildAt(i).x = -mTextures[i].frame.x;
+                this.getChildAt(i).y = -mTextures[i].frame.y;
                 this.getChildAt(i).name = mNames[i];
             }
             
