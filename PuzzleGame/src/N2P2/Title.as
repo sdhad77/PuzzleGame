@@ -1,7 +1,7 @@
 package N2P2
 {
     import starling.display.Sprite;
-    import starling.display.UserInterface;
+    import N2P2.utils.UserInterface;
     import starling.events.Event;
     import starling.events.TouchEvent;
     import starling.events.TouchPhase;
@@ -26,26 +26,14 @@ package N2P2
             _ui = new UserInterface(assetManager.getTextureAtlas("titleUI"), "title_");
             addChild(_ui);
             
-            _ui.addTouchEventByName("title_3.png", noticeCloseButtonClick);
-            _ui.addTouchEventByName("title_4.png", startButtonClick);
+            _ui.addTouchEventByName("title_1.png", startButtonClick);
             this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
         }
         
         private function onEnterFrame(event:Event):void
         {
             var currentDate:Date = new Date();
-            _ui.getChildByName("title_4.png").y = 900 + Math.cos(currentDate.getTime() * 0.002) * 5;
-        }
-        
-        private function noticeCloseButtonClick(event:TouchEvent):void
-        {
-            if(event.getTouch(_ui, TouchPhase.BEGAN))
-            {
-                _ui.removeTouchEventByName("title_3.png", noticeCloseButtonClick);
-                _ui.removeChildByName("title_1.png");
-                _ui.removeChildByName("title_2.png");
-                _ui.removeChildByName("title_3.png");
-            }
+            _ui.getChildByName("title_1.png").y = 900 + Math.cos(currentDate.getTime() * 0.002) * 5;
         }
         
         private function startButtonClick(event:TouchEvent):void

@@ -1,10 +1,12 @@
-package starling.display
+package N2P2.utils
 {
     import com.greensock.TweenLite;
     
     import starling.events.TouchEvent;
     import starling.textures.Texture;
     import starling.textures.TextureAtlas;
+    import starling.display.DisplayObjectContainer;
+    import starling.display.Image;
     
     public class UserInterface extends DisplayObjectContainer
     {
@@ -51,12 +53,12 @@ package starling.display
         {
             visible = true;
             
-            if(func == null) TweenLite.from(this, 0.2, {x: stage.stageWidth/2-this.width/10, y:stage.stageHeight/2-this.height/10, scaleX:0.1 , scaleY:0.1, onComplete:completeFunc});
-            else             TweenLite.from(this, 0.2, {x: stage.stageWidth/2-this.width/10, y:stage.stageHeight/2-this.height/10, scaleX:0.1 , scaleY:0.1, onComplete:func});
+            TweenLite.from(this, 0.2, {x: stage.stageWidth/2-this.width/10, y:stage.stageHeight/2-this.height/10, scaleX:0.1 , scaleY:0.1, onComplete:completeFunc});
             
             function completeFunc():void
             {
                 touchable = true;
+                if(func != null) func();
             }
         }
         
@@ -68,8 +70,7 @@ package starling.display
         {
             touchable = false;
             
-            if(func == null) TweenLite.to(this, 0.2, {x: stage.stageWidth/2-this.width/10, y:stage.stageHeight/2-this.height/10, scaleX:0.1 , scaleY:0.1, onComplete:completeFunc});
-            else             TweenLite.to(this, 0.2, {x: stage.stageWidth/2-this.width/10, y:stage.stageHeight/2-this.height/10, scaleX:0.1 , scaleY:0.1, onComplete:func});
+            TweenLite.to(this, 0.2, {x: stage.stageWidth/2-this.width/10, y:stage.stageHeight/2-this.height/10, scaleX:0.1 , scaleY:0.1, onComplete:completeFunc});
             
             function completeFunc():void
             {
@@ -78,6 +79,7 @@ package starling.display
                 y = 0;
                 scaleX *= 10;
                 scaleY *= 10;
+                if(func != null) func();
             }
         }
         

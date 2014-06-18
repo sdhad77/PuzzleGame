@@ -1,7 +1,4 @@
 <atlas>
-  <SubTexture name="title_0.png" x="0" y="0" width="768" height="1024" frameX="-0.4" frameY="0" frameWidth="768" frameHeight="1024" rotated="false"/>
-  <SubTexture name="title_1.png" x="0" y="1026" width="542" height="758" frameX="-113.39999999999999" frameY="-133.6" frameWidth="542" frameHeight="758" rotated="false"/>
-  <SubTexture name="title_2.png" x="544" y="1026" width="44" height="278" frameX="-257.40000000000003" frameY="-149.2" frameWidth="278" frameHeight="44" rotated="true"/>
-  <SubTexture name="title_3.png" x="590" y="1086" width="50" height="52" frameX="-555.8" frameY="-143" frameWidth="50" frameHeight="52" rotated="false"/>
-  <SubTexture name="title_4.png" x="590" y="1026" width="150" height="58" frameX="-327.4" frameY="-890.4" frameWidth="150" frameHeight="58" rotated="false"/>
+  <SubTexture name="title_0.png" x="0" y="0" width="768" height="1024" frameX="0" frameY="0" frameWidth="768" frameHeight="1024" rotated="false"/>
+  <SubTexture name="title_1.png" x="770" y="0" width="236" height="70" frameX="-266.4" frameY="-858.2" frameWidth="236" frameHeight="70" rotated="false"/>
 </atlas>
