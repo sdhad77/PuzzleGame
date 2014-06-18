@@ -78,9 +78,9 @@ package N2P2
             var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
             if(touch != null) 
             {
-                _mp.visible = false;
-                _mp.touchable = false;
+                _mp.disappearanceAnimation();
                 _ui.touchable = true;
+                _mb.touchable = true;
             }
         }
         
@@ -91,6 +91,7 @@ package N2P2
             {
                 _mp.appearanceAnimation();
                 _ui.touchable = false;
+                _mb.touchable = false;
             }
         }
         
@@ -99,8 +100,7 @@ package N2P2
             var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
             if(touch != null) 
             {
-                _sbp.touchable = false;
-                _sbp.visible = false;
+                _sbp.disappearanceAnimation();
                 _ui.touchable = true;
             }
         }
