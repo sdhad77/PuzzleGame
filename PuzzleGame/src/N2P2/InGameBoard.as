@@ -115,7 +115,7 @@ package N2P2
                     _boardTileImage[i][j] = new Image(tileTextures[_boardTileNum[i][j]]);
                     _boardTileImage[i][j].x = _boardTilePos[i][j].x;
                     _boardTileImage[i][j].y = _boardTilePos[i][j].y;
-                    _boardTileImage[i][j].addEventListener(starling.events.TouchEvent.TOUCH, tileTouch);
+                    _boardTileImage[i][j].addEventListener(starling.events.TouchEvent.TOUCH, touchTile);
                     addChild(_boardTileImage[i][j]);
                 }
             }
@@ -209,7 +209,17 @@ package N2P2
             }
         }
         
-        private function tileSwap(idx1:int, idx2:int, idx3:int, idx4:int, call:Function = null):void
+        private function checkSwap():void
+        {
+            if(_tileSwap)
+            {
+                _tileSwap = false;
+                
+                //검사 코드 추가
+            }
+        }
+        
+        private function swapTile(idx1:int, idx2:int, idx3:int, idx4:int, call:Function = null):void
         {
             var temp:int = _boardTileNum[idx2][idx1];
             _boardTileNum[idx2][idx1] = _boardTileNum[idx4][idx3];
@@ -222,7 +232,7 @@ package N2P2
             TweenLite.from(_boardTileImage[idx4][idx3], 0.2, {x:_boardTilePos[idx2][idx1].x, y: _boardTilePos[idx2][idx1].y, onComplete: call});
         }
         
-        private function tileTouch(event:TouchEvent):void
+        private function touchTile(event:TouchEvent):void
         {
             var touch:Touch = event.getTouch(this);
             if(touch != null)
@@ -250,13 +260,13 @@ package N2P2
                         touchOff();
                         
                         _tileSwap = true;
-                        tileSwap(_currentTileX, _currentTileY, _newTileX, _newTileY, boardUpdate);
+                        swapTile(_currentTileX, _currentTileY, _newTileX, _newTileY, boardUpdate);
                     }
                 }
             }
         }
         
-        private function crashTileMark(horizontalArr:Array, verticalArr:Array):void
+        private function markCrashTile(horizontalArr:Array, verticalArr:Array):void
         {
             var offset:int;
             var tileType:int;
@@ -269,11 +279,12 @@ package N2P2
                 {
                     tileType = _boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y + offset]/TILE_TYPE;
                     
-                    if     (tileType == 0) defaultTile(horizontalArr[i].x, horizontalArr[i].y + offset);
+                    if     (tileType == 0) defaultTile   (horizontalArr[i].x, horizontalArr[i].y + offset);
                     else if(tileType == 1) horizontalTile(horizontalArr[i].x);
-                    else if(tileType == 2) verticalTile(horizontalArr[i].y + offset);
-                    else if(tileType == 3) defaultTile(horizontalArr[i].x, horizontalArr[i].y + offset);
-                    else if(tileType == 4) defaultTile(horizontalArr[i].x, horizontalArr[i].y + offset);
+                    else if(tileType == 2) verticalTile  (horizontalArr[i].y + offset);
+                    else if(tileType == 3) sunglassesTile(horizontalArr[i].x, horizontalArr[i].y + offset);
+                    else if(tileType == 4 && offset == 0) ghostTile(_boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y + offset+1]%TILE_TYPE);
+                    else if(tileType == 4 && offset != 0) ghostTile(_boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y + offset-1]%TILE_TYPE);
                     
                     offset++;
                 }
@@ -287,11 +298,12 @@ package N2P2
                 {
                     tileType = _boardTileNumClone[verticalArr[i].x + offset][verticalArr[i].y]/TILE_TYPE;
                     
-                    if     (tileType == 0) defaultTile(verticalArr[i].x + offset, verticalArr[i].y);
+                    if     (tileType == 0) defaultTile   (verticalArr[i].x + offset, verticalArr[i].y);
                     else if(tileType == 1) horizontalTile(verticalArr[i].x + offset);
-                    else if(tileType == 2) verticalTile(verticalArr[i].y);
-                    else if(tileType == 3) _boardTileNum[verticalArr[i].x + offset][verticalArr[i].y] = -1;
-                    else if(tileType == 4) _boardTileNum[verticalArr[i].x + offset][verticalArr[i].y] = -1;
+                    else if(tileType == 2) verticalTile  (verticalArr[i].y);
+                    else if(tileType == 3) sunglassesTile(verticalArr[i].x + offset, verticalArr[i].y);
+                    else if(tileType == 4 && offset == 0) ghostTile(_boardTileNumClone[verticalArr[i].x + offset+1][verticalArr[i].y]%TILE_TYPE);
+                    else if(tileType == 4 && offset != 0) ghostTile(_boardTileNumClone[verticalArr[i].x + offset-1][verticalArr[i].y]%TILE_TYPE);
                     
                     offset++;
                 }
@@ -311,15 +323,46 @@ package N2P2
             }
             function sunglassesTile(idx1:int, idx2:int):void
             {
-                
+                for(var j:int=idx1-2; j<=idx1+2; j++)
+                {
+                    if(j < 0) continue;
+                    if(j >= FIELD_HEIGTH) break;
+                    
+                    if(j == idx1-2 || j == idx1+2)
+                    {
+                        for(var k:int=idx2-1; k<=idx2+1; k++)
+                        {
+                            if(k < 0) continue;
+                            if(k >= FIELD_WIDTH) break;
+                            
+                            _boardTileNum[j][k] = -1;
+                        }
+                    }
+                    else
+                    {
+                        for(k=idx2-2; k<=idx2+2; k++)
+                        {
+                            if(k < 0) continue;
+                            if(k >= FIELD_WIDTH) break;
+                            
+                            _boardTileNum[j][k] = -1;
+                        }
+                    }
+                }
             }
-            function ghostTile():void
+            function ghostTile(tileNum:int):void
             {
-                
+                for(var j:int=0; j<FIELD_HEIGTH; j++)
+                {
+                    for(var k:int=0; k<FIELD_WIDTH; k++)
+                    {
+                        if((_boardTileNumClone[j][k]%TILE_TYPE) == tileNum) _boardTileNum[j][k] = -1;
+                    }
+                }
             }
         }
         
-        private function crossTileMark(crossResult:Array):void
+        private function markCrossTile(crossResult:Array):void
         {
             for(var i:int=0; i<crossResult.length; i++)
             {
@@ -328,7 +371,7 @@ package N2P2
             }
         }
         
-        private function specialTileMark(horizontalArr:Array, verticalArr:Array):void
+        private function markSpecialTile(horizontalArr:Array, verticalArr:Array):void
         {
             for(var i:int=0; i<horizontalArr.length; i++)
             {
@@ -359,7 +402,7 @@ package N2P2
             }
         }
         
-        private function tileMove():Number
+        private function moveTiles():Number
         {
             var isUpTileExist:Boolean;
             var minusLineIdx:int;
@@ -409,15 +452,15 @@ package N2P2
             
             checkAll(_horizontalResult, _verticalResult);
             checkCross(_horizontalResult, _verticalResult, _crossResult);
-            crashTileMark(_horizontalResult, _verticalResult);
-            crossTileMark(_crossResult);
-            specialTileMark(_horizontalResult, _verticalResult);
+            markCrashTile(_horizontalResult, _verticalResult);
+            markCrossTile(_crossResult);
+            markSpecialTile(_horizontalResult, _verticalResult);
             
             if(_horizontalResult.length > 0 || _verticalResult.length > 0 || _crossResult.length > 0)
             {
                 _tileSwap = false;
                 
-                var maxTweenTime:Number = tileMove();
+                var maxTweenTime:Number = moveTiles();
                 
                 TweenLite.delayedCall(maxTweenTime, boardUpdate);
             }
@@ -426,7 +469,7 @@ package N2P2
                 if(_tileSwap == true)
                 {
                     _tileSwap = false;
-                    tileSwap(_currentTileX, _currentTileY, _newTileX, _newTileY, touchOn);
+                    swapTile(_currentTileX, _currentTileY, _newTileX, _newTileY, touchOn);
                 }
                 else
                 {
