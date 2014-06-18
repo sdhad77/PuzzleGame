@@ -49,10 +49,36 @@ package starling.display
          */
         public function appearanceAnimation(func:Function = null):void
         {
-            this.visible = true;
+            visible = true;
             
-            if(func == null) TweenLite.from(this, 0.2, {x: stage.stageWidth/2-this.width/10, y:stage.stageHeight/2-this.height/10, scaleX:0.1 , scaleY:0.1, onComplete:touchOn});
+            if(func == null) TweenLite.from(this, 0.2, {x: stage.stageWidth/2-this.width/10, y:stage.stageHeight/2-this.height/10, scaleX:0.1 , scaleY:0.1, onComplete:completeFunc});
             else             TweenLite.from(this, 0.2, {x: stage.stageWidth/2-this.width/10, y:stage.stageHeight/2-this.height/10, scaleX:0.1 , scaleY:0.1, onComplete:func});
+            
+            function completeFunc():void
+            {
+                touchable = true;
+            }
+        }
+        
+        /**
+         * UI의 사라지는 애니메이션 효과. 팝업창에서 사용하면 됩니다.
+         * @param func callBack 함수
+         */
+        public function disappearanceAnimation(func:Function = null):void
+        {
+            touchable = false;
+            
+            if(func == null) TweenLite.to(this, 0.2, {x: stage.stageWidth/2-this.width/10, y:stage.stageHeight/2-this.height/10, scaleX:0.1 , scaleY:0.1, onComplete:completeFunc});
+            else             TweenLite.to(this, 0.2, {x: stage.stageWidth/2-this.width/10, y:stage.stageHeight/2-this.height/10, scaleX:0.1 , scaleY:0.1, onComplete:func});
+            
+            function completeFunc():void
+            {
+                visible = false;
+                x = 0;
+                y = 0;
+                scaleX *= 10;
+                scaleY *= 10;
+            }
         }
         
         /**
@@ -125,9 +151,5 @@ package starling.display
             this.removeEventListeners();
             if(this.parent != null && this.parent != this) this.parent.removeChild(this);
         }
-        
-        //터치 관련 함수
-        public function touchOn():void  { this.touchable = true;  }
-        public function touchOff():void { this.touchable = false; }
     }
 }
