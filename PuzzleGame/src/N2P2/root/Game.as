@@ -1,7 +1,10 @@
-package N2P2
+package N2P2.root
 {
     import starling.display.Sprite;
     import starling.utils.AssetManager;
+    import N2P2.root.child.InGame;
+    import N2P2.root.child.Title;
+    import N2P2.root.child.WorldMap;
     
     public class Game extends Sprite
     {

@@ -1,4 +1,4 @@
-package N2P2
+package N2P2.root.child
 {
     import starling.display.Sprite;
     import N2P2.utils.UserInterface;
@@ -6,6 +6,7 @@ package N2P2
     import starling.events.TouchEvent;
     import starling.events.TouchPhase;
     import starling.utils.AssetManager;
+    import N2P2.root.Game;
 
     public class Title extends Sprite
     {

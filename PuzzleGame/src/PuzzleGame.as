@@ -3,8 +3,8 @@ package
     import flash.display.Sprite;
     import flash.geom.Rectangle;
     
-    import N2P2.EmbeddedAssets;
-    import N2P2.Game;
+    import N2P2.utils.EmbeddedAssets;
+    import N2P2.root.Game;
     
     import starling.core.Starling;
     import starling.events.Event;
