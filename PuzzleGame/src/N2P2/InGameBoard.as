@@ -32,7 +32,6 @@ package N2P2
         private var _boardTileMinusPos:Array  = new Array(FIELD_HEIGTH);
         
         private var _mouseButtonDown:Boolean;
-        private var _tileSwap:Boolean;
         
         private var _currentTileX:int;
         private var _currentTileY:int;
@@ -51,7 +50,6 @@ package N2P2
         
         private function init(textureAtlas:TextureAtlas):void
         {
-            _tileSwap = false;
             tileTextures = textureAtlas.getTextures("character_");
             
             initBoardTileNum();
@@ -178,14 +176,40 @@ package N2P2
             }
         }
         
-        private function checkSwap():void
+        private function checkSwapAndBoardUpdate():void
         {
-            if(_tileSwap)
+            _boardTileNumClone = clone(_boardTileNum);
+            
+            if(_currentTileY == _newTileY)
             {
-                _tileSwap = false;
-                
-                //검사 코드 추가
+                checkHorizontal(_currentTileY, _horizontalResult);
+                checkVertical(_currentTileX,_verticalResult);
+                checkVertical(_newTileX, _verticalResult);
             }
+            else
+            {
+                checkHorizontal(_currentTileY, _horizontalResult);
+                checkHorizontal(_newTileY, _horizontalResult);
+                checkVertical(_currentTileX,_verticalResult);
+            }
+            
+            if(_horizontalResult.length > 0 || _verticalResult.length > 0)
+            {
+                checkCross(_horizontalResult, _verticalResult, _crossResult);
+                markCrashTile(_horizontalResult, _verticalResult);
+                markCrossTile(_crossResult);
+                markSpecialTile(_horizontalResult, _verticalResult, true);
+                
+                var maxTweenTime:Number = moveTiles();
+                
+                TweenLite.delayedCall(maxTweenTime, boardUpdate);
+            }
+            else
+            {
+                swapTile(_currentTileX, _currentTileY, _newTileX, _newTileY, touchOn);
+            }
+            
+            resultClear();
         }
         
         private function swapTile(idx1:int, idx2:int, idx3:int, idx4:int, call:Function = null):void
@@ -228,8 +252,7 @@ package N2P2
                         _mouseButtonDown = false;
                         touchOff();
                         
-                        _tileSwap = true;
-                        swapTile(_currentTileX, _currentTileY, _newTileX, _newTileY, boardUpdate);
+                        swapTile(_currentTileX, _currentTileY, _newTileX, _newTileY, checkSwapAndBoardUpdate);
                     }
                 }
             }
@@ -340,7 +363,7 @@ package N2P2
             }
         }
         
-        private function markSpecialTile(horizontalArr:Array, verticalArr:Array):void
+        private function markSpecialTile(horizontalArr:Array, verticalArr:Array, isSwap:Boolean = false):void
         {
             for(var i:int=0; i<horizontalArr.length; i++)
             {
@@ -420,32 +443,19 @@ package N2P2
             _boardTileNumClone = clone(_boardTileNum);
             
             checkAll(_horizontalResult, _verticalResult);
-            checkCross(_horizontalResult, _verticalResult, _crossResult);
-            markCrashTile(_horizontalResult, _verticalResult);
-            markCrossTile(_crossResult);
-            markSpecialTile(_horizontalResult, _verticalResult);
             
-            if(_horizontalResult.length > 0 || _verticalResult.length > 0 || _crossResult.length > 0)
+            if(_horizontalResult.length > 0 || _verticalResult.length > 0)
             {
-                _tileSwap = false;
+                checkCross(_horizontalResult, _verticalResult, _crossResult);
+                markCrashTile(_horizontalResult, _verticalResult);
+                markCrossTile(_crossResult);
+                markSpecialTile(_horizontalResult, _verticalResult);
                 
                 var maxTweenTime:Number = moveTiles();
                 
                 TweenLite.delayedCall(maxTweenTime, boardUpdate);
             }
-            else
-            {
-                if(_tileSwap == true)
-                {
-                    _tileSwap = false;
-                    swapTile(_currentTileX, _currentTileY, _newTileX, _newTileY, touchOn);
-                }
-                else
-                {
-                    _tileSwap = false;
-                    touchOn();
-                }
-            }
+            else touchOn();
             
             resultClear();
         }
