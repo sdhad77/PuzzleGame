@@ -119,6 +119,18 @@ package N2P2
             }
         }
         
+        /**
+         * 타일을 변경하는 함수.
+         * @param idx1 타일 배열의 인덱스
+         * @param idx2 타일 배열의 인덱스
+         * @param tileNum tileNum으로 타일숫자 변경
+         */
+        private function changeTile(idx1:int, idx2:int, tileNum:int):void
+        {
+            _boardTileNum[idx1][idx2] = tileNum;
+            _boardTileImage[idx1][idx2].texture = tileTextures[tileNum];
+        }
+        
         private function checkHorizontal(index:int, result:Array):void
         {
             var cnt:int = 0;
@@ -214,12 +226,11 @@ package N2P2
         
         private function swapTile(idx1:int, idx2:int, idx3:int, idx4:int, call:Function = null):void
         {
-            var temp:int = _boardTileNum[idx2][idx1];
-            _boardTileNum[idx2][idx1] = _boardTileNum[idx4][idx3];
-            _boardTileNum[idx4][idx3] = temp;
+            var temp1:int = _boardTileNum[idx2][idx1];
+            var temp2:int = _boardTileNum[idx4][idx3];
             
-            _boardTileImage[idx2][idx1].texture = tileTextures[_boardTileNum[idx2][idx1]];
-            _boardTileImage[idx4][idx3].texture = tileTextures[_boardTileNum[idx4][idx3]];
+            changeTile(idx2, idx1, temp2);
+            changeTile(idx4, idx3, temp1);
             
             TweenLite.from(_boardTileImage[idx2][idx1], 0.2, {x:_boardTilePos[idx4][idx3].x, y: _boardTilePos[idx4][idx3].y});
             TweenLite.from(_boardTileImage[idx4][idx3], 0.2, {x:_boardTilePos[idx2][idx1].x, y: _boardTilePos[idx2][idx1].y, onComplete: call});
@@ -358,8 +369,7 @@ package N2P2
         {
             for(var i:int=0; i<crossResult.length; i++)
             {
-                _boardTileNum[crossResult[i].x][crossResult[i].y] = _boardTileNumClone[crossResult[i].x][crossResult[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE + TILE_TYPE;
-                _boardTileImage[crossResult[i].x][crossResult[i].y].texture = tileTextures[_boardTileNum[crossResult[i].x][crossResult[i].y]];
+                changeTile(crossResult[i].x, crossResult[i].y, _boardTileNumClone[crossResult[i].x][crossResult[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE + TILE_TYPE);
             }
         }
         
@@ -369,13 +379,11 @@ package N2P2
             {
                 if(horizontalArr[i].length >= 5)
                 {
-                    _boardTileNum[horizontalArr[i].x][horizontalArr[i].y] = TILE_GHOST;
-                    _boardTileImage[horizontalArr[i].x][horizontalArr[i].y].texture = tileTextures[_boardTileNum[horizontalArr[i].x][horizontalArr[i].y]];
+                    changeTile(horizontalArr[i].x, horizontalArr[i].y, TILE_GHOST);
                 }
                 else if(horizontalArr[i].length == 4)
                 {
-                    _boardTileNum[horizontalArr[i].x][horizontalArr[i].y] = _boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y]%TILE_TYPE + TILE_TYPE;
-                    _boardTileImage[horizontalArr[i].x][horizontalArr[i].y].texture = tileTextures[_boardTileNum[horizontalArr[i].x][horizontalArr[i].y]];
+                    changeTile(horizontalArr[i].x, horizontalArr[i].y, _boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y]%TILE_TYPE + TILE_TYPE);
                 }
             }
             
@@ -383,13 +391,11 @@ package N2P2
             {
                 if(verticalArr[i].length >= 5)
                 {
-                    _boardTileNum[verticalArr[i].x][verticalArr[i].y] = TILE_GHOST;
-                    _boardTileImage[verticalArr[i].x][verticalArr[i].y].texture = tileTextures[_boardTileNum[verticalArr[i].x][verticalArr[i].y]];
+                    changeTile(verticalArr[i].x, verticalArr[i].y, TILE_GHOST);
                 }
                 else if(verticalArr[i].length == 4)
                 {
-                    _boardTileNum[verticalArr[i].x][verticalArr[i].y] = _boardTileNumClone[verticalArr[i].x][verticalArr[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE;
-                    _boardTileImage[verticalArr[i].x][verticalArr[i].y].texture = tileTextures[_boardTileNum[verticalArr[i].x][verticalArr[i].y]];
+                    changeTile(verticalArr[i].x, verticalArr[i].y, _boardTileNumClone[verticalArr[i].x][verticalArr[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE);
                 }
             }
         }
@@ -414,8 +420,7 @@ package N2P2
                         {
                             if(_boardTileNum[q][i] != -1)
                             {
-                                _boardTileNum[j][i] = _boardTileNum[q][i];
-                                _boardTileImage[j][i].texture = tileTextures[_boardTileNum[j][i]];
+                                changeTile(j, i, _boardTileNum[q][i]);
                                 TweenLite.from(_boardTileImage[j][i], 0.2*(j-q), {y: _boardTilePos[q][i].y});
                                 if(maxTweenTime < 0.2*(j-q)) maxTweenTime = 0.2*(j-q);
                                 _boardTileNum[q][i] = -1;
@@ -425,8 +430,7 @@ package N2P2
                         }
                         if(!isUpTileExist)
                         {
-                            _boardTileNum[j][i] = Math.floor((Math.random())*TILE_TYPE);
-                            _boardTileImage[j][i].texture = tileTextures[_boardTileNum[j][i]];
+                            changeTile(j, i, Math.floor((Math.random())*TILE_TYPE));
                             TweenLite.from(_boardTileImage[j][i], 0.2*(minusLineIdx+j+1), {y: _boardTileMinusPos[minusLineIdx][i].y});
                             if(maxTweenTime < 0.2*(minusLineIdx+j+1)) maxTweenTime = 0.2*(minusLineIdx+j+1);
                             minusLineIdx++;
