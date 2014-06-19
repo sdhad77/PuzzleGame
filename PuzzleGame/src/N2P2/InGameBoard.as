@@ -128,12 +128,7 @@ package N2P2
             
             for(var i:int=0; i < FIELD_WIDTH; i++)
             {
-                if(i == 0 && _boardTileNum[index][0] == TILE_GHOST)
-                {
-                    cnt++;
-                    tileNum = _boardTileNum[index][i+1]%TILE_TYPE;
-                }
-                else if(_boardTileNum[index][i] == TILE_GHOST || tileNum == (_boardTileNum[index][i]%TILE_TYPE)) cnt++;
+                if(tileNum == (_boardTileNum[index][i]%TILE_TYPE)) cnt++;
                 else
                 {
                     if(cnt >= 3) result[result.length] = new CustomVector(index,i-cnt,cnt);
@@ -153,12 +148,7 @@ package N2P2
             
             for(var i:int=0; i < FIELD_HEIGTH; i++)
             {
-                if(i == 0 && _boardTileNum[0][index] == TILE_GHOST)
-                {
-                    cnt++;
-                    tileNum = _boardTileNum[i+1][index]%TILE_TYPE;
-                }
-                else if(_boardTileNum[i][index] == TILE_GHOST || tileNum == (_boardTileNum[i][index]%TILE_TYPE)) cnt++;
+                if(tileNum == (_boardTileNum[i][index]%TILE_TYPE)) cnt++;
                 else
                 {
                     if(cnt >= 3) result[result.length] = new CustomVector(i-cnt,index,cnt);
@@ -345,7 +335,7 @@ package N2P2
         {
             for(var i:int=0; i<crossResult.length; i++)
             {
-                _boardTileNum[crossResult[i].x][crossResult[i].y] = _boardTileNumClone[crossResult[i].x][crossResult[i].y] + TILE_TYPE + TILE_TYPE + TILE_TYPE;
+                _boardTileNum[crossResult[i].x][crossResult[i].y] = _boardTileNumClone[crossResult[i].x][crossResult[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE + TILE_TYPE;
                 _boardTileImage[crossResult[i].x][crossResult[i].y].texture = tileTextures[_boardTileNum[crossResult[i].x][crossResult[i].y]];
             }
         }
@@ -356,12 +346,12 @@ package N2P2
             {
                 if(horizontalArr[i].length >= 5)
                 {
-                    _boardTileNum[horizontalArr[i].x][horizontalArr[i].y] = 24;
+                    _boardTileNum[horizontalArr[i].x][horizontalArr[i].y] = TILE_GHOST;
                     _boardTileImage[horizontalArr[i].x][horizontalArr[i].y].texture = tileTextures[_boardTileNum[horizontalArr[i].x][horizontalArr[i].y]];
                 }
                 else if(horizontalArr[i].length == 4)
                 {
-                    _boardTileNum[horizontalArr[i].x][horizontalArr[i].y] = _boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y] + TILE_TYPE;
+                    _boardTileNum[horizontalArr[i].x][horizontalArr[i].y] = _boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y]%TILE_TYPE + TILE_TYPE;
                     _boardTileImage[horizontalArr[i].x][horizontalArr[i].y].texture = tileTextures[_boardTileNum[horizontalArr[i].x][horizontalArr[i].y]];
                 }
             }
@@ -370,12 +360,12 @@ package N2P2
             {
                 if(verticalArr[i].length >= 5)
                 {
-                    _boardTileNum[verticalArr[i].x][verticalArr[i].y] = 24;
+                    _boardTileNum[verticalArr[i].x][verticalArr[i].y] = TILE_GHOST;
                     _boardTileImage[verticalArr[i].x][verticalArr[i].y].texture = tileTextures[_boardTileNum[verticalArr[i].x][verticalArr[i].y]];
                 }
                 else if(verticalArr[i].length == 4)
                 {
-                    _boardTileNum[verticalArr[i].x][verticalArr[i].y] = _boardTileNumClone[verticalArr[i].x][verticalArr[i].y] + TILE_TYPE + TILE_TYPE;
+                    _boardTileNum[verticalArr[i].x][verticalArr[i].y] = _boardTileNumClone[verticalArr[i].x][verticalArr[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE;
                     _boardTileImage[verticalArr[i].x][verticalArr[i].y].texture = tileTextures[_boardTileNum[verticalArr[i].x][verticalArr[i].y]];
                 }
             }
