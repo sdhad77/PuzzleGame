@@ -188,36 +188,189 @@ package N2P2.root.child
             }
         }
         
+        private function checkSwapTileIsSpecialTile(horizontalArr:Array, verticalArr:Array):Boolean
+        {
+            var tileType1:int = _boardTileNumClone[_currentTileY][_currentTileX]/TILE_TYPE;
+            var tileNum1:int  = _boardTileNumClone[_currentTileY][_currentTileX]%TILE_TYPE;
+            var tileType2:int = _boardTileNumClone[_newTileY][_newTileX]/TILE_TYPE;
+            var tileNum2:int  = _boardTileNumClone[_newTileY][_newTileX]%TILE_TYPE;
+            
+            if(tileType1 != 0 || tileType2 != 0)
+            {
+                if(tileType1 == 1 || tileType1 == 2)
+                {
+                    if(tileType2 == 1 || tileType2 == 2)
+                    {
+                        cross(_currentTileY, _currentTileX, _newTileY, _newTileX);
+                    }
+                    else if(tileType2 == 3)
+                    {
+                        crossX3(_currentTileY, _currentTileX);
+                    }
+                    else if(tileType2 == 4)
+                    {
+                        ghost(_currentTileY, _currentTileX, tileNum1);
+                    }
+                }
+                else if(tileType1 == 3)
+                {
+                    if(tileType2 == 1 || tileType2 == 2)
+                    {
+                        crossX3(_newTileY, _newTileX);
+                    }
+                    else if(tileType2 == 3)
+                    {
+                        bigSunglasses(_currentTileY, _currentTileX);
+                    }
+                    else if(tileType2 == 4)
+                    {
+                        ghost(_currentTileY, _currentTileX, tileNum1);
+                    }
+                }
+                else if(tileType1 == 4)
+                {
+                    if(tileType2 == 1 || tileType2 == 2)
+                    {
+                        ghost(_newTileY, _newTileX, tileNum2);
+                    }
+                    else if(tileType2 == 3)
+                    {
+                        ghost(_newTileY, _newTileX, tileNum2);
+                    }
+                    else if(tileType2 == 4)
+                    {
+                        trace("뭔지 모르겠다..");
+                    }
+                }
+                else trace("swapTile 검사오류");
+                
+                return true;
+            }
+            else return false;
+            
+            function cross(idx1:int, idx2:int, idx3:int, idx4:int):void
+            {
+                _boardTileNumClone[idx1][idx2] = TILE_TYPE;
+                _boardTileNumClone[idx3][idx4] = TILE_TYPE + TILE_TYPE;
+                
+                horizontalArr[horizontalArr.length] = new CustomVector(idx1,idx2,1,true);
+                verticalArr[verticalArr.length] = new CustomVector(idx3,idx4,1,false);
+            }
+            function crossX3(idx1:int, idx2:int):void
+            {
+                var cnt:int;
+                
+                for(var i:int=idx1-1; i<=idx1+1; i++)
+                {
+                    if(i < 0) continue;
+                    if(i >= FIELD_HEIGTH) break;
+                    
+                    cnt = i;
+                    
+                    for(var j:int=idx2-1; j<=idx2+1; j++)
+                    {
+                        if(j < 0) continue;
+                        if(j >= FIELD_WIDTH) break;
+                        
+                        if(cnt%2 == 0)
+                        {
+                            _boardTileNumClone[i][j] = TILE_TYPE;
+                            horizontalArr[horizontalArr.length] = new CustomVector(i,j,1,true);
+                        }
+                        else
+                        {
+                            _boardTileNumClone[i][j] = TILE_TYPE + TILE_TYPE;
+                            verticalArr[verticalArr.length] = new CustomVector(i,j,1,false);
+                        }
+                        
+                        cnt++;
+                    }
+                }
+            }
+            function bigSunglasses(idx1:int, idx2:int):void
+            {
+                for(var i:int=idx1-3; i<=idx1+3; i++)
+                {
+                    if(i < 0) continue;
+                    if(i >= FIELD_HEIGTH) break;
+                    
+                    if(i == idx1-3 || i == idx1+3)
+                    {
+                        for(var j:int=idx2-2; j<=idx2+2; j++)
+                        {
+                            if(j < 0) continue;
+                            if(j >= FIELD_WIDTH) break;
+                            
+                            horizontalArr[horizontalArr.length] = new CustomVector(i,j,1,true);
+                        }
+                    }
+                    else
+                    {
+                        for(j=idx2-3; j<=idx2+3; j++)
+                        {
+                            if(j < 0) continue;
+                            if(j >= FIELD_WIDTH) break;
+                            
+                            horizontalArr[horizontalArr.length] = new CustomVector(i,j,1,true);
+                        }
+                    }
+                }
+            }
+            function ghost(idx1:int, idx2:int, tileNum:int):void
+            {
+                for(var i:int=0; i<FIELD_HEIGTH; i++)
+                {
+                    for(var j:int=0; j<FIELD_WIDTH; j++)
+                    {
+                        if((_boardTileNumClone[i][j]%TILE_TYPE) == tileNum)
+                        {
+                            _boardTileNumClone[i][j] = _boardTileNumClone[idx1][idx2];
+                            horizontalArr[horizontalArr.length] = new CustomVector(i,j,1,true);
+                        }
+                    }
+                }
+            }
+        }
+        
         private function checkSwapAndBoardUpdate():void
         {
             _boardTileNumClone = clone(_boardTileNum);
             
-            if(_currentTileY == _newTileY)
+            if(checkSwapTileIsSpecialTile(_horizontalResult, _verticalResult))
             {
-                checkHorizontal(_currentTileY, _horizontalResult);
-                checkVertical(_currentTileX,_verticalResult);
-                checkVertical(_newTileX, _verticalResult);
-            }
-            else
-            {
-                checkHorizontal(_currentTileY, _horizontalResult);
-                checkHorizontal(_newTileY, _horizontalResult);
-                checkVertical(_currentTileX,_verticalResult);
-            }
-            
-            if(_horizontalResult.length > 0 || _verticalResult.length > 0)
-            {
-                checkCross(_horizontalResult, _verticalResult, _crossResult);
                 markRemoveTile(_horizontalResult, _verticalResult);
-                markSpecialTileForSwap(_horizontalResult, _verticalResult, _crossResult);
                 
                 var maxTweenTime:Number = moveTiles();
-                
                 TweenLite.delayedCall(maxTweenTime, boardUpdate);
             }
             else
             {
-                swapTile(_currentTileX, _currentTileY, _newTileX, _newTileY, touchOn);
+                if(_currentTileY == _newTileY)
+                {
+                    checkHorizontal(_currentTileY, _horizontalResult);
+                    checkVertical(_currentTileX,_verticalResult);
+                    checkVertical(_newTileX, _verticalResult);
+                }
+                else
+                {
+                    checkHorizontal(_currentTileY, _horizontalResult);
+                    checkHorizontal(_newTileY, _horizontalResult);
+                    checkVertical(_currentTileX,_verticalResult);
+                }
+                
+                if(_horizontalResult.length > 0 || _verticalResult.length > 0)
+                {
+                    checkCross(_horizontalResult, _verticalResult, _crossResult);
+                    markRemoveTile(_horizontalResult, _verticalResult);
+                    markSpecialTileForSwap(_horizontalResult, _verticalResult, _crossResult);
+                    
+                    maxTweenTime = moveTiles();
+                    TweenLite.delayedCall(maxTweenTime, boardUpdate);
+                }
+                else
+                {
+                    swapTile(_currentTileX, _currentTileY, _newTileX, _newTileY, touchOn);
+                }
             }
             
             resultClear();
