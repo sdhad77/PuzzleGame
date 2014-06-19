@@ -262,7 +262,92 @@ package N2P2.root.child
                         _mouseButtonDown = false;
                         touchOff();
                         
+                        var intervalX:Number = touch.globalX - this.x - ((_currentTileX << 6) + (TILE_LENGTH_SCALED >> 1));
+                        var intervalY:Number = touch.globalY - this.y - ((_currentTileY << 6) + (TILE_LENGTH_SCALED >> 1));
+                        
+                        _newTileX = _currentTileX;
+                        _newTileY = _currentTileY;
+                        
+                        if(Math.abs(intervalX) > Math.abs(intervalY))
+                        {
+                            if(intervalX > 0) _newTileX++;
+                            else _newTileX--;
+                        }
+                        else
+                        {
+                            if(intervalY > 0) _newTileY++;
+                            else _newTileY--;
+                        }
+                        
                         swapTile(_currentTileX, _currentTileY, _newTileX, _newTileY, checkSwapAndBoardUpdate);
+                    }
+                }
+            }
+        }
+        
+        private function removeTile(idx1:int, idx2:int):void
+        {
+            if(_boardTileNum[idx1][idx2] != -1)
+            {
+                _boardTileNum[idx1][idx2] = -1;
+                if(_boardTileNumClone[idx1][idx2] >= TILE_TYPE) removeSpecialTile(idx1, idx2);
+            }
+        }
+        
+        private function removeSpecialTile(idx1:int, idx2:int):void
+        {
+            var tileType:int = _boardTileNumClone[idx1][idx2]/TILE_TYPE;
+            
+            if     (tileType == 1) horizontalTile(idx1);
+            else if(tileType == 2) verticalTile  (idx2);
+            else if(tileType == 3) sunglassesTile(idx1, idx2);
+            else if(tileType == 4) ghostTile(Math.floor((Math.random())*TILE_TYPE));
+            else trace("특수타일 버그발생");
+            
+            function horizontalTile(idx:int):void
+            {
+                for(var i:int=0; i<FIELD_WIDTH; i++) removeTile(idx, i);
+            }
+            function verticalTile(idx:int):void
+            {
+                for(var i:int=0; i<FIELD_HEIGTH; i++) removeTile(i, idx);
+            }
+            function sunglassesTile(idx1:int, idx2:int):void
+            {
+                for(var i:int=idx1-2; i<=idx1+2; i++)
+                {
+                    if(i < 0) continue;
+                    if(i >= FIELD_HEIGTH) break;
+                    
+                    if(i == idx1-2 || i == idx1+2)
+                    {
+                        for(var j:int=idx2-1; j<=idx2+1; j++)
+                        {
+                            if(j < 0) continue;
+                            if(j >= FIELD_WIDTH) break;
+                            
+                            removeTile(i, j);
+                        }
+                    }
+                    else
+                    {
+                        for(j=idx2-2; j<=idx2+2; j++)
+                        {
+                            if(j < 0) continue;
+                            if(j >= FIELD_WIDTH) break;
+                            
+                            removeTile(i,j);
+                        }
+                    }
+                }
+            }
+            function ghostTile(tileNum:int):void
+            {
+                for(var i:int=0; i<FIELD_HEIGTH; i++)
+                {
+                    for(var j:int=0; j<FIELD_WIDTH; j++)
+                    {
+                        if((_boardTileNumClone[i][j]%TILE_TYPE) == tileNum) removeTile(i,j);
                     }
                 }
             }
@@ -270,20 +355,11 @@ package N2P2.root.child
         
         private function markRemoveTile(horizontalArr:Array, verticalArr:Array):void
         {
-            var tileType:int;
-            
             for(var i:int=0; i<horizontalArr.length; i++)
             {
                 for(var offset:int=0; offset < horizontalArr[i].length; offset++)
                 {
-                    tileType = _boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y + offset]/TILE_TYPE;
-                    
-                    if     (tileType == 0) defaultTile   (horizontalArr[i].x, horizontalArr[i].y + offset);
-                    else if(tileType == 1) horizontalTile(horizontalArr[i].x);
-                    else if(tileType == 2) verticalTile  (horizontalArr[i].y + offset);
-                    else if(tileType == 3) sunglassesTile(horizontalArr[i].x, horizontalArr[i].y + offset);
-                    else if(tileType == 4 && offset == 0) ghostTile(_boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y + offset+1]%TILE_TYPE);
-                    else if(tileType == 4 && offset != 0) ghostTile(_boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y + offset-1]%TILE_TYPE);
+                    removeTile(horizontalArr[i].x, horizontalArr[i].y + offset);
                 }
             }
             
@@ -291,66 +367,7 @@ package N2P2.root.child
             {
                 for(offset=0; offset < verticalArr[i].length; offset++)
                 {
-                    tileType = _boardTileNumClone[verticalArr[i].x + offset][verticalArr[i].y]/TILE_TYPE;
-                    
-                    if     (tileType == 0) defaultTile   (verticalArr[i].x + offset, verticalArr[i].y);
-                    else if(tileType == 1) horizontalTile(verticalArr[i].x + offset);
-                    else if(tileType == 2) verticalTile  (verticalArr[i].y);
-                    else if(tileType == 3) sunglassesTile(verticalArr[i].x + offset, verticalArr[i].y);
-                    else if(tileType == 4 && offset == 0) ghostTile(_boardTileNumClone[verticalArr[i].x + offset+1][verticalArr[i].y]%TILE_TYPE);
-                    else if(tileType == 4 && offset != 0) ghostTile(_boardTileNumClone[verticalArr[i].x + offset-1][verticalArr[i].y]%TILE_TYPE);
-                }
-            }
-            
-            function defaultTile(idx1:int, idx2:int):void
-            {
-                _boardTileNum[idx1][idx2] = -1;
-            }
-            function horizontalTile(idx:int):void
-            {
-                for(var j:int=0; j<FIELD_WIDTH; j++) _boardTileNum[idx][j] = -1;
-            }
-            function verticalTile(idx:int):void
-            {
-                for(var j:int=0; j<FIELD_HEIGTH; j++) _boardTileNum[j][idx] = -1;
-            }
-            function sunglassesTile(idx1:int, idx2:int):void
-            {
-                for(var j:int=idx1-2; j<=idx1+2; j++)
-                {
-                    if(j < 0) continue;
-                    if(j >= FIELD_HEIGTH) break;
-                    
-                    if(j == idx1-2 || j == idx1+2)
-                    {
-                        for(var k:int=idx2-1; k<=idx2+1; k++)
-                        {
-                            if(k < 0) continue;
-                            if(k >= FIELD_WIDTH) break;
-                            
-                            _boardTileNum[j][k] = -1;
-                        }
-                    }
-                    else
-                    {
-                        for(k=idx2-2; k<=idx2+2; k++)
-                        {
-                            if(k < 0) continue;
-                            if(k >= FIELD_WIDTH) break;
-                            
-                            _boardTileNum[j][k] = -1;
-                        }
-                    }
-                }
-            }
-            function ghostTile(tileNum:int):void
-            {
-                for(var j:int=0; j<FIELD_HEIGTH; j++)
-                {
-                    for(var k:int=0; k<FIELD_WIDTH; k++)
-                    {
-                        if((_boardTileNumClone[j][k]%TILE_TYPE) == tileNum) _boardTileNum[j][k] = -1;
-                    }
+                    removeTile(verticalArr[i].x + offset, verticalArr[i].y);
                 }
             }
         }
