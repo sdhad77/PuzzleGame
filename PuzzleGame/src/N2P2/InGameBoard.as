@@ -121,11 +121,10 @@ package N2P2
             }
         }
         
-        private function checkHorizontal(index:int, result:Array):Boolean
+        private function checkHorizontal(index:int, result:Array):void
         {
             var cnt:int = 0;
             var tileNum:int = _boardTileNum[index][0]%TILE_TYPE;
-            var resultLength:int = result.length;
             
             for(var i:int=0; i < FIELD_WIDTH; i++)
             {
@@ -145,16 +144,12 @@ package N2P2
             }
             
             if(cnt >= 3) result[result.length] = new CustomVector(index,FIELD_WIDTH-cnt,cnt);
-            
-            if(resultLength != result.length) return true;
-            else return false;
         }
         
-        private function checkVertical(index:int, result:Array):Boolean
+        private function checkVertical(index:int, result:Array):void
         {
             var cnt:int = 0;
             var tileNum:int = _boardTileNum[0][index]%TILE_TYPE;
-            var resultLength:int = result.length;
             
             for(var i:int=0; i < FIELD_HEIGTH; i++)
             {
@@ -174,28 +169,12 @@ package N2P2
             }
             
             if(cnt >= 3) result[result.length] = new CustomVector(FIELD_HEIGTH-cnt,index,cnt);
-            
-            if(resultLength != result.length) return true;
-            else return false;
         }
         
-        private function checkAll(horizontalArr:Array, verticalArr:Array):Boolean
+        private function checkAll(horizontalArr:Array, verticalArr:Array):void
         {
-            var cnt:int;
-            var tileNum:int;
-            var result:Boolean = false;
-            
-            for(var i:int=0; i < FIELD_HEIGTH; i++)
-            {
-                if(checkHorizontal(i, horizontalArr)) result = true;
-            }
-            
-            for(i=0; i < FIELD_WIDTH; i++)
-            {
-                if(checkVertical(i, verticalArr)) result = true;
-            }
-            
-            return result;
+            for(var i:int=0; i < FIELD_HEIGTH; i++) checkHorizontal(i, horizontalArr);
+            for(i=0; i < FIELD_WIDTH; i++) checkVertical(i, verticalArr);
         }
         
         private function checkCross(horizontalArr:Array, verticalArr:Array, result:Array):void
