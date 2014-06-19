@@ -141,14 +141,14 @@ package N2P2.root.child
                 if(tileNum == (_boardTileNum[index][i]%TILE_TYPE)) cnt++;
                 else
                 {
-                    if(cnt >= 3) result[result.length] = new CustomVector(index,i-cnt,cnt);
+                    if(cnt >= 3) result[result.length] = new CustomVector(index,i-cnt,cnt,true);
                     
                     cnt = 1;
                     tileNum = _boardTileNum[index][i]%TILE_TYPE;
                 }
             }
             
-            if(cnt >= 3) result[result.length] = new CustomVector(index,FIELD_WIDTH-cnt,cnt);
+            if(cnt >= 3) result[result.length] = new CustomVector(index,FIELD_WIDTH-cnt,cnt,true);
         }
         
         private function checkVertical(index:int, result:Array):void
@@ -161,14 +161,14 @@ package N2P2.root.child
                 if(tileNum == (_boardTileNum[i][index]%TILE_TYPE)) cnt++;
                 else
                 {
-                    if(cnt >= 3) result[result.length] = new CustomVector(i-cnt,index,cnt);
+                    if(cnt >= 3) result[result.length] = new CustomVector(i-cnt,index,cnt,false);
                     
                     cnt = 1;
                     tileNum = _boardTileNum[i][index]%TILE_TYPE;
                 }
             }
             
-            if(cnt >= 3) result[result.length] = new CustomVector(FIELD_HEIGTH-cnt,index,cnt);
+            if(cnt >= 3) result[result.length] = new CustomVector(FIELD_HEIGTH-cnt,index,cnt,false);
         }
         
         private function checkAll(horizontalArr:Array, verticalArr:Array):void
@@ -208,9 +208,8 @@ package N2P2.root.child
             if(_horizontalResult.length > 0 || _verticalResult.length > 0)
             {
                 checkCross(_horizontalResult, _verticalResult, _crossResult);
-                markCrashTile(_horizontalResult, _verticalResult);
-                markCrossTile(_crossResult);
-                markSpecialTile(_horizontalResult, _verticalResult, true);
+                markRemoveTile(_horizontalResult, _verticalResult);
+                markSpecialTileForSwap(_horizontalResult, _verticalResult, _crossResult);
                 
                 var maxTweenTime:Number = moveTiles();
                 
@@ -269,16 +268,13 @@ package N2P2.root.child
             }
         }
         
-        private function markCrashTile(horizontalArr:Array, verticalArr:Array):void
+        private function markRemoveTile(horizontalArr:Array, verticalArr:Array):void
         {
-            var offset:int;
             var tileType:int;
             
             for(var i:int=0; i<horizontalArr.length; i++)
             {
-                offset = 0;
-                
-                while(offset < horizontalArr[i].length)
+                for(var offset:int=0; offset < horizontalArr[i].length; offset++)
                 {
                     tileType = _boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y + offset]/TILE_TYPE;
                     
@@ -288,16 +284,12 @@ package N2P2.root.child
                     else if(tileType == 3) sunglassesTile(horizontalArr[i].x, horizontalArr[i].y + offset);
                     else if(tileType == 4 && offset == 0) ghostTile(_boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y + offset+1]%TILE_TYPE);
                     else if(tileType == 4 && offset != 0) ghostTile(_boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y + offset-1]%TILE_TYPE);
-                    
-                    offset++;
                 }
             }
             
             for(i=0; i<verticalArr.length; i++)
             {
-                offset = 0;
-                
-                while(offset < verticalArr[i].length)
+                for(offset=0; offset < verticalArr[i].length; offset++)
                 {
                     tileType = _boardTileNumClone[verticalArr[i].x + offset][verticalArr[i].y]/TILE_TYPE;
                     
@@ -307,8 +299,6 @@ package N2P2.root.child
                     else if(tileType == 3) sunglassesTile(verticalArr[i].x + offset, verticalArr[i].y);
                     else if(tileType == 4 && offset == 0) ghostTile(_boardTileNumClone[verticalArr[i].x + offset+1][verticalArr[i].y]%TILE_TYPE);
                     else if(tileType == 4 && offset != 0) ghostTile(_boardTileNumClone[verticalArr[i].x + offset-1][verticalArr[i].y]%TILE_TYPE);
-                    
-                    offset++;
                 }
             }
             
@@ -365,15 +355,7 @@ package N2P2.root.child
             }
         }
         
-        private function markCrossTile(crossResult:Array):void
-        {
-            for(var i:int=0; i<crossResult.length; i++)
-            {
-                changeTile(crossResult[i].x, crossResult[i].y, _boardTileNumClone[crossResult[i].x][crossResult[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE + TILE_TYPE);
-            }
-        }
-        
-        private function markSpecialTile(horizontalArr:Array, verticalArr:Array, isSwap:Boolean = false):void
+        private function markSpecialTile(horizontalArr:Array, verticalArr:Array, crossResult:Array):void
         {
             for(var i:int=0; i<horizontalArr.length; i++)
             {
@@ -397,6 +379,51 @@ package N2P2.root.child
                 {
                     changeTile(verticalArr[i].x, verticalArr[i].y, _boardTileNumClone[verticalArr[i].x][verticalArr[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE);
                 }
+            }
+            
+            for(i=0; i<crossResult.length; i++)
+            {
+                changeTile(crossResult[i].x, crossResult[i].y, _boardTileNumClone[crossResult[i].x][crossResult[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE + TILE_TYPE);
+            }
+        }
+        
+        private function markSpecialTileForSwap(horizontalArr:Array, verticalArr:Array, crossResult:Array):void
+        {
+            for(var i:int=0; i<horizontalArr.length; i++)
+            {
+                if(horizontalArr[i].length >= 5)
+                {
+                    if(horizontalArr[i].isExist(_currentTileY, _currentTileX)) changeTile(_currentTileY, _currentTileX, TILE_GHOST);
+                    else if(horizontalArr[i].isExist(_newTileY, _newTileX)) changeTile(_newTileY, _newTileX, TILE_GHOST);
+                    else changeTile(horizontalArr[i].x, horizontalArr[i].y, TILE_GHOST);
+                }
+                else if(horizontalArr[i].length == 4)
+                {
+                    if(horizontalArr[i].isExist(_currentTileY, _currentTileX)) changeTile(_currentTileY, _currentTileX, _boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y]%TILE_TYPE + TILE_TYPE);
+                    else if(horizontalArr[i].isExist(_newTileY, _newTileX)) changeTile(_newTileY, _newTileX, _boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y]%TILE_TYPE + TILE_TYPE);
+                    else changeTile(horizontalArr[i].x, horizontalArr[i].y, _boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y]%TILE_TYPE + TILE_TYPE);
+                }
+            }
+            
+            for(i=0; i<verticalArr.length; i++)
+            {
+                if(verticalArr[i].length >= 5)
+                {
+                    if(verticalArr[i].isExist(_currentTileY, _currentTileX)) changeTile(_currentTileY, _currentTileX, TILE_GHOST);
+                    else if(verticalArr[i].isExist(_newTileY, _newTileX)) changeTile(_newTileY, _newTileX, TILE_GHOST);
+                    else changeTile(verticalArr[i].x, verticalArr[i].y, TILE_GHOST);
+                }
+                else if(verticalArr[i].length == 4)
+                {
+                    if(verticalArr[i].isExist(_currentTileY, _currentTileX)) changeTile(_currentTileY, _currentTileX, _boardTileNumClone[verticalArr[i].x][verticalArr[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE);
+                    else if(verticalArr[i].isExist(_newTileY, _newTileX)) changeTile(_newTileY, _newTileX, _boardTileNumClone[verticalArr[i].x][verticalArr[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE);
+                    else changeTile(verticalArr[i].x, verticalArr[i].y, _boardTileNumClone[verticalArr[i].x][verticalArr[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE);
+                }
+            }
+            
+            for(i=0; i<crossResult.length; i++)
+            {
+                changeTile(crossResult[i].x, crossResult[i].y, _boardTileNumClone[crossResult[i].x][crossResult[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE + TILE_TYPE);
             }
         }
         
@@ -451,9 +478,8 @@ package N2P2.root.child
             if(_horizontalResult.length > 0 || _verticalResult.length > 0)
             {
                 checkCross(_horizontalResult, _verticalResult, _crossResult);
-                markCrashTile(_horizontalResult, _verticalResult);
-                markCrossTile(_crossResult);
-                markSpecialTile(_horizontalResult, _verticalResult);
+                markRemoveTile(_horizontalResult, _verticalResult);
+                markSpecialTile(_horizontalResult, _verticalResult, _crossResult);
                 
                 var maxTweenTime:Number = moveTiles();
                 
@@ -517,12 +543,14 @@ class CustomVector
     private var _x:int;
     private var _y:int;
     private var _length:int
+    private var _isHorizontal:Boolean;
     
-    public function CustomVector(x:int, y:int, length:int)
+    public function CustomVector(x:int, y:int, length:int, isHorizontal:Boolean)
     {
         _x = x;
         _y = y;
         _length = length;
+        _isHorizontal = isHorizontal;
     }
     
     public function isCross(v1:CustomVector, result:Array):void
@@ -530,7 +558,36 @@ class CustomVector
         if(v1.x <= this.x && this.x <= (v1.x + v1.length -1) && this.y <= v1.y && v1.y <= (this.y + this.length -1)) result[result.length] = new Point(this.x, v1.y);
     }
     
-    public function get x():int     {return _x;}
-    public function get y():int     {return _y;}
-    public function get length():int {return _length;}
+    public function isExist(idx1:int, idx2:int):Boolean
+    {
+        if(_isHorizontal == true)
+        {
+            if(_x == idx1)
+            {
+                for(var i:int=0; i<_length; i++)
+                {
+                    if((y+i) == idx2) return true;
+                }
+            }
+            else return false;
+        }
+        else
+        {
+            if(_y == idx2)
+            {
+                for(i=0; i<_length; i++)
+                {
+                    if((x+i) == idx1) return true;
+                }
+            }
+            else return false;
+        }
+        
+        return false;
+    }
+    
+    public function get x():int                { return _x;            }
+    public function get y():int                { return _y;            }
+    public function get length():int           { return _length;       }
+    public function get isHorizontal():Boolean { return _isHorizontal; }
 }
