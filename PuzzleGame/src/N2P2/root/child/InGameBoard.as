@@ -1,9 +1,11 @@
 package N2P2.root.child
 {
     import com.greensock.TweenLite;
+    import com.greensock.easing.Linear;
     
     import flash.geom.Point;
-    import flash.utils.ByteArray;
+    
+    import N2P2.utils.CustomVector;
     
     import starling.display.Image;
     import starling.display.Sprite;
@@ -12,7 +14,6 @@ package N2P2.root.child
     import starling.events.TouchPhase;
     import starling.textures.Texture;
     import starling.textures.TextureAtlas;
-    import N2P2.utils.CustomVector;
     
     public class InGameBoard extends Sprite
     {
@@ -25,12 +26,11 @@ package N2P2.root.child
         private const TILE_LENGTH:int = 160;
         private const TILE_LENGTH_SCALED:Number = TILE_LENGTH * INGAME_STAGE_SCALE;
         private const TILE_GHOST:int = 24;
+        private const TWEEN_TIME:Number = 0.2;
         
         private var _boardTileNum:Array       = new Array(FIELD_HEIGTH);
-        private var _boardTileNumClone:Array  = new Array(FIELD_HEIGTH);
         private var _boardTileImage:Array     = new Array(FIELD_HEIGTH);
         private var _boardTilePos:Array       = new Array(FIELD_HEIGTH);
-        private var _boardTileMinusPos:Array  = new Array(FIELD_HEIGTH);
         
         private var _mouseButtonDown:Boolean;
         
@@ -52,6 +52,7 @@ package N2P2.root.child
         private function init(textureAtlas:TextureAtlas):void
         {
             tileTextures = textureAtlas.getTextures("character_");
+            TweenLite.defaultEase = Linear.easeNone;
             
             initBoardTileNum();
             initBoardTilePos();
@@ -93,13 +94,8 @@ package N2P2.root.child
             for(var i:int=0; i < FIELD_HEIGTH; i++)
             {
                 _boardTilePos[i]      = new Array(FIELD_WIDTH);
-                _boardTileMinusPos[i] = new Array(FIELD_WIDTH);
                 
-                for(var j:int=0; j < FIELD_WIDTH; j++)
-                {
-                    _boardTilePos[i][j]      = new Point(j * TILE_LENGTH, i * TILE_LENGTH);
-                    _boardTileMinusPos[i][j] = new Point(j * TILE_LENGTH, -(i+1) * TILE_LENGTH);
-                }
+                for(var j:int=0; j < FIELD_WIDTH; j++) _boardTilePos[i][j] = new Point(j * TILE_LENGTH, i * TILE_LENGTH);
             }
         }
         
@@ -130,6 +126,7 @@ package N2P2.root.child
         {
             _boardTileNum[idx1][idx2] = tileNum;
             _boardTileImage[idx1][idx2].texture = tileTextures[tileNum];
+            _boardTileImage[idx1][idx2].visible = true;
         }
         
         private function checkHorizontal(index:int, result:Array):void
@@ -191,68 +188,40 @@ package N2P2.root.child
         
         private function checkSwapTileIsSpecialTile(horizontalArr:Array, verticalArr:Array):Boolean
         {
-            var tileType1:int = _boardTileNumClone[_currentTileY][_currentTileX]/TILE_TYPE;
-            var tileNum1:int  = _boardTileNumClone[_currentTileY][_currentTileX]%TILE_TYPE;
-            var tileType2:int = _boardTileNumClone[_newTileY][_newTileX]/TILE_TYPE;
-            var tileNum2:int  = _boardTileNumClone[_newTileY][_newTileX]%TILE_TYPE;
+            var tileType1:int = _boardTileNum[_currentTileY][_currentTileX]/TILE_TYPE;
+            var tileNum1:int  = _boardTileNum[_currentTileY][_currentTileX]%TILE_TYPE;
+            var tileType2:int = _boardTileNum[_newTileY][_newTileX]/TILE_TYPE;
+            var tileNum2:int  = _boardTileNum[_newTileY][_newTileX]%TILE_TYPE;
             
-            if(tileType1 != 0 || tileType2 != 0)
+            if(tileType1 == 0 && tileType2 == 4) ghost(_currentTileY, _currentTileX, tileNum1);
+            if(tileType1 == 1 || tileType1 == 2)
             {
-                if(tileType1 == 1 || tileType1 == 2)
-                {
-                    if(tileType2 == 1 || tileType2 == 2)
-                    {
-                        cross(_currentTileY, _currentTileX, _newTileY, _newTileX);
-                    }
-                    else if(tileType2 == 3)
-                    {
-                        crossX3(_currentTileY, _currentTileX);
-                    }
-                    else if(tileType2 == 4)
-                    {
-                        ghost(_currentTileY, _currentTileX, tileNum1);
-                    }
-                }
-                else if(tileType1 == 3)
-                {
-                    if(tileType2 == 1 || tileType2 == 2)
-                    {
-                        crossX3(_newTileY, _newTileX);
-                    }
-                    else if(tileType2 == 3)
-                    {
-                        bigSunglasses(_currentTileY, _currentTileX);
-                    }
-                    else if(tileType2 == 4)
-                    {
-                        ghost(_currentTileY, _currentTileX, tileNum1);
-                    }
-                }
-                else if(tileType1 == 4)
-                {
-                    if(tileType2 == 1 || tileType2 == 2)
-                    {
-                        ghost(_newTileY, _newTileX, tileNum2);
-                    }
-                    else if(tileType2 == 3)
-                    {
-                        ghost(_newTileY, _newTileX, tileNum2);
-                    }
-                    else if(tileType2 == 4)
-                    {
-                        trace("뭔지 모르겠다..");
-                    }
-                }
+                if     (tileType2 == 1) cross(_currentTileY, _currentTileX, _newTileY, _newTileX);
+                else if(tileType2 == 2) cross(_currentTileY, _currentTileX, _newTileY, _newTileX);
+                else if(tileType2 == 3) crossX3(_currentTileY, _currentTileX);
+                else if(tileType2 == 4) ghost(_currentTileY, _currentTileX, tileNum1);
                 else return false;
-                
-                return true;
+            }
+            else if(tileType1 == 3)
+            {
+                if     (tileType2 == 1) crossX3(_newTileY, _newTileX);
+                else if(tileType2 == 2) crossX3(_newTileY, _newTileX);
+                else if(tileType2 == 3) bigSunglasses(_currentTileY, _currentTileX);
+                else if(tileType2 == 4) ghost(_currentTileY, _currentTileX, tileNum1);
+                else return false;
+            }
+            else if(tileType1 == 4)
+            {
+                ghost(_newTileY, _newTileX, tileNum2);
             }
             else return false;
+                
+            return true;
             
             function cross(idx1:int, idx2:int, idx3:int, idx4:int):void
             {
-                _boardTileNumClone[idx1][idx2] = TILE_TYPE;
-                _boardTileNumClone[idx3][idx4] = TILE_TYPE + TILE_TYPE;
+                _boardTileNum[idx1][idx2] = TILE_TYPE;
+                _boardTileNum[idx3][idx4] = TILE_TYPE + TILE_TYPE;
                 
                 horizontalArr[horizontalArr.length] = new CustomVector(idx1,idx2,1,true);
                 verticalArr[verticalArr.length] = new CustomVector(idx3,idx4,1,false);
@@ -275,12 +244,12 @@ package N2P2.root.child
                         
                         if(cnt%2 == 0)
                         {
-                            _boardTileNumClone[i][j] = TILE_TYPE;
+                            _boardTileNum[i][j] = TILE_TYPE;
                             horizontalArr[horizontalArr.length] = new CustomVector(i,j,1,true);
                         }
                         else
                         {
-                            _boardTileNumClone[i][j] = TILE_TYPE + TILE_TYPE;
+                            _boardTileNum[i][j] = TILE_TYPE + TILE_TYPE;
                             verticalArr[verticalArr.length] = new CustomVector(i,j,1,false);
                         }
                         
@@ -323,9 +292,9 @@ package N2P2.root.child
                 {
                     for(var j:int=0; j<FIELD_WIDTH; j++)
                     {
-                        if((_boardTileNumClone[i][j]%TILE_TYPE) == tileNum)
+                        if((_boardTileNum[i][j]%TILE_TYPE) == tileNum)
                         {
-                            _boardTileNumClone[i][j] = _boardTileNumClone[idx1][idx2];
+                            _boardTileNum[i][j] = _boardTileNum[idx1][idx2];
                             horizontalArr[horizontalArr.length] = new CustomVector(i,j,1,true);
                         }
                     }
@@ -335,14 +304,10 @@ package N2P2.root.child
         
         private function checkSwapAndBoardUpdate():void
         {
-            _boardTileNumClone = clone(_boardTileNum);
-            
             if(checkSwapTileIsSpecialTile(_horizontalResult, _verticalResult))
             {
                 markRemoveTile(_horizontalResult, _verticalResult);
-                
-                var maxTweenTime:Number = moveTiles();
-                TweenLite.delayedCall(maxTweenTime, boardUpdate);
+                moveTiles();
             }
             else
             {
@@ -364,9 +329,7 @@ package N2P2.root.child
                     checkCross(_horizontalResult, _verticalResult, _crossResult);
                     markRemoveTile(_horizontalResult, _verticalResult);
                     markSpecialTileForSwap(_horizontalResult, _verticalResult, _crossResult);
-                    
-                    maxTweenTime = moveTiles();
-                    TweenLite.delayedCall(maxTweenTime, boardUpdate);
+                    moveTiles();
                 }
                 else
                 {
@@ -441,16 +404,16 @@ package N2P2.root.child
         
         private function removeTile(idx1:int, idx2:int):void
         {
-            if(_boardTileNum[idx1][idx2] != -1)
+            if(_boardTileImage[idx1][idx2].visible == true)
             {
-                _boardTileNum[idx1][idx2] = -1;
-                if(_boardTileNumClone[idx1][idx2] >= TILE_TYPE) removeSpecialTile(idx1, idx2);
+                _boardTileImage[idx1][idx2].visible = false;
+                if(_boardTileNum[idx1][idx2] >= TILE_TYPE) removeSpecialTile(idx1, idx2);
             }
         }
         
         private function removeSpecialTile(idx1:int, idx2:int):void
         {
-            var tileType:int = _boardTileNumClone[idx1][idx2]/TILE_TYPE;
+            var tileType:int = _boardTileNum[idx1][idx2]/TILE_TYPE;
             
             if     (tileType == 1) horizontalTile(idx1);
             else if(tileType == 2) verticalTile  (idx2);
@@ -501,7 +464,7 @@ package N2P2.root.child
                 {
                     for(var j:int=0; j<FIELD_WIDTH; j++)
                     {
-                        if((_boardTileNumClone[i][j]%TILE_TYPE) == tileNum) removeTile(i,j);
+                        if((_boardTileNum[i][j]%TILE_TYPE) == tileNum) removeTile(i,j);
                     }
                 }
             }
@@ -536,7 +499,7 @@ package N2P2.root.child
                 }
                 else if(horizontalArr[i].length == 4)
                 {
-                    changeTile(horizontalArr[i].x, horizontalArr[i].y, _boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y]%TILE_TYPE + TILE_TYPE);
+                    changeTile(horizontalArr[i].x, horizontalArr[i].y, _boardTileNum[horizontalArr[i].x][horizontalArr[i].y]%TILE_TYPE + TILE_TYPE);
                 }
             }
             
@@ -548,13 +511,13 @@ package N2P2.root.child
                 }
                 else if(verticalArr[i].length == 4)
                 {
-                    changeTile(verticalArr[i].x, verticalArr[i].y, _boardTileNumClone[verticalArr[i].x][verticalArr[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE);
+                    changeTile(verticalArr[i].x, verticalArr[i].y, _boardTileNum[verticalArr[i].x][verticalArr[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE);
                 }
             }
             
             for(i=0; i<crossResult.length; i++)
             {
-                changeTile(crossResult[i].x, crossResult[i].y, _boardTileNumClone[crossResult[i].x][crossResult[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE + TILE_TYPE);
+                changeTile(crossResult[i].x, crossResult[i].y, _boardTileNum[crossResult[i].x][crossResult[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE + TILE_TYPE);
             }
         }
         
@@ -570,9 +533,9 @@ package N2P2.root.child
                 }
                 else if(horizontalArr[i].length == 4)
                 {
-                    if(horizontalArr[i].isExist(_currentTileY, _currentTileX)) changeTile(_currentTileY, _currentTileX, _boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y]%TILE_TYPE + TILE_TYPE);
-                    else if(horizontalArr[i].isExist(_newTileY, _newTileX)) changeTile(_newTileY, _newTileX, _boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y]%TILE_TYPE + TILE_TYPE);
-                    else changeTile(horizontalArr[i].x, horizontalArr[i].y, _boardTileNumClone[horizontalArr[i].x][horizontalArr[i].y]%TILE_TYPE + TILE_TYPE);
+                    if(horizontalArr[i].isExist(_currentTileY, _currentTileX)) changeTile(_currentTileY, _currentTileX, _boardTileNum[horizontalArr[i].x][horizontalArr[i].y]%TILE_TYPE + TILE_TYPE);
+                    else if(horizontalArr[i].isExist(_newTileY, _newTileX)) changeTile(_newTileY, _newTileX, _boardTileNum[horizontalArr[i].x][horizontalArr[i].y]%TILE_TYPE + TILE_TYPE);
+                    else changeTile(horizontalArr[i].x, horizontalArr[i].y, _boardTileNum[horizontalArr[i].x][horizontalArr[i].y]%TILE_TYPE + TILE_TYPE);
                 }
             }
             
@@ -586,64 +549,105 @@ package N2P2.root.child
                 }
                 else if(verticalArr[i].length == 4)
                 {
-                    if(verticalArr[i].isExist(_currentTileY, _currentTileX)) changeTile(_currentTileY, _currentTileX, _boardTileNumClone[verticalArr[i].x][verticalArr[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE);
-                    else if(verticalArr[i].isExist(_newTileY, _newTileX)) changeTile(_newTileY, _newTileX, _boardTileNumClone[verticalArr[i].x][verticalArr[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE);
-                    else changeTile(verticalArr[i].x, verticalArr[i].y, _boardTileNumClone[verticalArr[i].x][verticalArr[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE);
+                    if(verticalArr[i].isExist(_currentTileY, _currentTileX)) changeTile(_currentTileY, _currentTileX, _boardTileNum[verticalArr[i].x][verticalArr[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE);
+                    else if(verticalArr[i].isExist(_newTileY, _newTileX)) changeTile(_newTileY, _newTileX, _boardTileNum[verticalArr[i].x][verticalArr[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE);
+                    else changeTile(verticalArr[i].x, verticalArr[i].y, _boardTileNum[verticalArr[i].x][verticalArr[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE);
                 }
             }
             
             for(i=0; i<crossResult.length; i++)
             {
-                changeTile(crossResult[i].x, crossResult[i].y, _boardTileNumClone[crossResult[i].x][crossResult[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE + TILE_TYPE);
+                changeTile(crossResult[i].x, crossResult[i].y, _boardTileNum[crossResult[i].x][crossResult[i].y]%TILE_TYPE + TILE_TYPE + TILE_TYPE + TILE_TYPE);
             }
         }
         
-        private function moveTiles():Number
+        private function moveTiles():void
         {
-            var isUpTileExist:Boolean;
-            var minusLineIdx:int;
-            var maxTweenTime:Number=-1;
+            var moveTileExist:Boolean = false;
             
-            for(var i:int=0; i < FIELD_WIDTH; i++)
+            for(var j:int=FIELD_HEIGTH-1; 0 <= j; j--)
             {
-                minusLineIdx = 0;
-                
-                for(var j:int=FIELD_HEIGTH-1; 0 <= j; j--)
+                for(var i:int=0; i < FIELD_WIDTH; i++)
                 {
-                    isUpTileExist = false;
-                    
-                    if(_boardTileNum[j][i] == -1)
+                    if(_boardTileImage[j][i].visible == false)
                     {
-                        for(var q:int=j; 0 <= q; q--)
-                        {
-                            if(_boardTileNum[q][i] != -1)
-                            {
-                                changeTile(j, i, _boardTileNum[q][i]);
-                                TweenLite.from(_boardTileImage[j][i], 0.2*(j-q), {y: _boardTilePos[q][i].y});
-                                if(maxTweenTime < 0.2*(j-q)) maxTweenTime = 0.2*(j-q);
-                                _boardTileNum[q][i] = -1;
-                                isUpTileExist = true;
-                                break;
-                            }
-                        }
-                        if(!isUpTileExist)
+                        if(j == 0)
                         {
                             changeTile(j, i, Math.floor((Math.random())*TILE_TYPE));
-                            TweenLite.from(_boardTileImage[j][i], 0.2*(minusLineIdx+j+1), {y: _boardTileMinusPos[minusLineIdx][i].y});
-                            if(maxTweenTime < 0.2*(minusLineIdx+j+1)) maxTweenTime = 0.2*(minusLineIdx+j+1);
-                            minusLineIdx++;
+                            TweenLite.from(_boardTileImage[j][i], TWEEN_TIME, {y: "-160"});
+                            moveTileExist = true;
+                        }
+                        else
+                        {
+                            if(i == 0)
+                            {
+                                if(_boardTileImage[j-1][i].visible == true)
+                                {
+                                    changeTile(j, i, _boardTileNum[j-1][i]);
+                                    TweenLite.from(_boardTileImage[j][i], TWEEN_TIME, {y: "-160"});
+                                    _boardTileImage[j-1][i].visible = false;
+                                    moveTileExist = true;
+                                }
+                                else if(_boardTileImage[j-1][i+1].visible == true && _boardTileImage[j][i+1].visible == true)
+                                {
+                                    changeTile(j, i, _boardTileNum[j-1][i+1]);
+                                    TweenLite.from(_boardTileImage[j][i], TWEEN_TIME, {x: "160", y: "-160"});
+                                    _boardTileImage[j-1][i+1].visible = false;
+                                    moveTileExist = true;
+                                }
+                            }
+                            else if(i == (FIELD_WIDTH-1))
+                            {
+                                if(_boardTileImage[j-1][i].visible == true)
+                                {
+                                    changeTile(j, i, _boardTileNum[j-1][i]);
+                                    TweenLite.from(_boardTileImage[j][i], TWEEN_TIME, {y: "-160"});
+                                    _boardTileImage[j-1][i].visible = false;
+                                    moveTileExist = true;
+                                }
+                                else if(_boardTileImage[j-1][i-1].visible == true && _boardTileImage[j][i-1].visible == true)
+                                {
+                                    changeTile(j, i, _boardTileNum[j-1][i-1]);
+                                    TweenLite.from(_boardTileImage[j][i], TWEEN_TIME, {x: "-160", y: "-160"});
+                                    _boardTileImage[j-1][i-1].visible = false;
+                                    moveTileExist = true;
+                                }
+                            }
+                            else
+                            {
+                                if(_boardTileImage[j-1][i].visible == true)
+                                {
+                                    changeTile(j, i, _boardTileNum[j-1][i]);
+                                    TweenLite.from(_boardTileImage[j][i], TWEEN_TIME, {y: "-160"});
+                                    _boardTileImage[j-1][i].visible = false;
+                                    moveTileExist = true;
+                                }
+                                else if(_boardTileImage[j-1][i+1].visible == true && _boardTileImage[j][i+1].visible == true)
+                                {
+                                    changeTile(j, i, _boardTileNum[j-1][i+1]);
+                                    TweenLite.from(_boardTileImage[j][i], TWEEN_TIME, {x: "160", y: "-160"});
+                                    _boardTileImage[j-1][i+1].visible = false;
+                                    moveTileExist = true;
+                                }
+                                else if(_boardTileImage[j-1][i-1].visible == true && _boardTileImage[j][i-1].visible == true)
+                                {
+                                    changeTile(j, i, _boardTileNum[j-1][i-1]);
+                                    TweenLite.from(_boardTileImage[j][i], TWEEN_TIME, {x: "-160", y: "-160"});
+                                    _boardTileImage[j-1][i-1].visible = false;
+                                    moveTileExist = true;
+                                }
+                            }
                         }
                     }
                 }
             }
             
-            return maxTweenTime;
+            if(moveTileExist == true) TweenLite.delayedCall(TWEEN_TIME, moveTiles);
+            else boardUpdate();
         }
         
         private function boardUpdate():void
         {
-            _boardTileNumClone = clone(_boardTileNum);
-            
             checkAll(_horizontalResult, _verticalResult);
             
             if(_horizontalResult.length > 0 || _verticalResult.length > 0)
@@ -651,10 +655,7 @@ package N2P2.root.child
                 checkCross(_horizontalResult, _verticalResult, _crossResult);
                 markRemoveTile(_horizontalResult, _verticalResult);
                 markSpecialTile(_horizontalResult, _verticalResult, _crossResult);
-                
-                var maxTweenTime:Number = moveTiles();
-                
-                TweenLite.delayedCall(maxTweenTime, boardUpdate);
+                moveTiles();
             }
             else touchOn();
             
@@ -666,7 +667,6 @@ package N2P2.root.child
             _horizontalResult.length = 0;
             _verticalResult.length = 0;
             _crossResult.length = 0;
-            _boardTileNumClone.length = 0;
         }
         
         private function touchOn():void
@@ -689,20 +689,10 @@ package N2P2.root.child
             _boardTileImage = null;
             _boardTilePos.length = 0;
             _boardTilePos = null;
-            _boardTileMinusPos.length = 0;
-            _boardTileMinusPos = null;
             this.removeEventListeners();
             while(this.numChildren > 0) this.removeChildAt(0);
             this.parent.removeChild(this);
             this.dispose();
-        }
-        
-        private function clone(source:Object):* 
-        { 
-            var myBA:ByteArray = new ByteArray(); 
-            myBA.writeObject(source); 
-            myBA.position = 0; 
-            return(myBA.readObject()); 
         }
     }
 }
