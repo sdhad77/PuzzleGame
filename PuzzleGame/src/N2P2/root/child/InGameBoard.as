@@ -579,64 +579,30 @@ package N2P2.root.child
                         }
                         else
                         {
-                            if(i == 0)
+                            if(_boardTileImage[j-1][i].visible == true)
                             {
-                                if(_boardTileImage[j-1][i].visible == true)
-                                {
-                                    changeTile(j, i, _boardTileNum[j-1][i]);
-                                    TweenLite.from(_boardTileImage[j][i], TWEEN_TIME, {y: "-160"});
-                                    _boardTileImage[j-1][i].visible = false;
-                                    moveTileExist = true;
-                                }
-                                else if(_boardTileImage[j-1][i+1].visible == true && _boardTileImage[j][i+1].visible == true)
-                                {
-                                    changeTile(j, i, _boardTileNum[j-1][i+1]);
-                                    TweenLite.from(_boardTileImage[j][i], TWEEN_TIME, {x: "160", y: "-160"});
-                                    _boardTileImage[j-1][i+1].visible = false;
-                                    moveTileExist = true;
-                                }
-                            }
-                            else if(i == (FIELD_WIDTH-1))
-                            {
-                                if(_boardTileImage[j-1][i].visible == true)
-                                {
-                                    changeTile(j, i, _boardTileNum[j-1][i]);
-                                    TweenLite.from(_boardTileImage[j][i], TWEEN_TIME, {y: "-160"});
-                                    _boardTileImage[j-1][i].visible = false;
-                                    moveTileExist = true;
-                                }
-                                else if(_boardTileImage[j-1][i-1].visible == true && _boardTileImage[j][i-1].visible == true)
-                                {
-                                    changeTile(j, i, _boardTileNum[j-1][i-1]);
-                                    TweenLite.from(_boardTileImage[j][i], TWEEN_TIME, {x: "-160", y: "-160"});
-                                    _boardTileImage[j-1][i-1].visible = false;
-                                    moveTileExist = true;
-                                }
+                                changeTile(j, i, _boardTileNum[j-1][i]);
+                                TweenLite.from(_boardTileImage[j][i], TWEEN_TIME, {y: "-160"});
+                                _boardTileImage[j-1][i].visible = false;
                             }
                             else
                             {
-                                if(_boardTileImage[j-1][i].visible == true)
-                                {
-                                    changeTile(j, i, _boardTileNum[j-1][i]);
-                                    TweenLite.from(_boardTileImage[j][i], TWEEN_TIME, {y: "-160"});
-                                    _boardTileImage[j-1][i].visible = false;
-                                    moveTileExist = true;
-                                }
-                                else if(_boardTileImage[j-1][i+1].visible == true && _boardTileImage[j][i+1].visible == true)
-                                {
-                                    changeTile(j, i, _boardTileNum[j-1][i+1]);
-                                    TweenLite.from(_boardTileImage[j][i], TWEEN_TIME, {x: "160", y: "-160"});
-                                    _boardTileImage[j-1][i+1].visible = false;
-                                    moveTileExist = true;
-                                }
-                                else if(_boardTileImage[j-1][i-1].visible == true && _boardTileImage[j][i-1].visible == true)
+                                if(i != 0 && _boardTileImage[j-1][i-1].visible == true && _boardTileImage[j][i-1].visible == true)
                                 {
                                     changeTile(j, i, _boardTileNum[j-1][i-1]);
                                     TweenLite.from(_boardTileImage[j][i], TWEEN_TIME, {x: "-160", y: "-160"});
                                     _boardTileImage[j-1][i-1].visible = false;
-                                    moveTileExist = true;
                                 }
+                                else if(i != (FIELD_WIDTH-1) && _boardTileImage[j-1][i+1].visible == true && _boardTileImage[j][i+1].visible == true)
+                                {
+                                    changeTile(j, i, _boardTileNum[j-1][i+1]);
+                                    TweenLite.from(_boardTileImage[j][i], TWEEN_TIME, {x: "160", y: "-160"});
+                                    _boardTileImage[j-1][i+1].visible = false;
+                                }
+                                else continue;
                             }
+                            
+                            moveTileExist = true;
                         }
                     }
                 }
