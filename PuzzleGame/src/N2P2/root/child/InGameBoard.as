@@ -243,7 +243,7 @@ package N2P2.root.child
                         trace("뭔지 모르겠다..");
                     }
                 }
-                else trace("swapTile 검사오류");
+                else return false;
                 
                 return true;
             }
