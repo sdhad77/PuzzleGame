@@ -22,22 +22,16 @@ package N2P2.root.child
         
         public function start(assetManager:AssetManager, stageNum:Number):void
         {
-            loadStageInfo(stageNum);
-            init(assetManager);
+            init(assetManager, stageNum);
         }
         
-        private function loadStageInfo(stageNum:Number):void
-        {
-            
-        }
-        
-        private function init(assetManager:AssetManager):void
+        private function init(assetManager:AssetManager, stageNum:Number):void
         {
             _inGameUI = new UserInterface(assetManager.getTextureAtlas("inGameUI"), "inGameUI_");
             _inGameUI.addTouchEventByName("inGameUI_2.png", pausePopupButtonTouch);
             addChild(_inGameUI);
             
-            _inGameBoard = new InGameBoard(assetManager.getTextureAtlas("inGameUI"));
+            _inGameBoard = new InGameBoard(stageNum, assetManager);
             _inGameBoard.scaleX = _inGameBoard.scaleY = 0.4;
             _inGameBoard.x = (Starling.current.viewPort.width >> 1) - ((8 * 64) >> 1);
             _inGameBoard.y = (Starling.current.viewPort.height >> 1) - ((8 * 64) >> 1);
