@@ -5,17 +5,20 @@ package N2P2.root.child
     
     import N2P2.utils.CustomVector;
     import N2P2.utils.GlobalData;
+    import N2P2.utils.InGameStageInfo;
     import N2P2.utils.Tile;
     
     import starling.display.Sprite;
     import starling.events.Touch;
     import starling.events.TouchEvent;
     import starling.events.TouchPhase;
-    import starling.textures.TextureAtlas;
+    import starling.utils.AssetManager;
     
     public class InGameBoard extends Sprite
     {
         private var _tiles:Vector.<Vector.<Tile>> = new Vector.<Vector.<Tile>>;
+        private var _board:Array = new Array;
+        private var _boardForMove:Array = new Array;
         
         private var _mouseButtonDown:Boolean;
         
@@ -28,17 +31,28 @@ package N2P2.root.child
         private var _verticalResult:Array = new Array;
         private var _crossResult:Array = new Array;
         
-        public function InGameBoard(textureAtlas:TextureAtlas)
+        public function InGameBoard(stageNum:Number, assetManager:AssetManager)
         {
             super();
-            init(textureAtlas);
+            
+            init(stageNum, assetManager);
         }
         
-        private function init(textureAtlas:TextureAtlas):void
+        private function init(stageNum:Number, assetManager:AssetManager):void
         {
             TweenLite.defaultEase = Linear.easeNone;
             
+            loadGameStage(stageNum, assetManager);
             initTiles();
+        }
+        
+        private function loadGameStage(stageNum:Number, assetManager:AssetManager):void
+        {
+            var inGameStageInfo:InGameStageInfo = new InGameStageInfo;
+            inGameStageInfo.parseStageInfoXml(assetManager.getXml("stageInfo"), stageNum);
+            
+            _board = inGameStageInfo.board;
+            _boardForMove = inGameStageInfo.boardForMove;
         }
         
         private function initTiles():void
@@ -74,6 +88,8 @@ package N2P2.root.child
                     _tiles[i][j].y = i * GlobalData.TILE_LENGTH;
                     _tiles[i][j].addEventListener(starling.events.TouchEvent.TOUCH, touchTile);
                     addChild(_tiles[i][j]);
+                    
+                    if(_board[i][j] == 1) _tiles[i][j].visibleOff();
                 }
             }
         }
@@ -85,7 +101,7 @@ package N2P2.root.child
             
             for(var i:int=0; i < GlobalData.FIELD_WIDTH; i++)
             {
-                if(tileChar == (_tiles[index][i].char)) cnt++;
+                if(_tiles[index][i].visible == true && tileChar == (_tiles[index][i].char)) cnt++;
                 else
                 {
                     if(cnt >= 3) result[result.length] = new CustomVector(index,i-cnt,cnt,true);
@@ -105,7 +121,7 @@ package N2P2.root.child
             
             for(var i:int=0; i < GlobalData.FIELD_HEIGTH; i++)
             {
-                if(tileChar == (_tiles[i][index].char)) cnt++;
+                if(_tiles[i][index].visible == true && tileChar == (_tiles[i][index].char)) cnt++;
                 else
                 {
                     if(cnt >= 3) result[result.length] = new CustomVector(i-cnt,index,cnt,false);
@@ -314,7 +330,6 @@ package N2P2.root.child
                     else if(_currentTileX != _newTileX || _currentTileY != _newTileY)
                     {
                         _mouseButtonDown = false;
-                        touchOff();
                         
                         var intervalX:Number = touch.globalX - this.x - ((_currentTileX << 6) + (GlobalData.TILE_LENGTH_SCALED >> 1));
                         var intervalY:Number = touch.globalY - this.y - ((_currentTileY << 6) + (GlobalData.TILE_LENGTH_SCALED >> 1));
@@ -333,7 +348,11 @@ package N2P2.root.child
                             else _newTileY--;
                         }
                         
-                        _tiles[_currentTileY][_currentTileX].swap(_tiles[_newTileY][_newTileX], checkSwapAndBoardUpdate);
+                        if(_tiles[_newTileY][_newTileX].visible != false)
+                        {
+                            touchOff();
+                            _tiles[_currentTileY][_currentTileX].swap(_tiles[_newTileY][_newTileX], checkSwapAndBoardUpdate);
+                        }
                     }
                 }
             }
@@ -428,11 +447,11 @@ package N2P2.root.child
             {
                 if(horizontalArr[i].length >= 5)
                 {
-                    _tiles[horizontalArr[i].x][horizontalArr[i].y].change(GlobalData.TILE_GHOST);
+                    _tiles[horizontalArr[i].x][horizontalArr[i].y].mark(GlobalData.TILE_GHOST);
                 }
                 else if(horizontalArr[i].length == 4)
                 {
-                    _tiles[horizontalArr[i].x][horizontalArr[i].y].change(_tiles[horizontalArr[i].x][horizontalArr[i].y].char+GlobalData.TILE_CHAR);
+                    _tiles[horizontalArr[i].x][horizontalArr[i].y].mark(_tiles[horizontalArr[i].x][horizontalArr[i].y].char+GlobalData.TILE_CHAR);
                 }
             }
             
@@ -440,17 +459,17 @@ package N2P2.root.child
             {
                 if(verticalArr[i].length >= 5)
                 {
-                    _tiles[verticalArr[i].x][verticalArr[i].y].change(GlobalData.TILE_GHOST);
+                    _tiles[verticalArr[i].x][verticalArr[i].y].mark(GlobalData.TILE_GHOST);
                 }
                 else if(verticalArr[i].length == 4)
                 {
-                    _tiles[verticalArr[i].x][verticalArr[i].y].change(_tiles[verticalArr[i].x][verticalArr[i].y].char+GlobalData.TILE_CHAR+GlobalData.TILE_CHAR);
+                    _tiles[verticalArr[i].x][verticalArr[i].y].mark(_tiles[verticalArr[i].x][verticalArr[i].y].char+GlobalData.TILE_CHAR+GlobalData.TILE_CHAR);
                 }
             }
             
             for(i=0; i<crossResult.length; i++)
             {
-                _tiles[crossResult[i].x][crossResult[i].y].change(_tiles[crossResult[i].x][crossResult[i].y].char+GlobalData.TILE_CHAR+GlobalData.TILE_CHAR+GlobalData.TILE_CHAR);
+                _tiles[crossResult[i].x][crossResult[i].y].mark(_tiles[crossResult[i].x][crossResult[i].y].char+GlobalData.TILE_CHAR+GlobalData.TILE_CHAR+GlobalData.TILE_CHAR);
             }
         }
         
@@ -460,15 +479,15 @@ package N2P2.root.child
             {
                 if(horizontalArr[i].length >= 5)
                 {
-                    if(horizontalArr[i].isExist(_currentTileY, _currentTileX)) _tiles[_currentTileY][_currentTileX].change(GlobalData.TILE_GHOST);
-                    else if(horizontalArr[i].isExist(_newTileY, _newTileX)) _tiles[_newTileY][_newTileX].change(GlobalData.TILE_GHOST);
-                    else _tiles[horizontalArr[i].x][horizontalArr[i].y].change(GlobalData.TILE_GHOST);
+                    if(horizontalArr[i].isExist(_currentTileY, _currentTileX)) _tiles[_currentTileY][_currentTileX].mark(GlobalData.TILE_GHOST);
+                    else if(horizontalArr[i].isExist(_newTileY, _newTileX)) _tiles[_newTileY][_newTileX].mark(GlobalData.TILE_GHOST);
+                    else _tiles[horizontalArr[i].x][horizontalArr[i].y].mark(GlobalData.TILE_GHOST);
                 }
                 else if(horizontalArr[i].length == 4)
                 {
-                    if(horizontalArr[i].isExist(_currentTileY, _currentTileX)) _tiles[_currentTileY][_currentTileX].change(_tiles[horizontalArr[i].x][horizontalArr[i].y].char+GlobalData.TILE_CHAR);
-                    else if(horizontalArr[i].isExist(_newTileY, _newTileX)) _tiles[_newTileY][_newTileX].change(_tiles[horizontalArr[i].x][horizontalArr[i].y].char+GlobalData.TILE_CHAR);
-                    else _tiles[horizontalArr[i].x][horizontalArr[i].y].change(_tiles[horizontalArr[i].x][horizontalArr[i].y].char+GlobalData.TILE_CHAR);
+                    if(horizontalArr[i].isExist(_currentTileY, _currentTileX)) _tiles[_currentTileY][_currentTileX].mark(_tiles[horizontalArr[i].x][horizontalArr[i].y].char+GlobalData.TILE_CHAR);
+                    else if(horizontalArr[i].isExist(_newTileY, _newTileX)) _tiles[_newTileY][_newTileX].mark(_tiles[horizontalArr[i].x][horizontalArr[i].y].char+GlobalData.TILE_CHAR);
+                    else _tiles[horizontalArr[i].x][horizontalArr[i].y].mark(_tiles[horizontalArr[i].x][horizontalArr[i].y].char+GlobalData.TILE_CHAR);
                 }
             }
             
@@ -476,21 +495,21 @@ package N2P2.root.child
             {
                 if(verticalArr[i].length >= 5)
                 {
-                    if(verticalArr[i].isExist(_currentTileY, _currentTileX)) _tiles[_currentTileY][_currentTileX].change(GlobalData.TILE_GHOST);
-                    else if(verticalArr[i].isExist(_newTileY, _newTileX)) _tiles[_newTileY][_newTileX].change(GlobalData.TILE_GHOST);
-                    else _tiles[verticalArr[i].x][verticalArr[i].y].change(GlobalData.TILE_GHOST);
+                    if(verticalArr[i].isExist(_currentTileY, _currentTileX)) _tiles[_currentTileY][_currentTileX].mark(GlobalData.TILE_GHOST);
+                    else if(verticalArr[i].isExist(_newTileY, _newTileX)) _tiles[_newTileY][_newTileX].mark(GlobalData.TILE_GHOST);
+                    else _tiles[verticalArr[i].x][verticalArr[i].y].mark(GlobalData.TILE_GHOST);
                 }
                 else if(verticalArr[i].length == 4)
                 {
-                    if(verticalArr[i].isExist(_currentTileY, _currentTileX)) _tiles[_currentTileY][_currentTileX].change(_tiles[verticalArr[i].x][verticalArr[i].y].char+GlobalData.TILE_CHAR);
-                    else if(verticalArr[i].isExist(_newTileY, _newTileX)) _tiles[_newTileY][_newTileX].change(_tiles[verticalArr[i].x][verticalArr[i].y].char+GlobalData.TILE_CHAR);
-                    else _tiles[verticalArr[i].x][verticalArr[i].y].change(_tiles[verticalArr[i].x][verticalArr[i].y].char+GlobalData.TILE_CHAR);
+                    if(verticalArr[i].isExist(_currentTileY, _currentTileX)) _tiles[_currentTileY][_currentTileX].mark(_tiles[verticalArr[i].x][verticalArr[i].y].char+GlobalData.TILE_CHAR);
+                    else if(verticalArr[i].isExist(_newTileY, _newTileX)) _tiles[_newTileY][_newTileX].mark(_tiles[verticalArr[i].x][verticalArr[i].y].char+GlobalData.TILE_CHAR);
+                    else _tiles[verticalArr[i].x][verticalArr[i].y].mark(_tiles[verticalArr[i].x][verticalArr[i].y].char+GlobalData.TILE_CHAR);
                 }
             }
             
             for(i=0; i<crossResult.length; i++)
             {
-                _tiles[crossResult[i].x][crossResult[i].y].change(_tiles[crossResult[i].x][crossResult[i].y].char+GlobalData.TILE_CHAR+GlobalData.TILE_CHAR+GlobalData.TILE_CHAR);
+                _tiles[crossResult[i].x][crossResult[i].y].mark(_tiles[crossResult[i].x][crossResult[i].y].char+GlobalData.TILE_CHAR+GlobalData.TILE_CHAR+GlobalData.TILE_CHAR);
             }
         }
         
@@ -502,11 +521,11 @@ package N2P2.root.child
             {
                 for(var i:int=0; i < GlobalData.FIELD_WIDTH; i++)
                 {
-                    if(_tiles[j][i].visible == false)
+                    if(_tiles[j][i].visible == false && _board[j][i] == 0)
                     {
                         if(j == 0)
                         {
-                            _tiles[j][i].change(Math.floor((Math.random())*GlobalData.TILE_CHAR));
+                            _tiles[j][i].mark(Math.floor((Math.random())*GlobalData.TILE_CHAR));
                             _tiles[j][i].moveFrom(null, "-160");
                             moveTileExist = true;
                         }
@@ -514,26 +533,27 @@ package N2P2.root.child
                         {
                             if(_tiles[j-1][i].visible == true)
                             {
-                                _tiles[j][i].change(_tiles[j-1][i].num);
+                                _tiles[j][i].mark(_tiles[j-1][i].num);
                                 _tiles[j][i].moveFrom(null, "-160");
                                 _tiles[j-1][i].visible = false;
                             }
-                            else
+                            else if(_boardForMove[j][i] == 1)
                             {
                                 if(i != 0 && _tiles[j-1][i-1].visible == true && _tiles[j][i-1].visible == true)
                                 {
-                                    _tiles[j][i].change(_tiles[j-1][i-1].num);
+                                    _tiles[j][i].mark(_tiles[j-1][i-1].num);
                                     _tiles[j][i].moveFrom("-160", "-160");
                                     _tiles[j-1][i-1].visible = false;
                                 }
                                 else if(i != (GlobalData.FIELD_WIDTH-1) && _tiles[j-1][i+1].visible == true && _tiles[j][i+1].visible == true)
                                 {
-                                    _tiles[j][i].change(_tiles[j-1][i+1].num);
+                                    _tiles[j][i].mark(_tiles[j-1][i+1].num);
                                     _tiles[j][i].moveFrom("160", "-160");
                                     _tiles[j-1][i+1].visible = false;
                                 }
                                 else continue;
                             }
+                            else continue;
                             
                             moveTileExist = true;
                         }
@@ -588,6 +608,22 @@ package N2P2.root.child
                     _tiles[_tiles.length-1].pop();
                 }
                 _tiles = null;
+            }
+            if(_board != null)
+            {
+                while(_board.length > 0)
+                {
+                    _board[_board.length-1].length = 0;
+                }
+                _board = null;
+            }
+            if(_boardForMove != null)
+            {
+                while(_boardForMove.length > 0)
+                {
+                    _boardForMove[_boardForMove.length-1].length = 0;
+                }
+                _boardForMove = null;
             }
             this.removeEventListeners();
             while(this.numChildren > 0) this.removeChildAt(0);
