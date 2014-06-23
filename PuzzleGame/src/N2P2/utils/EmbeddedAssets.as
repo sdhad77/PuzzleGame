@@ -19,5 +19,8 @@ package N2P2.utils
         
         [Embed(source="../../../bin/res/system/inGameUI.xml", mimeType="application/octet-stream")]
         public static const inGameUIXml:Class;
+        
+        [Embed(source="../../../bin/res/system/stageInfo.xml", mimeType="application/octet-stream")]
+        public static const stageInfoXml:Class;
     }
 }

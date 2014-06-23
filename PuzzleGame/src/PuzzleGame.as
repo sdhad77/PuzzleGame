@@ -3,8 +3,8 @@ package
     import flash.display.Sprite;
     import flash.geom.Rectangle;
     
-    import N2P2.utils.EmbeddedAssets;
     import N2P2.root.Game;
+    import N2P2.utils.EmbeddedAssets;
     
     import starling.core.Starling;
     import starling.events.Event;
@@ -34,6 +34,7 @@ package
             assetManager.addTextureAtlas("titleUI", new TextureAtlas(Texture.fromBitmap(new EmbeddedAssets.titleUISheet()), XML(new EmbeddedAssets.titleUIXml())));
             assetManager.addTextureAtlas("worldMapUI", new TextureAtlas(Texture.fromBitmap(new EmbeddedAssets.worldMapUISheet()), XML(new EmbeddedAssets.worldMapUIXml())));
             assetManager.addTextureAtlas("inGameUI", new TextureAtlas(Texture.fromBitmap(new EmbeddedAssets.inGameUISheet()), XML(new EmbeddedAssets.inGameUIXml())));
+            assetManager.addXml("stageInfo", XML(new EmbeddedAssets.stageInfoXml()));
             
             game.start(assetManager);
         }
