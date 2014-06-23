@@ -57,6 +57,28 @@ package N2P2.utils
             }
         }
         
+        public function clear():void
+        {
+            if(_board != null)
+            {
+                while(_board.length > 0)
+                {
+                    _board[_board.length-1].length = 0;
+                    _board.pop();
+                }
+                _board = null;
+            }
+            if(_boardForMove != null)
+            {
+                while(_boardForMove.length > 0)
+                {
+                    _boardForMove[_boardForMove.length-1].length = 0;
+                    _boardForMove.pop();
+                }
+                _boardForMove = null;
+            }
+        }
+        
         public function get board():Array        { return _board;        }
         public function get boardForMove():Array { return _boardForMove; }
         public function get moveNum():int        { return _moveNum;      }
