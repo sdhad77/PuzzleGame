@@ -6,34 +6,45 @@
   <SubTexture name="inGameUI_4.png" x="94" y="1898" width="90" height="94" frameX="-430.6" frameY="-874.2" frameWidth="90" frameHeight="94" rotated="false"/>
   <SubTexture name="inGameUI_5.png" x="0" y="1898" width="92" height="94" frameX="-529.6" frameY="-874.2" frameWidth="92" frameHeight="94" rotated="false"/>
   <SubTexture name="inGameUI_6.png" x="643" y="1435" width="94" height="94" frameX="-629" frameY="-874.2" frameWidth="94" frameHeight="94" rotated="false"/>
+  <SubTexture name="inGameUI_7.png" x="770" y="0" width="512" height="512" frameX="-128" frameY="-256" frameWidth="512" frameHeight="512" rotated="false"/>
   <SubTexture name="inGameUIPausePopup_0.png" x="0" y="1026" width="480" height="550" frameX="-144.8" frameY="-206.8" frameWidth="480" frameHeight="550" rotated="false"/>
   <SubTexture name="inGameUIPausePopup_1.png" x="481" y="1495" width="78" height="72" frameX="-568" frameY="-190.4" frameWidth="78" frameHeight="72" rotated="false"/>
-  <SubTexture name="inGameUIPausePopup_2.png" x="671" y="1026" width="94" height="306" frameX="-231.8" frameY="-324.6" frameWidth="306" frameHeight="94" rotated="true"/>
-  <SubTexture name="inGameUIPausePopup_3.png" x="576" y="1026" width="94" height="306" frameX="-231.8" frameY="-428.4" frameWidth="306" frameHeight="94" rotated="true"/>
-  <SubTexture name="inGameUIPausePopup_4.png" x="481" y="1026" width="94" height="306" frameX="-231.6" frameY="-532" frameWidth="306" frameHeight="94" rotated="true"/>
-  <SubTexture name="character_00.png" x="1256" y="0" width="160" height="160" frameX="-13" frameY="-57.8" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_01.png" x="1418" y="0" width="160" height="160" frameX="-96.4" frameY="-57.2" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_02.png" x="1580" y="0" width="160" height="160" frameX="-162.4" frameY="-57.8" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_03.png" x="1742" y="0" width="160" height="160" frameX="-230.4" frameY="-56.8" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_04.png" x="770" y="162" width="160" height="160" frameX="-302" frameY="-54.8" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_05.png" x="932" y="162" width="160" height="160" frameX="-367" frameY="-54.2" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_06.png" x="481" y="1333" width="160" height="160" frameX="-14" frameY="-213.2" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_07.png" x="1256" y="162" width="160" height="160" frameX="-88" frameY="-213.2" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_08.png" x="1418" y="162" width="160" height="160" frameX="-162" frameY="-213.2" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_09.png" x="932" y="0" width="160" height="160" frameX="-238" frameY="-212.2" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_10.png" x="602" y="1766" width="160" height="160" frameX="-305" frameY="-211.6" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_11.png" x="770" y="0" width="160" height="160" frameX="-376" frameY="-211.6" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_12.png" x="932" y="324" width="160" height="160" frameX="-14.2" frameY="-373.2" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_13.png" x="1094" y="162" width="160" height="160" frameX="-85.4" frameY="-373.6" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_14.png" x="1256" y="324" width="160" height="160" frameX="-164.4" frameY="-372.2" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_15.png" x="1418" y="324" width="160" height="160" frameX="-241.4" frameY="-372.6" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_16.png" x="1580" y="324" width="160" height="160" frameX="-307" frameY="-373.6" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_17.png" x="1094" y="324" width="160" height="160" frameX="-376.4" frameY="-373.2" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_18.png" x="770" y="486" width="160" height="160" frameX="-13" frameY="-566.2" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_19.png" x="1742" y="324" width="160" height="160" frameX="-86" frameY="-566.2" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_20.png" x="932" y="486" width="160" height="160" frameX="-157" frameY="-566.8" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_21.png" x="1580" y="162" width="160" height="160" frameX="-208.4" frameY="-566.2" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_22.png" x="770" y="324" width="160" height="160" frameX="-269" frameY="-570.2" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_23.png" x="1742" y="162" width="160" height="160" frameX="-329" frameY="-570.2" frameWidth="160" frameHeight="160" rotated="false"/>
-  <SubTexture name="character_24.png" x="1094" y="0" width="160" height="160" frameX="-22.2" frameY="-742.2" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="inGameUIPausePopup_2.png" x="576" y="1026" width="94" height="306" frameX="-231.8" frameY="-324.6" frameWidth="306" frameHeight="94" rotated="true"/>
+  <SubTexture name="inGameUIPausePopup_3.png" x="481" y="1026" width="94" height="306" frameX="-231.8" frameY="-428.4" frameWidth="306" frameHeight="94" rotated="true"/>
+  <SubTexture name="inGameUIPausePopup_4.png" x="671" y="1026" width="94" height="306" frameX="-231.6" frameY="-532" frameWidth="306" frameHeight="94" rotated="true"/>
+  <SubTexture name="character_00.png" x="1446" y="0" width="160" height="160" frameX="-13" frameY="-57.8" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_01.png" x="1446" y="162" width="160" height="160" frameX="-96.4" frameY="-57.2" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_02.png" x="1446" y="324" width="160" height="160" frameX="-162.4" frameY="-57.8" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_03.png" x="1608" y="0" width="160" height="160" frameX="-230.4" frameY="-56.8" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_04.png" x="1770" y="0" width="160" height="160" frameX="-302" frameY="-54.8" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_05.png" x="1608" y="162" width="160" height="160" frameX="-367" frameY="-54.2" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_06.png" x="1608" y="324" width="160" height="160" frameX="-14" frameY="-213.2" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_07.png" x="1770" y="162" width="160" height="160" frameX="-88" frameY="-213.2" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_08.png" x="1770" y="324" width="160" height="160" frameX="-162" frameY="-213.2" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_09.png" x="1284" y="162" width="160" height="160" frameX="-238" frameY="-212.2" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_10.png" x="932" y="514" width="160" height="160" frameX="-305" frameY="-211.6" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_11.png" x="481" y="1333" width="160" height="160" frameX="-376" frameY="-211.6" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_12.png" x="1256" y="514" width="160" height="160" frameX="-14.2" frameY="-373.2" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_13.png" x="1418" y="514" width="160" height="160" frameX="-85.4" frameY="-373.6" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_14.png" x="1580" y="514" width="160" height="160" frameX="-164.4" frameY="-372.2" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_15.png" x="602" y="1766" width="160" height="160" frameX="-241.4" frameY="-372.6" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_16.png" x="1284" y="0" width="160" height="160" frameX="-307" frameY="-373.6" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_17.png" x="932" y="676" width="160" height="160" frameX="-376.4" frameY="-373.2" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_18.png" x="770" y="676" width="160" height="160" frameX="-13" frameY="-566.2" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_19.png" x="1094" y="676" width="160" height="160" frameX="-86" frameY="-566.2" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_20.png" x="1256" y="676" width="160" height="160" frameX="-157" frameY="-566.8" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_21.png" x="770" y="514" width="160" height="160" frameX="-208.4" frameY="-566.2" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_22.png" x="1094" y="514" width="160" height="160" frameX="-269" frameY="-570.2" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_23.png" x="1742" y="514" width="160" height="160" frameX="-329" frameY="-570.2" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="character_24.png" x="1284" y="324" width="160" height="160" frameX="-22.2" frameY="-742.2" frameWidth="160" frameHeight="160" rotated="false"/>
+  <SubTexture name="number_00.png" x="560" y="1495" width="32" height="32" frameX="-271.6" frameY="-508.2" frameWidth="32" frameHeight="32" rotated="false"/>
+  <SubTexture name="number_01.png" x="560" y="1529" width="32" height="32" frameX="-316.4" frameY="-505" frameWidth="32" frameHeight="32" rotated="false"/>
+  <SubTexture name="number_02.png" x="594" y="1495" width="32" height="32" frameX="-351.8" frameY="-510" frameWidth="32" frameHeight="32" rotated="false"/>
+  <SubTexture name="number_03.png" x="594" y="1529" width="32" height="32" frameX="-399" frameY="-511.4" frameWidth="32" frameHeight="32" rotated="false"/>
+  <SubTexture name="number_04.png" x="643" y="1530" width="32" height="32" frameX="-443.6" frameY="-513.8" frameWidth="32" frameHeight="32" rotated="false"/>
+  <SubTexture name="number_05.png" x="677" y="1530" width="32" height="32" frameX="-430.4" frameY="-554.8" frameWidth="32" frameHeight="32" rotated="false"/>
+  <SubTexture name="number_06.png" x="711" y="1530" width="32" height="32" frameX="-467.6" frameY="-556" frameWidth="32" frameHeight="32" rotated="false"/>
+  <SubTexture name="number_07.png" x="735" y="1577" width="32" height="32" frameX="-506.6" frameY="-553.6" frameWidth="32" frameHeight="32" rotated="false"/>
+  <SubTexture name="number_08.png" x="735" y="1611" width="32" height="32" frameX="-545.2" frameY="-556.6" frameWidth="32" frameHeight="32" rotated="false"/>
+  <SubTexture name="number_09.png" x="735" y="1645" width="32" height="32" frameX="-582.2" frameY="-558" frameWidth="32" frameHeight="32" rotated="false"/>
 </atlas>
