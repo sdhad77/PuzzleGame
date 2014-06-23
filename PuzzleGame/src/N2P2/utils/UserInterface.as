@@ -75,7 +75,7 @@ package N2P2.utils
         {
             touchable = false;
             
-            TweenLite.to(this, 0.2, {x: stage.stageWidth/2-this.width/10, y:stage.stageHeight/2-this.height/10, scaleX:0.1 , scaleY:0.1, onComplete:completeFunc});
+            TweenLite.to(this, 0.2, {x: stage.stageWidth/2-this.width/20, y:stage.stageHeight/2-this.height/20, scaleX:0.1 , scaleY:0.1, onComplete:completeFunc});
             
             function completeFunc():void
             {
