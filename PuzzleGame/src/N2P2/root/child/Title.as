@@ -34,7 +34,7 @@ package N2P2.root.child
         private function onEnterFrame(event:Event):void
         {
             var currentDate:Date = new Date();
-            _ui.getChildByName("title_1.png").y = 900 + Math.cos(currentDate.getTime() * 0.002) * 5;
+            _ui.getChildByName("title_1.png").y = this.height*0.8 + Math.cos(currentDate.getTime() * 0.002) * 5;
         }
         
         private function startButtonClick(event:TouchEvent):void
