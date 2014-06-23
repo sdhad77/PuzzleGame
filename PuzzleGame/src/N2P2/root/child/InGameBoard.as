@@ -17,8 +17,7 @@ package N2P2.root.child
     public class InGameBoard extends Sprite
     {
         private var _tiles:Vector.<Vector.<Tile>> = new Vector.<Vector.<Tile>>;
-        private var _board:Array = new Array;
-        private var _boardForMove:Array = new Array;
+        private var _inGameStageInfo:InGameStageInfo = new InGameStageInfo;
         
         private var _mouseButtonDown:Boolean;
         
@@ -48,11 +47,7 @@ package N2P2.root.child
         
         private function loadGameStage(stageNum:Number, assetManager:AssetManager):void
         {
-            var inGameStageInfo:InGameStageInfo = new InGameStageInfo;
-            inGameStageInfo.parseStageInfoXml(assetManager.getXml("stageInfo"), stageNum);
-            
-            _board = inGameStageInfo.board;
-            _boardForMove = inGameStageInfo.boardForMove;
+            _inGameStageInfo.parseStageInfoXml(assetManager.getXml("stageInfo"), stageNum);
         }
         
         private function initTiles():void
@@ -89,7 +84,7 @@ package N2P2.root.child
                     _tiles[i][j].addEventListener(starling.events.TouchEvent.TOUCH, touchTile);
                     addChild(_tiles[i][j]);
                     
-                    if(_board[i][j] == 1) _tiles[i][j].visibleOff();
+                    if(_inGameStageInfo.board[i][j] == 1) _tiles[i][j].visibleOff();
                 }
             }
         }
@@ -273,6 +268,7 @@ package N2P2.root.child
             
             if(checkSwapTileIsSpecialTile(_horizontalResult, _verticalResult))
             {
+                _inGameStageInfo.moveNum--;
                 markRemoveTile(_horizontalResult, _verticalResult);
                 moveTiles();
             }
@@ -293,6 +289,7 @@ package N2P2.root.child
                 
                 if(_horizontalResult.length > 0 || _verticalResult.length > 0)
                 {
+                    _inGameStageInfo.moveNum--;
                     checkCross(_horizontalResult, _verticalResult, _crossResult);
                     markRemoveTile(_horizontalResult, _verticalResult);
                     markSpecialTileForSwap(_horizontalResult, _verticalResult, _crossResult);
@@ -337,16 +334,8 @@ package N2P2.root.child
                         _newTileX = _currentTileX;
                         _newTileY = _currentTileY;
                         
-                        if(Math.abs(intervalX) > Math.abs(intervalY))
-                        {
-                            if(intervalX > 0) _newTileX++;
-                            else _newTileX--;
-                        }
-                        else
-                        {
-                            if(intervalY > 0) _newTileY++;
-                            else _newTileY--;
-                        }
+                        if(Math.abs(intervalX) > Math.abs(intervalY)) (intervalX > 0) ? _newTileX++ : _newTileX--;
+                        else                                          (intervalY > 0) ? _newTileY++ : _newTileY--;
                         
                         if(_tiles[_newTileY][_newTileX].visible != false)
                         {
@@ -473,43 +462,43 @@ package N2P2.root.child
             }
         }
         
-        private function markSpecialTileForSwap(horizontalArr:Array, verticalArr:Array, crossResult:Array):void
+        private function markSpecialTileForSwap(hArr:Array, vArr:Array, cArr:Array):void
         {
-            for(var i:int=0; i<horizontalArr.length; i++)
+            for(var i:int=0; i<hArr.length; i++)
             {
-                if(horizontalArr[i].length >= 5)
+                if(hArr[i].length >= 5)
                 {
-                    if(horizontalArr[i].isExist(_currentTileY, _currentTileX)) _tiles[_currentTileY][_currentTileX].mark(GlobalData.TILE_GHOST);
-                    else if(horizontalArr[i].isExist(_newTileY, _newTileX)) _tiles[_newTileY][_newTileX].mark(GlobalData.TILE_GHOST);
-                    else _tiles[horizontalArr[i].x][horizontalArr[i].y].mark(GlobalData.TILE_GHOST);
+                    if(hArr[i].isExist(_currentTileY, _currentTileX)) _tiles[_currentTileY][_currentTileX].mark(GlobalData.TILE_GHOST);
+                    else if(hArr[i].isExist(_newTileY, _newTileX)) _tiles[_newTileY][_newTileX].mark(GlobalData.TILE_GHOST);
+                    else _tiles[hArr[i].x][hArr[i].y].mark(GlobalData.TILE_GHOST);
                 }
-                else if(horizontalArr[i].length == 4)
+                else if(hArr[i].length == 4)
                 {
-                    if(horizontalArr[i].isExist(_currentTileY, _currentTileX)) _tiles[_currentTileY][_currentTileX].mark(_tiles[horizontalArr[i].x][horizontalArr[i].y].char+GlobalData.TILE_CHAR);
-                    else if(horizontalArr[i].isExist(_newTileY, _newTileX)) _tiles[_newTileY][_newTileX].mark(_tiles[horizontalArr[i].x][horizontalArr[i].y].char+GlobalData.TILE_CHAR);
-                    else _tiles[horizontalArr[i].x][horizontalArr[i].y].mark(_tiles[horizontalArr[i].x][horizontalArr[i].y].char+GlobalData.TILE_CHAR);
+                    if(hArr[i].isExist(_currentTileY, _currentTileX)) _tiles[_currentTileY][_currentTileX].mark(_tiles[hArr[i].x][hArr[i].y].char+GlobalData.TILE_CHAR);
+                    else if(hArr[i].isExist(_newTileY, _newTileX)) _tiles[_newTileY][_newTileX].mark(_tiles[hArr[i].x][hArr[i].y].char+GlobalData.TILE_CHAR);
+                    else _tiles[hArr[i].x][hArr[i].y].mark(_tiles[hArr[i].x][hArr[i].y].char+GlobalData.TILE_CHAR);
                 }
             }
             
-            for(i=0; i<verticalArr.length; i++)
+            for(i=0; i<vArr.length; i++)
             {
-                if(verticalArr[i].length >= 5)
+                if(vArr[i].length >= 5)
                 {
-                    if(verticalArr[i].isExist(_currentTileY, _currentTileX)) _tiles[_currentTileY][_currentTileX].mark(GlobalData.TILE_GHOST);
-                    else if(verticalArr[i].isExist(_newTileY, _newTileX)) _tiles[_newTileY][_newTileX].mark(GlobalData.TILE_GHOST);
-                    else _tiles[verticalArr[i].x][verticalArr[i].y].mark(GlobalData.TILE_GHOST);
+                    if(vArr[i].isExist(_currentTileY, _currentTileX)) _tiles[_currentTileY][_currentTileX].mark(GlobalData.TILE_GHOST);
+                    else if(vArr[i].isExist(_newTileY, _newTileX)) _tiles[_newTileY][_newTileX].mark(GlobalData.TILE_GHOST);
+                    else _tiles[vArr[i].x][vArr[i].y].mark(GlobalData.TILE_GHOST);
                 }
-                else if(verticalArr[i].length == 4)
+                else if(vArr[i].length == 4)
                 {
-                    if(verticalArr[i].isExist(_currentTileY, _currentTileX)) _tiles[_currentTileY][_currentTileX].mark(_tiles[verticalArr[i].x][verticalArr[i].y].char+GlobalData.TILE_CHAR);
-                    else if(verticalArr[i].isExist(_newTileY, _newTileX)) _tiles[_newTileY][_newTileX].mark(_tiles[verticalArr[i].x][verticalArr[i].y].char+GlobalData.TILE_CHAR);
-                    else _tiles[verticalArr[i].x][verticalArr[i].y].mark(_tiles[verticalArr[i].x][verticalArr[i].y].char+GlobalData.TILE_CHAR);
+                    if(vArr[i].isExist(_currentTileY, _currentTileX)) _tiles[_currentTileY][_currentTileX].mark(_tiles[vArr[i].x][vArr[i].y].char+GlobalData.TILE_CHAR);
+                    else if(vArr[i].isExist(_newTileY, _newTileX)) _tiles[_newTileY][_newTileX].mark(_tiles[vArr[i].x][vArr[i].y].char+GlobalData.TILE_CHAR);
+                    else _tiles[vArr[i].x][vArr[i].y].mark(_tiles[vArr[i].x][vArr[i].y].char+GlobalData.TILE_CHAR);
                 }
             }
             
-            for(i=0; i<crossResult.length; i++)
+            for(i=0; i<cArr.length; i++)
             {
-                _tiles[crossResult[i].x][crossResult[i].y].mark(_tiles[crossResult[i].x][crossResult[i].y].char+GlobalData.TILE_CHAR+GlobalData.TILE_CHAR+GlobalData.TILE_CHAR);
+                _tiles[cArr[i].x][cArr[i].y].mark(_tiles[cArr[i].x][cArr[i].y].char+GlobalData.TILE_CHAR+GlobalData.TILE_CHAR+GlobalData.TILE_CHAR);
             }
         }
         
@@ -521,7 +510,7 @@ package N2P2.root.child
             {
                 for(var i:int=0; i < GlobalData.FIELD_WIDTH; i++)
                 {
-                    if(_tiles[j][i].visible == false && _board[j][i] == 0)
+                    if(_tiles[j][i].visible == false && _inGameStageInfo.board[j][i] == 0)
                     {
                         if(j == 0)
                         {
@@ -537,7 +526,7 @@ package N2P2.root.child
                                 _tiles[j][i].moveFrom(null, "-160");
                                 _tiles[j-1][i].visible = false;
                             }
-                            else if(_boardForMove[j][i] == 1)
+                            else if(_inGameStageInfo.boardForMove[j][i] == 1)
                             {
                                 if(i != 0 && _tiles[j-1][i-1].visible == true && _tiles[j][i-1].visible == true)
                                 {
@@ -578,7 +567,16 @@ package N2P2.root.child
                 markSpecialTile(_horizontalResult, _verticalResult, _crossResult);
                 moveTiles();
             }
-            else touchOn();
+            else
+            {
+                touchOn();
+                trace(_inGameStageInfo.moveNum, this.parent);
+                if(_inGameStageInfo.moveNum == 0)
+                {
+                    trace("game over");
+                    (this.parent as InGame).missionComplete();
+                }
+            }
         }
         
         private function resultClear():void
@@ -609,21 +607,25 @@ package N2P2.root.child
                 }
                 _tiles = null;
             }
-            if(_board != null)
+            if(_inGameStageInfo != null)
             {
-                while(_board.length > 0)
-                {
-                    _board[_board.length-1].length = 0;
-                }
-                _board = null;
+                _inGameStageInfo.clear();
+                _inGameStageInfo = null;
             }
-            if(_boardForMove != null)
+            if(_horizontalResult != null)
             {
-                while(_boardForMove.length > 0)
-                {
-                    _boardForMove[_boardForMove.length-1].length = 0;
-                }
-                _boardForMove = null;
+                _horizontalResult.length = 0;
+                _horizontalResult = null;
+            }
+            if(_verticalResult != null)
+            {
+                _verticalResult.length = 0;
+                _verticalResult = null;
+            }
+            if(_crossResult != null)
+            {
+                _crossResult.length = 0;
+                _crossResult = null;
             }
             this.removeEventListeners();
             while(this.numChildren > 0) this.removeChildAt(0);

@@ -1,19 +1,24 @@
 package N2P2.root.child 
 {
+    import com.greensock.TweenLite;
+    
+    import N2P2.root.Game;
+    import N2P2.utils.UserInterface;
+    
     import starling.core.Starling;
     import starling.display.Sprite;
-    import N2P2.utils.UserInterface;
     import starling.events.Touch;
     import starling.events.TouchEvent;
     import starling.events.TouchPhase;
     import starling.utils.AssetManager;
-    import N2P2.root.Game;
 
     public class InGame extends Sprite
     {
         private var _inGameBoard:InGameBoard;
         private var _inGameUI:UserInterface;
         private var _pausePopupUI:UserInterface;
+        private var _missionCompleteUI:UserInterface;
+        private var _inGameClearUI:UserInterface;
         
         public function InGame()
         {
@@ -43,8 +48,16 @@ package N2P2.root.child
             _pausePopupUI.addTouchEventByName("inGameUIPausePopup_1.png", pausePopupClose);//popupclose
             _pausePopupUI.addTouchEventByName("inGameUIPausePopup_2.png", pausePopupClose);//continue
             _pausePopupUI.addTouchEventByName("inGameUIPausePopup_3.png", restartGameButtonTouch);//restartclose
-            _pausePopupUI.addTouchEventByName("inGameUIPausePopup_4.png", returnWorldMap);//returnclose
+            _pausePopupUI.addTouchEventByName("inGameUIPausePopup_4.png", returnWorldMapButtonTouch);//returnclose
             addChild(_pausePopupUI);
+            
+            _missionCompleteUI = new UserInterface(assetManager.getTextureAtlas("inGameUI"), "inGameClear_");
+            _missionCompleteUI.visible = false;
+            addChild(_missionCompleteUI);
+            
+            _inGameClearUI = new UserInterface(assetManager.getTextureAtlas("inGameUI"), "inGameClear2_");
+            _inGameClearUI.visible = false;
+            addChild(_inGameClearUI);
         }
         
         private function pausePopupButtonTouch(event:TouchEvent):void
@@ -72,20 +85,33 @@ package N2P2.root.child
         private function restartGameButtonTouch(event:TouchEvent):void
         {
             var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
-            if(touch != null)
-            {
-                this.removeChild(_inGameBoard);
-            }
+            if(touch != null) this.removeChild(_inGameBoard);
         }
         
-        private function returnWorldMap(event:TouchEvent):void
+        private function returnWorldMapButtonTouch(event:TouchEvent):void
         {
             var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
-            if(touch != null)
-            {
-                (this.root as Game).startWorldMap();
-                clear();
-            }
+            if(touch != null) returnWorldMap();
+        }
+        
+        private function returnWorldMap():void
+        {
+            (this.root as Game).startWorldMap();
+            clear();
+        }
+        
+        public function missionComplete():void
+        {
+            _missionCompleteUI.visible = true;
+            TweenLite.from(_missionCompleteUI, 0.5, {x: stage.stageWidth/2 - this.width*5/2, y: stage.stageHeight/2 - this.height, scaleX: 5, scaleY: 2});
+            TweenLite.delayedCall(2, inGameClear);
+        }
+        
+        private function inGameClear():void
+        {
+            _missionCompleteUI.visible = false;
+            _inGameClearUI.appearanceAnimation();
+            TweenLite.delayedCall(1.5, _inGameClearUI.disappearanceAnimation, new Array(returnWorldMap));
         }
         
         private function clear():void
