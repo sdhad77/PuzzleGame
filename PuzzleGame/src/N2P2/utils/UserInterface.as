@@ -8,6 +8,11 @@ package N2P2.utils
     import starling.display.DisplayObjectContainer;
     import starling.display.Image;
     
+    /**
+     * 자동으로 UI를 생성해주는 클래스입니다.</br>
+     * flash CC -> swf -> png의 과정을 거친 아틀라스이미지를 사용하면 됩니다.
+     * @author 신동환
+     */
     public class UserInterface extends DisplayObjectContainer
     {
         public function UserInterface(textureAtlas:TextureAtlas, name:String)

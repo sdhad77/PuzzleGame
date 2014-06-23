@@ -4,6 +4,10 @@ package N2P2.utils
     
     import starling.display.Image;
     
+    /**
+     * 게임 보드 위에 존재하는 타일의 클래스입니다.
+     * @author 신동환
+     */
     public class Tile extends Image
     {
         private var _num:int;  //텍스쳐 넘버
@@ -28,6 +32,15 @@ package N2P2.utils
             _type = num/GlobalData.TILE_CHAR;
             _char = num%GlobalData.TILE_CHAR;
             this.texture = GlobalData.TILE_TEXTURE[num];
+        }
+        
+        /**
+         * 타일을 변경하는 함수. visible을 true로 자동 변경해줌
+         * @param num num 타일로 변경
+         */
+        public function mark(num:int):void
+        {
+            change(num);
             this.visible = true;
         }
         
