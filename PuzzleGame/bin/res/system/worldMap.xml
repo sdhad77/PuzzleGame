@@ -1,0 +1,20 @@
+<atlas>
+  <SubTexture name="worldMap_00.png" x="0" y="0" width="768" height="1024" frameX="0" frameY="0" frameWidth="768" frameHeight="1024" rotated="false"/>
+  <SubTexture name="worldMap_01.png" x="770" y="0" width="768" height="1024" frameX="-768" frameY="0" frameWidth="768" frameHeight="1024" rotated="false"/>
+  <SubTexture name="worldMap_02.png" x="1540" y="0" width="292" height="1024" frameX="-1536" frameY="0" frameWidth="292" frameHeight="1024" rotated="false"/>
+  <SubTexture name="worldMap_03.png" x="0" y="1026" width="110" height="76" frameX="-168.6" frameY="-147.6" frameWidth="110" frameHeight="76" rotated="false"/>
+  <SubTexture name="worldMap_04.png" x="112" y="1026" width="110" height="76" frameX="-191.8" frameY="-352.6" frameWidth="110" frameHeight="76" rotated="false"/>
+  <SubTexture name="worldMap_05.png" x="224" y="1026" width="110" height="76" frameX="-250.8" frameY="-530.6" frameWidth="110" frameHeight="76" rotated="false"/>
+  <SubTexture name="worldMap_06.png" x="336" y="1026" width="110" height="76" frameX="-448.6" frameY="-267.6" frameWidth="110" frameHeight="76" rotated="false"/>
+  <SubTexture name="worldMap_07.png" x="448" y="1026" width="110" height="76" frameX="-499.6" frameY="-642.4" frameWidth="110" frameHeight="76" rotated="false"/>
+  <SubTexture name="worldMap_08.png" x="560" y="1026" width="110" height="76" frameX="-658.6" frameY="-761.4" frameWidth="110" frameHeight="76" rotated="false"/>
+  <SubTexture name="worldMap_09.png" x="0" y="1104" width="110" height="76" frameX="-778.6" frameY="-459.6" frameWidth="110" frameHeight="76" rotated="false"/>
+  <SubTexture name="worldMap_10.png" x="112" y="1104" width="110" height="76" frameX="-785.6" frameY="-204.6" frameWidth="110" frameHeight="76" rotated="false"/>
+  <SubTexture name="worldMap_11.png" x="224" y="1104" width="110" height="76" frameX="-998.6" frameY="-428.2" frameWidth="110" frameHeight="76" rotated="false"/>
+  <SubTexture name="worldMap_12.png" x="336" y="1104" width="110" height="76" frameX="-998.6" frameY="-667.4" frameWidth="110" frameHeight="76" rotated="false"/>
+  <SubTexture name="worldMap_13.png" x="448" y="1104" width="110" height="76" frameX="-1289.6" frameY="-718.2" frameWidth="110" frameHeight="76" rotated="false"/>
+  <SubTexture name="worldMap_14.png" x="560" y="1104" width="110" height="76" frameX="-1310.6" frameY="-521.6" frameWidth="110" frameHeight="76" rotated="false"/>
+  <SubTexture name="worldMap_15.png" x="0" y="1182" width="110" height="76" frameX="-1358.6" frameY="-285.6" frameWidth="110" frameHeight="76" rotated="false"/>
+  <SubTexture name="worldMap_16.png" x="112" y="1182" width="110" height="76" frameX="-1592.6" frameY="-361.2" frameWidth="110" frameHeight="76" rotated="false"/>
+  <SubTexture name="worldMap_17.png" x="224" y="1182" width="110" height="76" frameX="-1592.6" frameY="-755.6" frameWidth="110" frameHeight="76" rotated="false"/>
+</atlas>

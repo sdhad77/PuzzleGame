@@ -8,6 +8,12 @@ package N2P2.utils
         [Embed(source="../../../bin/res/system/titleUI.xml", mimeType="application/octet-stream")]
         public static const titleUIXml:Class;
         
+        [Embed(source="../../../bin/res/system/worldMap.png")]
+        public static const worldMapSheet:Class;
+        
+        [Embed(source="../../../bin/res/system/worldMap.xml", mimeType="application/octet-stream")]
+        public static const worldMapXml:Class;
+        
         [Embed(source="../../../bin/res/system/worldMapUI.png")]
         public static const worldMapUISheet:Class;
         

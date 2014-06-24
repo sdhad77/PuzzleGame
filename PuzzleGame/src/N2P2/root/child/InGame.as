@@ -102,6 +102,8 @@ package N2P2.root.child
         
         public function missionComplete():void
         {
+            _inGameBoard.touchable = false;
+            _inGameUI.touchable = false;
             _missionCompleteUI.visible = true;
             TweenLite.from(_missionCompleteUI, 0.5, {x: stage.stageWidth/2 - this.width*5/2, y: stage.stageHeight/2 - this.height, scaleX: 5, scaleY: 2});
             TweenLite.delayedCall(2, inGameClear);

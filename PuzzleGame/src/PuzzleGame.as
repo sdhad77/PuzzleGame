@@ -32,6 +32,7 @@ package
             assetManager = new AssetManager();
             
             assetManager.addTextureAtlas("titleUI", new TextureAtlas(Texture.fromBitmap(new EmbeddedAssets.titleUISheet()), XML(new EmbeddedAssets.titleUIXml())));
+            assetManager.addTextureAtlas("worldMap", new TextureAtlas(Texture.fromBitmap(new EmbeddedAssets.worldMapSheet()), XML(new EmbeddedAssets.worldMapXml())));
             assetManager.addTextureAtlas("worldMapUI", new TextureAtlas(Texture.fromBitmap(new EmbeddedAssets.worldMapUISheet()), XML(new EmbeddedAssets.worldMapUIXml())));
             assetManager.addTextureAtlas("inGameUI", new TextureAtlas(Texture.fromBitmap(new EmbeddedAssets.inGameUISheet()), XML(new EmbeddedAssets.inGameUIXml())));
             assetManager.addXml("stageInfo", XML(new EmbeddedAssets.stageInfoXml()));

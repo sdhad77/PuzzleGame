@@ -1,5 +1,6 @@
 package N2P2.root.child
 {
+    import N2P2.root.Game;
     import N2P2.utils.UserInterface;
     
     import starling.display.DisplayObject;
@@ -8,11 +9,10 @@ package N2P2.root.child
     import starling.events.TouchEvent;
     import starling.events.TouchPhase;
     import starling.utils.AssetManager;
-    import N2P2.root.Game;
 
     public class WorldMap extends Sprite
     {
-        private var _ui:UserInterface;
+        private var _worldMap:UserInterface;
         private var _ssp:UserInterface;        //stage Select Popup
         private var _sspContents:UserInterface;// stage Select Popup 위에 사용할 ui. stage별로 다른 UI사용
         private var _isp:UserInterface;        //item Select Popup
@@ -40,8 +40,8 @@ package N2P2.root.child
         
         private function drawWorldMap(assetManager:AssetManager):void
         {
-            _ui = new UserInterface(assetManager.getTextureAtlas("worldMapUI"), "worldMap_");
-            addChild(_ui);
+            _worldMap = new UserInterface(assetManager.getTextureAtlas("worldMap"), "worldMap_");
+            addChild(_worldMap);
             
             _mb = new UserInterface(assetManager.getTextureAtlas("worldMapUI"), "worldMapMB_");
             addChild(_mb);
@@ -63,12 +63,12 @@ package N2P2.root.child
             
             //================================================================================
             
-            _ui.addTouchEventByName("worldMap_00.png", mapClick);
-            _ui.addTouchEventByName("worldMap_01.png", mapClick);
-            _ui.addTouchEventByName("worldMap_02.png", mapClick);
+            _worldMap.addTouchEventByName("worldMap_00.png", mapClick);
+            _worldMap.addTouchEventByName("worldMap_01.png", mapClick);
+            _worldMap.addTouchEventByName("worldMap_02.png", mapClick);
             
-            for(var i:int=3; i<10; i++) _ui.addTouchEventByName("worldMap_0" + i + ".png", stageSelectClick);
-            for(i=10; i<18; i++)        _ui.addTouchEventByName("worldMap_" + i + ".png", stageSelectClick);
+            for(var i:int=3; i<10; i++) _worldMap.addTouchEventByName("worldMap_0" + i + ".png", stageSelectClick);
+            for(i=10; i<18; i++)        _worldMap.addTouchEventByName("worldMap_" + i + ".png", stageSelectClick);
             
             _mb.addTouchEventByName("worldMapMB_0.png", heartClick);
             _mb.addTouchEventByName("worldMapMB_1.png", heartClick);
@@ -93,7 +93,7 @@ package N2P2.root.child
             
             //================================================================================
             
-            _rightSide = _ui.getChildByName("worldMap_01.png").width + _ui.getChildByName("worldMap_02.png").width;
+            _rightSide = _worldMap.getChildByName("worldMap_01.png").width + _worldMap.getChildByName("worldMap_02.png").width -1;
         }
         
         private function stageSelectClick(event:TouchEvent):void
@@ -104,7 +104,7 @@ package N2P2.root.child
                 var name:String = (event.target as DisplayObject).name;
                 _selectStageNum = Number(name.substring(name.indexOf("_")+1,name.indexOf("."))) - 2;
                 
-                _ui.touchable = false;
+                _worldMap.touchable = false;
                 _mb.touchable = false;
                 _sspContents = new UserInterface(_assetManager.getTextureAtlas("worldMapUI"), "stage" + _selectStageNum.toString() + "_");
                 _sspContents.name = "contents";
@@ -119,7 +119,7 @@ package N2P2.root.child
             if(touch != null) 
             {
                 _ssp.disappearanceAnimation(sspContentsRemove);
-                _ui.touchable = true;
+                _worldMap.touchable = true;
                 _mb.touchable = true;
             }
         }
@@ -150,7 +150,7 @@ package N2P2.root.child
             if(touch != null) 
             {
                 _isp.disappearanceAnimation();
-                _ui.touchable = true;
+                _worldMap.touchable = true;
                 _mb.touchable = true;
             }
         }
@@ -171,7 +171,7 @@ package N2P2.root.child
             if(touch != null) 
             {
                 _mp.appearanceAnimation();
-                _ui.touchable = false;
+                _worldMap.touchable = false;
                 _mb.touchable = false;
             }
         }
@@ -182,7 +182,7 @@ package N2P2.root.child
             if(touch != null) 
             {
                 _mp.disappearanceAnimation();
-                _ui.touchable = true;
+                _worldMap.touchable = true;
                 _mb.touchable = true;
             }
         }
@@ -202,10 +202,10 @@ package N2P2.root.child
                 }
                 else if(touch.phase == TouchPhase.MOVED && _mouseButtonDown == true)
                 {
-                    var temp:Number = _ui.x + touch.globalX - touch.previousGlobalX;
-                    if(temp > 0) _ui.x = 0;
-                    else if(temp < -_rightSide) _ui.x = -_rightSide;
-                    else _ui.x += touch.globalX - touch.previousGlobalX;
+                    var temp:Number = _worldMap.x + touch.globalX - touch.previousGlobalX;
+                    if(temp > 0) _worldMap.x = 0;
+                    else if(temp < -_rightSide) _worldMap.x = -_rightSide;
+                    else _worldMap.x += touch.globalX - touch.previousGlobalX;
                 }
             }
         }
@@ -221,10 +221,10 @@ package N2P2.root.child
         {
             _assetManager = null;
             
-            if(_ui != null)
+            if(_worldMap != null)
             {
-                _ui.dispose();
-                _ui = null;
+                _worldMap.dispose();
+                _worldMap = null;
             }
             if(_sspContents != null)
             {
