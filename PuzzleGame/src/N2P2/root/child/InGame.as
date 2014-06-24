@@ -3,9 +3,9 @@ package N2P2.root.child
     import com.greensock.TweenLite;
     
     import N2P2.root.Game;
+    import N2P2.utils.GlobalData;
     import N2P2.utils.UserInterface;
     
-    import starling.core.Starling;
     import starling.display.Sprite;
     import starling.events.Touch;
     import starling.events.TouchEvent;
@@ -39,9 +39,9 @@ package N2P2.root.child
             addChild(_inGameUI);
             
             _inGameBoard = new InGameBoard(stageNum, assetManager);
-            _inGameBoard.scaleX = _inGameBoard.scaleY = 0.4;
-            _inGameBoard.x = (Starling.current.viewPort.width >> 1) - ((8 * 64) >> 1);
-            _inGameBoard.y = (Starling.current.viewPort.height >> 1) - ((8 * 64) >> 1);
+            _inGameBoard.scaleX = _inGameBoard.scaleY = GlobalData.INGAME_STAGE_SCALE;
+            _inGameBoard.x = (this.width >> 1) - ((GlobalData.FIELD_WIDTH * GlobalData.TILE_LENGTH_SCALED) >> 1);
+            _inGameBoard.y = (this.height >> 1) - ((GlobalData.FIELD_HEIGTH * GlobalData.TILE_LENGTH_SCALED) >> 1);
             addChild(_inGameBoard);
             
             _pausePopupUI = new UserInterface(assetManager.getTextureAtlas("inGameUI"), "inGameUIPausePopup_");
