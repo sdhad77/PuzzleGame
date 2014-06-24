@@ -17,8 +17,10 @@ package N2P2.root.child
         private var _inGameBoard:InGameBoard;
         private var _inGameUI:UserInterface;
         private var _pausePopupUI:UserInterface;
+        private var _missionFailUI:UserInterface;
         private var _missionCompleteUI:UserInterface;
         private var _inGameClearUI:UserInterface;
+        private var _resetTileUI:UserInterface;
         
         public function InGame()
         {
@@ -51,6 +53,10 @@ package N2P2.root.child
             _pausePopupUI.addTouchEventByName("inGameUIPausePopup_4.png", returnWorldMapButtonTouch);//returnclose
             addChild(_pausePopupUI);
             
+            _missionFailUI = new UserInterface(assetManager.getTextureAtlas("inGameUI"), "inGameFail_");
+            _missionFailUI.visible = false;
+            addChild(_missionFailUI);
+            
             _missionCompleteUI = new UserInterface(assetManager.getTextureAtlas("inGameUI"), "inGameClear_");
             _missionCompleteUI.visible = false;
             addChild(_missionCompleteUI);
@@ -58,6 +64,10 @@ package N2P2.root.child
             _inGameClearUI = new UserInterface(assetManager.getTextureAtlas("inGameUI"), "inGameClear2_");
             _inGameClearUI.visible = false;
             addChild(_inGameClearUI);
+            
+            _resetTileUI = new UserInterface(assetManager.getTextureAtlas("inGameUI"), "inGameTileReset_");
+            _resetTileUI.visible = false;
+            addChild(_resetTileUI);
         }
         
         private function pausePopupButtonTouch(event:TouchEvent):void
@@ -98,6 +108,34 @@ package N2P2.root.child
         {
             (this.root as Game).startWorldMap();
             clear();
+        }
+        
+        public function resetTile():void
+        {
+            _inGameBoard.touchable = false;
+            _inGameUI.touchable = false;
+            _resetTileUI.appearanceAnimation();
+        }
+        
+        public function resetTileComplete():void
+        {
+            _inGameBoard.touchable = true;
+            _inGameUI.touchable = true;
+            _resetTileUI.disappearanceAnimation();
+        }
+        
+        public function missionFail():void
+        {
+            _inGameBoard.touchable = false;
+            _inGameUI.touchable = false;
+            _missionFailUI.appearanceAnimation();
+            TweenLite.delayedCall(3, inGameFail);
+        }
+        
+        private function inGameFail():void
+        {
+            _missionFailUI.visible = false;
+            returnWorldMap();
         }
         
         public function missionComplete():void
