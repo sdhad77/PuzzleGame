@@ -5,6 +5,14 @@ package N2P2.utils
 
     public class GlobalData
     {
+        public static const TEXTFIELD_MOVENUM_POS_X:Number = 0.126;
+        public static const TEXTFIELD_MOVENUM_POS_Y:Number = 0.094;
+        public static const TEXTFIELD_MOVENUM_SIZE:Number = 0.039;
+        
+        public static const TEXTFIELD_POINT_POS_X:Number = 0.170;
+        public static const TEXTFIELD_POINT_POS_Y:Number = 0.094;
+        public static const TEXTFIELD_POINT_SIZE:Number = 0.039;
+        
         public static const INGAME_STAGE_SCALE:Number = 0.4;
         public static const FIELD_WIDTH:int = 8;
         public static const FIELD_HEIGTH:int = 8;

@@ -10,6 +10,7 @@ package N2P2.root.child
     import starling.events.Touch;
     import starling.events.TouchEvent;
     import starling.events.TouchPhase;
+    import starling.text.TextField;
     import starling.utils.AssetManager;
 
     public class InGame extends Sprite
@@ -21,6 +22,14 @@ package N2P2.root.child
         private var _missionCompleteUI:UserInterface;
         private var _inGameClearUI:UserInterface;
         private var _resetTileUI:UserInterface;
+        
+        private var _tfMoveNum:TextField;
+        private var _tfMoveNumPosX:Number;
+        private var _tfMoveNumPosY:Number;
+        
+        private var _tfPoint:TextField;
+        private var _tfPointPosX:Number;
+        private var _tfPointPosY:Number;
         
         public function InGame()
         {
@@ -68,6 +77,24 @@ package N2P2.root.child
             _resetTileUI = new UserInterface(assetManager.getTextureAtlas("inGameUI"), "inGameTileReset_");
             _resetTileUI.visible = false;
             addChild(_resetTileUI);
+            
+            _tfMoveNumPosX = GlobalData.TEXTFIELD_MOVENUM_POS_X * this.width;
+            _tfMoveNumPosY = GlobalData.TEXTFIELD_MOVENUM_POS_Y * this.height;
+            _tfMoveNum = new TextField(100, 40, _inGameBoard.inGameStageInfo.moveNum.toString(), "Verdana", GlobalData.TEXTFIELD_MOVENUM_SIZE*this.width, 0xffffff, true);
+            _tfMoveNum.width = _tfMoveNum.textBounds.width + 100;
+            _tfMoveNum.height = _tfMoveNum.textBounds.height + 10;
+            _tfMoveNum.x = _tfMoveNumPosX - _tfMoveNum.width/2;
+            _tfMoveNum.y = _tfMoveNumPosY - _tfMoveNum.height/2;
+            addChild(_tfMoveNum);
+            
+            _tfPointPosX = GlobalData.TEXTFIELD_POINT_POS_X * this.width;
+            _tfPointPosY = GlobalData.TEXTFIELD_POINT_POS_Y * this.height;
+            _tfPoint = new TextField(100, 40, _inGameBoard.inGameStageInfo.point.toString(), "Verdana", GlobalData.TEXTFIELD_POINT_SIZE*this.width, 0x0, true);
+            _tfPoint.width = _tfPoint.textBounds.width + 100;
+            _tfPoint.height = _tfPoint.textBounds.height + 10;
+            _tfPoint.x = _tfPointPosX;
+            _tfPoint.y = _tfPointPosY - _tfPoint.height/2;
+            addChild(_tfPoint);
         }
         
         private function pausePopupButtonTouch(event:TouchEvent):void
@@ -108,6 +135,19 @@ package N2P2.root.child
         {
             (this.root as Game).startWorldMap();
             clear();
+        }
+        
+        public function updateMoveNum(moveNum:int):void
+        {
+            _tfMoveNum.text = moveNum.toString();
+            _tfMoveNum.width = _tfMoveNum.textBounds.width + 100;
+            _tfMoveNum.x = _tfMoveNumPosX - _tfMoveNum.width/2;
+        }
+        
+        public function updatePoint(point:int):void
+        {
+            _tfPoint.text = point.toString();
+            _tfPoint.width = _tfPoint.textBounds.width + 100;
         }
         
         public function resetTile():void

@@ -269,6 +269,7 @@ package N2P2.root.child
             if(checkSwapTileIsSpecialTile(_horizontalResult, _verticalResult))
             {
                 _inGameStageInfo.moveNum--;
+                (this.parent as InGame).updateMoveNum(_inGameStageInfo.moveNum);
                 markRemoveTile(_horizontalResult, _verticalResult);
                 moveTiles();
             }
@@ -290,6 +291,7 @@ package N2P2.root.child
                 if(_horizontalResult.length > 0 || _verticalResult.length > 0)
                 {
                     _inGameStageInfo.moveNum--;
+                    (this.parent as InGame).updateMoveNum(_inGameStageInfo.moveNum);
                     checkCross(_horizontalResult, _verticalResult, _crossResult);
                     markRemoveTile(_horizontalResult, _verticalResult);
                     markSpecialTileForSwap(_horizontalResult, _verticalResult, _crossResult);
@@ -349,6 +351,8 @@ package N2P2.root.child
         
         private function removeTile(idx1:int, idx2:int):void
         {
+            _inGameStageInfo.point += 100;
+            (this.parent as InGame).updatePoint(_inGameStageInfo.point);
             if(_tiles[idx1][idx2].vanishFromBoard()) removeSpecialTile(idx1, idx2);
         }
         
@@ -570,11 +574,10 @@ package N2P2.root.child
             else
             {
                 touchOn();
-                trace(_inGameStageInfo.moveNum, this.parent);
                 if(_inGameStageInfo.moveNum == 0)
                 {
-                    trace("game over");
-                    (this.parent as InGame).missionComplete();
+                    if(_inGameStageInfo.point >= _inGameStageInfo.point1) (this.parent as InGame).missionComplete();
+                    else  (this.parent as InGame).missionFail();
                 }
             }
         }
@@ -632,5 +635,7 @@ package N2P2.root.child
             this.parent.removeChild(this);
             this.dispose();
         }
+        
+        public function get inGameStageInfo():InGameStageInfo { return _inGameStageInfo; }
     }
 }
