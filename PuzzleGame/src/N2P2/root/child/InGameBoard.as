@@ -3,12 +3,15 @@ package N2P2.root.child
     import com.greensock.TweenLite;
     import com.greensock.easing.Linear;
     
+    import flash.utils.getTimer;
+    
     import N2P2.utils.CustomVector;
     import N2P2.utils.GlobalData;
     import N2P2.utils.InGameStageInfo;
     import N2P2.utils.Tile;
     
     import starling.display.Sprite;
+    import starling.events.Event;
     import starling.events.Touch;
     import starling.events.TouchEvent;
     import starling.events.TouchPhase;
@@ -18,8 +21,10 @@ package N2P2.root.child
     {
         private var _tiles:Vector.<Vector.<Tile>> = new Vector.<Vector.<Tile>>;
         private var _inGameStageInfo:InGameStageInfo = new InGameStageInfo;
+        private var _hintTiles:Sprite = new Sprite;
         
         private var _mouseButtonDown:Boolean;
+        private var _lastTileMoveTime:Number;
         
         private var _currentTileX:int;
         private var _currentTileY:int;
@@ -40,9 +45,20 @@ package N2P2.root.child
         private function init(stageNum:Number, assetManager:AssetManager):void
         {
             TweenLite.defaultEase = Linear.easeNone;
+            _lastTileMoveTime = getTimer();
             
             loadGameStage(stageNum, assetManager);
             initTiles();
+            initHintTiles();
+            
+            if(checkHint() == false)
+            {
+                removeAllTile();
+                (this.parent as InGame).resetTile();
+                moveTiles();
+            }
+            
+            addEventListener(Event.ENTER_FRAME, enterFrame);
         }
         
         private function loadGameStage(stageNum:Number, assetManager:AssetManager):void
@@ -86,6 +102,22 @@ package N2P2.root.child
                     
                     if(_inGameStageInfo.board[i][j] == 1) _tiles[i][j].visibleOff();
                 }
+            }
+        }
+        
+        private function initHintTiles():void
+        {
+            _hintTiles.touchable = false;
+            _hintTiles.visible = false;
+            addChild(_hintTiles);
+        }
+        
+        private function enterFrame():void
+        {
+            if(this.touchable == true && _mouseButtonDown == false && getTimer() - _lastTileMoveTime >= 3000)
+            {
+                _lastTileMoveTime = getTimer();
+                hintOn();
             }
         }
         
@@ -144,6 +176,111 @@ package N2P2.root.child
                     horizontalArr[i].isCross(verticalArr[j], result);
                 }
             }
+        }
+        
+        private function checkHint():Boolean
+        {
+            for(var i:int=0; i<GlobalData.FIELD_HEIGTH; i++)
+            {
+                for(var j:int=0; j<GlobalData.FIELD_WIDTH-1; j++)
+                {
+                    if(_tiles[i][j].visible == false) continue;
+                    if(_tiles[i][j+1].visible == true)
+                    {
+                        if(_tiles[i][j].char == _tiles[i][j+1].char)
+                        {
+                            if(j+2 < GlobalData.FIELD_WIDTH && _tiles[i][j+2].visible == true)
+                            {
+                                if     (j+3 < GlobalData.FIELD_WIDTH  && _tiles[i][j+3].visible   == true && _tiles[i][j].char == _tiles[i][j+3].char)   {markHint(new Array(i,j,i,j+1,i,j+3)); return true;}
+                                else if(i-1 >= 0                      && _tiles[i-1][j+2].visible == true && _tiles[i][j].char == _tiles[i-1][j+2].char) {markHint(new Array(i,j,i,j+1,i-1,j+2)); return true;}
+                                else if(i+1 < GlobalData.FIELD_HEIGTH && _tiles[i+1][j+2].visible == true && _tiles[i][j].char == _tiles[i+1][j+2].char) {markHint(new Array(i,j,i,j+1,i+1,j+2)); return true;}
+                            }
+                            else if(j-1 >= 0 && _tiles[i][j-1].visible == true)
+                            {
+                                if     (j-2 >= 0                      && _tiles[i][j-2].visible   == true && _tiles[i][j].char == _tiles[i][j-2].char)   {markHint(new Array(i,j,i,j+1,i,j-2)); return true;}
+                                else if(i-1 >= 0                      && _tiles[i-1][j-1].visible == true && _tiles[i][j].char == _tiles[i-1][j-1].char) {markHint(new Array(i,j,i,j+1,i-1,j-1)); return true;}
+                                else if(i+1 < GlobalData.FIELD_HEIGTH && _tiles[i+1][j-1].visible == true && _tiles[i][j].char == _tiles[i+1][j-1].char) {markHint(new Array(i,j,i,j+1,i+1,j-1)); return true;}
+                            }
+                        }
+                        else if(j+2 < GlobalData.FIELD_WIDTH && _tiles[i][j+2].visible == true && _tiles[i][j].char == _tiles[i][j+2].char)
+                        {
+                            if     (i+1 < GlobalData.FIELD_HEIGTH && _tiles[i+1][j+1].visible == true && _tiles[i][j].char == _tiles[i+1][j+1].char) {markHint(new Array(i,j,i,j+2,i+1,j+1)); return true;}
+                            else if(i-1 >= 0                      && _tiles[i-1][j+1].visible == true && _tiles[i][j].char == _tiles[i-1][j+1].char) {markHint(new Array(i,j,i,j+2,i-1,j+1)); return true;}
+                        }
+                    }
+                }
+            }
+            
+            for(i=0; i<GlobalData.FIELD_WIDTH; i++)
+            {
+                for(j=0; j<GlobalData.FIELD_HEIGTH-1; j++)
+                {
+                    if(_tiles[j][i].visible == false) continue;
+                    if(_tiles[j+1][i].visible == true)
+                    {
+                        if(_tiles[j][i].char == _tiles[j+1][i].char)
+                        {
+                            if(j+2 < GlobalData.FIELD_HEIGTH && _tiles[j+2][i].visible == true)
+                            {
+                                if     (j+3 < GlobalData.FIELD_HEIGTH && _tiles[j+3][i].visible   == true && _tiles[j][i].char == _tiles[j+3][i].char)   {markHint(new Array(j,i,j+1,i,j+3,i)); return true;}
+                                else if(i-1 >= 0                      && _tiles[j+2][i-1].visible == true && _tiles[j][i].char == _tiles[j+2][i-1].char) {markHint(new Array(j,i,j+1,i,j+2,i-1)); return true;}
+                                else if(i+1 < GlobalData.FIELD_WIDTH  && _tiles[j+2][i+1].visible == true && _tiles[j][i].char == _tiles[j+2][i+1].char) {markHint(new Array(j,i,j+1,i,j+2,i+1)); return true;}
+                            }
+                            else if(j-1 >= 0 && _tiles[j-1][i].visible == true)
+                            {
+                                if     (j-2 >= 0                     && _tiles[j-2][i].visible   == true && _tiles[j][i].char == _tiles[j-2][i].char)   {markHint(new Array(j,i,j+1,i,j-2,i)); return true;}
+                                else if(i-1 >= 0                     && _tiles[j-1][i-1].visible == true && _tiles[j][i].char == _tiles[j-1][i-1].char) {markHint(new Array(j,i,j+1,i,j-1,i-1)); return true;}
+                                else if(i+1 < GlobalData.FIELD_WIDTH && _tiles[j-1][i+1].visible == true && _tiles[j][i].char == _tiles[j-1][i+1].char) {markHint(new Array(j,i,j+1,i,j-1,i+1)); return true;}
+                            }
+                        }
+                        else if(j+2 < GlobalData.FIELD_WIDTH && _tiles[j+2][i].visible == true && _tiles[j][i].char == _tiles[j+2][i].char)
+                        {
+                            if     (i+1 < GlobalData.FIELD_WIDTH  && _tiles[j+1][i+1].visible == true && _tiles[j][i].char == _tiles[j+1][i+1].char) {markHint(new Array(j,i,j+2,i,j+1,i+1)); return true;}
+                            else if(i-1 >= 0                      && _tiles[j+1][i-1].visible == true && _tiles[j][i].char == _tiles[j+1][i-1].char) {markHint(new Array(j,i,j+2,i,j+1,i-1)); return true;}
+                        }
+                    }
+                }
+            }
+            
+            return checkHintSpecialTile();
+        }
+        
+        private function checkHintSpecialTile():Boolean
+        {
+            for(var i:int=0; i<GlobalData.FIELD_HEIGTH; i++)
+            {
+                for(var j:int=0; j<GlobalData.FIELD_WIDTH-1; j++)
+                {
+                    if(_tiles[i][j].visible == false || _tiles[i][j].type == 0) continue;
+                    if(_tiles[i][j+1].visible == true && _tiles[i][j+1].type != 0) return true;
+                }
+            }
+            
+            for(i=0; i<GlobalData.FIELD_WIDTH; i++)
+            {
+                for(j=0; j<GlobalData.FIELD_HEIGTH-1; j++)
+                {
+                    if(_tiles[j][i].visible == false || _tiles[j][i].type == 0) continue;
+                    if(_tiles[j+1][i].visible == true && _tiles[j+1][i].type != 0) return true;
+                }
+            }
+            
+            return false;
+        }
+        
+        private function markHint(arr:Array):void
+        {
+            while(_hintTiles.numChildren > 0) _hintTiles.removeChildAt(0);
+            
+            for(var i:int=0; i<arr.length; i+=2)
+            {
+                _hintTiles.addChild(new Tile(GlobalData.TILE_HINT));
+                _hintTiles.getChildAt(_hintTiles.numChildren-1).x = _tiles[arr[i]][arr[i+1]].x;
+                _hintTiles.getChildAt(_hintTiles.numChildren-1).y = _tiles[arr[i]][arr[i+1]].y;
+            }
+            
+            arr.length = 0;
+            arr = null;
         }
         
         private function checkSwapTileIsSpecialTile(horizontalArr:Array, verticalArr:Array):Boolean
@@ -315,6 +452,9 @@ package N2P2.root.child
                     
                     _currentTileX = (touch.globalX - this.x) / GlobalData.TILE_LENGTH_SCALED;
                     _currentTileY = (touch.globalY - this.y) / GlobalData.TILE_LENGTH_SCALED;
+                    
+                    _lastTileMoveTime = getTimer();
+                    hintOff();
                 }
                 else if(touch.phase == TouchPhase.ENDED)
                 {
@@ -351,8 +491,11 @@ package N2P2.root.child
         
         private function removeTile(idx1:int, idx2:int):void
         {
-            _inGameStageInfo.point += 100;
-            (this.parent as InGame).updatePoint(_inGameStageInfo.point);
+            if(_tiles[idx1][idx2].visible == true)
+            {
+                _inGameStageInfo.point += 100;
+                (this.parent as InGame).updatePoint(_inGameStageInfo.point);
+            }
             if(_tiles[idx1][idx2].vanishFromBoard()) removeSpecialTile(idx1, idx2);
         }
         
@@ -558,6 +701,17 @@ package N2P2.root.child
             else boardUpdate();
         }
         
+        private function removeAllTile():void
+        {
+            for(var i:int=0; i<GlobalData.FIELD_HEIGTH; i++)
+            {
+                for(var j:int=0; j<GlobalData.FIELD_WIDTH; j++)
+                {
+                    _tiles[i][j].vanishFromBoard();
+                }
+            }
+        }
+        
         private function boardUpdate():void
         {
             resultClear();
@@ -573,11 +727,22 @@ package N2P2.root.child
             }
             else
             {
+                _lastTileMoveTime = getTimer();
                 touchOn();
                 if(_inGameStageInfo.moveNum == 0)
                 {
-                    if(_inGameStageInfo.point >= _inGameStageInfo.point1) (this.parent as InGame).missionComplete();
-                    else  (this.parent as InGame).missionFail();
+                    if(_inGameStageInfo.missionType == 0)
+                    {
+                        if(_inGameStageInfo.point >= _inGameStageInfo.point1) (this.parent as InGame).missionComplete();
+                        else (this.parent as InGame).missionFail();
+                    }
+                    else if(_inGameStageInfo.missionType == 1) (this.parent as InGame).missionFail();
+                }
+                else if(checkHint() == false)
+                {
+                    removeAllTile();
+                    (this.parent as InGame).resetTile();
+                    moveTiles();
                 }
             }
         }
@@ -587,6 +752,16 @@ package N2P2.root.child
             _horizontalResult.length = 0;
             _verticalResult.length = 0;
             _crossResult.length = 0;
+        }
+        
+        private function hintOn():void
+        {
+            _hintTiles.visible = true;
+        }
+        
+        private function hintOff():void
+        {
+            _hintTiles.visible = false;
         }
         
         private function touchOn():void
@@ -609,6 +784,12 @@ package N2P2.root.child
                     _tiles[_tiles.length-1].pop();
                 }
                 _tiles = null;
+            }
+            if(_hintTiles != null)
+            {
+                while(_hintTiles.numChildren) _hintTiles.removeChildAt(0);
+                _hintTiles.dispose();
+                _hintTiles = null;
             }
             if(_inGameStageInfo != null)
             {

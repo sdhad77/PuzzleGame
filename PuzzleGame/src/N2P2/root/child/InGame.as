@@ -155,9 +155,10 @@ package N2P2.root.child
             _inGameBoard.touchable = false;
             _inGameUI.touchable = false;
             _resetTileUI.appearanceAnimation();
+            TweenLite.delayedCall(2, resetTileComplete);
         }
         
-        public function resetTileComplete():void
+        private function resetTileComplete():void
         {
             _inGameBoard.touchable = true;
             _inGameUI.touchable = true;
