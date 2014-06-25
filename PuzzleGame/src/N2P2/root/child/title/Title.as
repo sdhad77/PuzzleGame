@@ -1,12 +1,13 @@
-package N2P2.root.child
+package N2P2.root.child.title
 {
-    import starling.display.Sprite;
+    import N2P2.root.Game;
     import N2P2.utils.UserInterface;
+    
+    import starling.display.Sprite;
     import starling.events.Event;
     import starling.events.TouchEvent;
     import starling.events.TouchPhase;
     import starling.utils.AssetManager;
-    import N2P2.root.Game;
 
     public class Title extends Sprite
     {
@@ -34,12 +35,12 @@ package N2P2.root.child
         private function onEnterFrame(event:Event):void
         {
             var currentDate:Date = new Date();
-            _ui.getChildByName("title_1.png").y = this.height*0.8 + Math.cos(currentDate.getTime() * 0.002) * 5;
+            _ui.getChildByName("title_1.png").y = this.height*0.8 + Math.cos(currentDate.getTime() * 0.004) * 5;
         }
         
         private function startButtonClick(event:TouchEvent):void
         {
-            if(event.getTouch(_ui, TouchPhase.BEGAN))
+            if(event.getTouch(this, TouchPhase.BEGAN))
             {
                 (this.root as Game).startWorldMap();
                 clear();

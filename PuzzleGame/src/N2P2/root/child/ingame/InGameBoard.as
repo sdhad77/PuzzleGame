@@ -1,4 +1,4 @@
-package N2P2.root.child
+package N2P2.root.child.ingame
 {
     import com.greensock.TweenLite;
     import com.greensock.easing.Linear;

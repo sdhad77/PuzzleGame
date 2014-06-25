@@ -20,10 +20,10 @@ package
         
         public function PuzzleGame()
         {
-            myStarling = new Starling(Game, stage, new Rectangle(0,0,stage.fullScreenWidth,stage.fullScreenHeight));
+            myStarling = new Starling(Game, stage, new Rectangle(0,0,768,1024));
             myStarling.addEventListener(Event.ROOT_CREATED, onRootCreated);
-            myStarling.showStats = true;
-   //         myStarling.viewPort = new Rectangle(0,0,stage.fullScreenWidth,stage.fullScreenHeight);
+            myStarling.showStats = true;myStarling.showStatsAt("left","top",3);
+            myStarling.viewPort = new Rectangle(0,40,480,640);
             myStarling.start();
         }
         

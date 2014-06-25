@@ -1,8 +1,8 @@
 package N2P2.root
 {
-    import N2P2.root.child.InGame;
-    import N2P2.root.child.Title;
-    import N2P2.root.child.WorldMap;
+    import N2P2.root.child.ingame.InGame;
+    import N2P2.root.child.title.Title;
+    import N2P2.root.child.worldmap.WorldMap;
     import N2P2.utils.GlobalData;
     
     import starling.display.Sprite;

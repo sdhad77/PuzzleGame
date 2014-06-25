@@ -1,4 +1,4 @@
-package N2P2.root.child
+package N2P2.root.child.worldmap
 {
     import N2P2.root.Game;
     import N2P2.utils.UserInterface;
