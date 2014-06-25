@@ -1,11 +1,11 @@
-package N2P2.utils
+package N2P2.root.child.ingame
 {
     /**
      * 스테이지 정보를 읽어와서 가지고 있는 클래스입니다.</br>
      * 한개의 스테이지 정보만 가지고 있을 수 있습니다.
      * @author 신동환
      */
-    public class InGameStageInfo
+    public class StageInfo
     {
         private var _board:Array;        //타일이 표시되는 영역, 표시되지 않는 영역을 구분하기 위한 배열
         private var _boardForMove:Array; //타일이 생성가능한 라인인지 판별하기 위한 배열. 타일 생성이 불가능한 라인이면 대각선 이동을 통해 타일을 넘겨 받는다.

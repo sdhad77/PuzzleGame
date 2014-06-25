@@ -15,7 +15,7 @@ package N2P2.root.child.ingame
 
     public class InGame extends Sprite
     {
-        private var _inGameBoard:InGameBoard;
+        private var _inGameBoard:Board;
         private var _inGameUI:UserInterface;
         private var _pausePopupUI:UserInterface;
         private var _missionFailUI:UserInterface;
@@ -47,7 +47,7 @@ package N2P2.root.child.ingame
             _inGameUI.addTouchEventByName("inGameUI_2.png", pausePopupButtonTouch);
             addChild(_inGameUI);
             
-            _inGameBoard = new InGameBoard(stageNum, assetManager);
+            _inGameBoard = new Board(stageNum, assetManager);
             _inGameBoard.scaleX = _inGameBoard.scaleY = GlobalData.INGAME_STAGE_SCALE;
             _inGameBoard.x = (this.width >> 1) - ((GlobalData.FIELD_WIDTH * GlobalData.TILE_LENGTH_SCALED) >> 1);
             _inGameBoard.y = (this.height >> 1) - ((GlobalData.FIELD_HEIGTH * GlobalData.TILE_LENGTH_SCALED) >> 1);

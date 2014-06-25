@@ -1,8 +1,9 @@
-package N2P2.utils
+package N2P2.root.child.ingame
 {
     import com.greensock.TweenLite;
     
     import starling.display.Image;
+    import N2P2.utils.GlobalData;
     
     /**
      * 게임 보드 위에 존재하는 타일의 클래스입니다.

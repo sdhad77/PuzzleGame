@@ -7,8 +7,6 @@ package N2P2.root.child.ingame
     
     import N2P2.utils.CustomVector;
     import N2P2.utils.GlobalData;
-    import N2P2.utils.InGameStageInfo;
-    import N2P2.utils.Tile;
     
     import starling.display.Sprite;
     import starling.events.Event;
@@ -17,11 +15,13 @@ package N2P2.root.child.ingame
     import starling.events.TouchPhase;
     import starling.utils.AssetManager;
     
-    public class InGameBoard extends Sprite
+    public class Board extends Sprite
     {
         private var _tiles:Vector.<Vector.<Tile>> = new Vector.<Vector.<Tile>>;
-        private var _inGameStageInfo:InGameStageInfo = new InGameStageInfo;
+        private var _inGameStageInfo:StageInfo = new StageInfo;
         private var _hintTiles:Sprite = new Sprite;
+        
+        private var _checker:Checker = new Checker;
         
         private var _mouseButtonDown:Boolean;
         private var _lastTileMoveTime:Number;
@@ -35,7 +35,7 @@ package N2P2.root.child.ingame
         private var _verticalResult:Array = new Array;
         private var _crossResult:Array = new Array;
         
-        public function InGameBoard(stageNum:Number, assetManager:AssetManager)
+        public function Board(stageNum:Number, assetManager:AssetManager)
         {
             super();
             
@@ -51,7 +51,7 @@ package N2P2.root.child.ingame
             initTiles();
             initHintTiles();
             
-            if(checkHint() == false)
+            if(checkHint() == null)
             {
                 removeAllTile();
                 (this.parent as InGame).resetTile();
@@ -123,149 +123,29 @@ package N2P2.root.child.ingame
         
         private function checkHorizontal(index:int, result:Array):void
         {
-            var cnt:int = 0;
-            var tileChar:int = _tiles[index][0].char;
-            
-            for(var i:int=0; i < GlobalData.FIELD_WIDTH; i++)
-            {
-                if(_tiles[index][i].visible == true && tileChar == (_tiles[index][i].char)) cnt++;
-                else
-                {
-                    if(cnt >= 3) result[result.length] = new CustomVector(index,i-cnt,cnt,true);
-                    
-                    cnt = 1;
-                    tileChar = _tiles[index][i].char;
-                }
-            }
-            
-            if(cnt >= 3) result[result.length] = new CustomVector(index,GlobalData.FIELD_WIDTH-cnt,cnt,true);
+            _checker.checkHorizontal(index, _tiles, result);
         }
         
         private function checkVertical(index:int, result:Array):void
         {
-            var cnt:int = 0;
-            var tileChar:int = _tiles[0][index].char;
-            
-            for(var i:int=0; i < GlobalData.FIELD_HEIGTH; i++)
-            {
-                if(_tiles[i][index].visible == true && tileChar == (_tiles[i][index].char)) cnt++;
-                else
-                {
-                    if(cnt >= 3) result[result.length] = new CustomVector(i-cnt,index,cnt,false);
-                    
-                    cnt = 1;
-                    tileChar = _tiles[i][index].char;
-                }
-            }
-            
-            if(cnt >= 3) result[result.length] = new CustomVector(GlobalData.FIELD_HEIGTH-cnt,index,cnt,false);
+            _checker.checkVertical(index, _tiles, result);
         }
         
         private function checkAll(horizontalArr:Array, verticalArr:Array):void
         {
-            for(var i:int=0; i < GlobalData.FIELD_HEIGTH; i++) checkHorizontal(i, horizontalArr);
-            for(i=0; i < GlobalData.FIELD_WIDTH; i++) checkVertical(i, verticalArr);
+            _checker.checkAll(horizontalArr, verticalArr, _tiles);
         }
         
         private function checkCross(horizontalArr:Array, verticalArr:Array, result:Array):void
         {
-            for(var i:int=0; i<horizontalArr.length; i++)
-            {
-                for(var j:int=0; j<verticalArr.length; j++)
-                {
-                    horizontalArr[i].isCross(verticalArr[j], result);
-                }
-            }
+            _checker.checkCross(horizontalArr, verticalArr, result);
         }
         
-        private function checkHint():Boolean
+        private function checkHint():Array
         {
-            for(var i:int=0; i<GlobalData.FIELD_HEIGTH; i++)
-            {
-                for(var j:int=0; j<GlobalData.FIELD_WIDTH-1; j++)
-                {
-                    if(_tiles[i][j].visible == false) continue;
-                    if(_tiles[i][j+1].visible == true)
-                    {
-                        if(_tiles[i][j].char == _tiles[i][j+1].char)
-                        {
-                            if(j+2 < GlobalData.FIELD_WIDTH && _tiles[i][j+2].visible == true)
-                            {
-                                if     (j+3 < GlobalData.FIELD_WIDTH  && _tiles[i][j+3].visible   == true && _tiles[i][j].char == _tiles[i][j+3].char)   {markHint(new Array(i,j,i,j+1,i,j+3)); return true;}
-                                else if(i-1 >= 0                      && _tiles[i-1][j+2].visible == true && _tiles[i][j].char == _tiles[i-1][j+2].char) {markHint(new Array(i,j,i,j+1,i-1,j+2)); return true;}
-                                else if(i+1 < GlobalData.FIELD_HEIGTH && _tiles[i+1][j+2].visible == true && _tiles[i][j].char == _tiles[i+1][j+2].char) {markHint(new Array(i,j,i,j+1,i+1,j+2)); return true;}
-                            }
-                            else if(j-1 >= 0 && _tiles[i][j-1].visible == true)
-                            {
-                                if     (j-2 >= 0                      && _tiles[i][j-2].visible   == true && _tiles[i][j].char == _tiles[i][j-2].char)   {markHint(new Array(i,j,i,j+1,i,j-2)); return true;}
-                                else if(i-1 >= 0                      && _tiles[i-1][j-1].visible == true && _tiles[i][j].char == _tiles[i-1][j-1].char) {markHint(new Array(i,j,i,j+1,i-1,j-1)); return true;}
-                                else if(i+1 < GlobalData.FIELD_HEIGTH && _tiles[i+1][j-1].visible == true && _tiles[i][j].char == _tiles[i+1][j-1].char) {markHint(new Array(i,j,i,j+1,i+1,j-1)); return true;}
-                            }
-                        }
-                        else if(j+2 < GlobalData.FIELD_WIDTH && _tiles[i][j+2].visible == true && _tiles[i][j].char == _tiles[i][j+2].char)
-                        {
-                            if     (i+1 < GlobalData.FIELD_HEIGTH && _tiles[i+1][j+1].visible == true && _tiles[i][j].char == _tiles[i+1][j+1].char) {markHint(new Array(i,j,i,j+2,i+1,j+1)); return true;}
-                            else if(i-1 >= 0                      && _tiles[i-1][j+1].visible == true && _tiles[i][j].char == _tiles[i-1][j+1].char) {markHint(new Array(i,j,i,j+2,i-1,j+1)); return true;}
-                        }
-                    }
-                }
-            }
+            _checker.checkHint(_tiles);
             
-            for(i=0; i<GlobalData.FIELD_WIDTH; i++)
-            {
-                for(j=0; j<GlobalData.FIELD_HEIGTH-1; j++)
-                {
-                    if(_tiles[j][i].visible == false) continue;
-                    if(_tiles[j+1][i].visible == true)
-                    {
-                        if(_tiles[j][i].char == _tiles[j+1][i].char)
-                        {
-                            if(j+2 < GlobalData.FIELD_HEIGTH && _tiles[j+2][i].visible == true)
-                            {
-                                if     (j+3 < GlobalData.FIELD_HEIGTH && _tiles[j+3][i].visible   == true && _tiles[j][i].char == _tiles[j+3][i].char)   {markHint(new Array(j,i,j+1,i,j+3,i)); return true;}
-                                else if(i-1 >= 0                      && _tiles[j+2][i-1].visible == true && _tiles[j][i].char == _tiles[j+2][i-1].char) {markHint(new Array(j,i,j+1,i,j+2,i-1)); return true;}
-                                else if(i+1 < GlobalData.FIELD_WIDTH  && _tiles[j+2][i+1].visible == true && _tiles[j][i].char == _tiles[j+2][i+1].char) {markHint(new Array(j,i,j+1,i,j+2,i+1)); return true;}
-                            }
-                            else if(j-1 >= 0 && _tiles[j-1][i].visible == true)
-                            {
-                                if     (j-2 >= 0                     && _tiles[j-2][i].visible   == true && _tiles[j][i].char == _tiles[j-2][i].char)   {markHint(new Array(j,i,j+1,i,j-2,i)); return true;}
-                                else if(i-1 >= 0                     && _tiles[j-1][i-1].visible == true && _tiles[j][i].char == _tiles[j-1][i-1].char) {markHint(new Array(j,i,j+1,i,j-1,i-1)); return true;}
-                                else if(i+1 < GlobalData.FIELD_WIDTH && _tiles[j-1][i+1].visible == true && _tiles[j][i].char == _tiles[j-1][i+1].char) {markHint(new Array(j,i,j+1,i,j-1,i+1)); return true;}
-                            }
-                        }
-                        else if(j+2 < GlobalData.FIELD_WIDTH && _tiles[j+2][i].visible == true && _tiles[j][i].char == _tiles[j+2][i].char)
-                        {
-                            if     (i+1 < GlobalData.FIELD_WIDTH  && _tiles[j+1][i+1].visible == true && _tiles[j][i].char == _tiles[j+1][i+1].char) {markHint(new Array(j,i,j+2,i,j+1,i+1)); return true;}
-                            else if(i-1 >= 0                      && _tiles[j+1][i-1].visible == true && _tiles[j][i].char == _tiles[j+1][i-1].char) {markHint(new Array(j,i,j+2,i,j+1,i-1)); return true;}
-                        }
-                    }
-                }
-            }
-            
-            return checkHintSpecialTile();
-        }
-        
-        private function checkHintSpecialTile():Boolean
-        {
-            for(var i:int=0; i<GlobalData.FIELD_HEIGTH; i++)
-            {
-                for(var j:int=0; j<GlobalData.FIELD_WIDTH-1; j++)
-                {
-                    if(_tiles[i][j].visible == false || _tiles[i][j].type == 0) continue;
-                    if(_tiles[i][j+1].visible == true && _tiles[i][j+1].type != 0) return true;
-                }
-            }
-            
-            for(i=0; i<GlobalData.FIELD_WIDTH; i++)
-            {
-                for(j=0; j<GlobalData.FIELD_HEIGTH-1; j++)
-                {
-                    if(_tiles[j][i].visible == false || _tiles[j][i].type == 0) continue;
-                    if(_tiles[j+1][i].visible == true && _tiles[j+1][i].type != 0) return true;
-                }
-            }
-            
-            return false;
+            return _checker.checkHint(_tiles);
         }
         
         private function markHint(arr:Array):void
@@ -817,6 +697,6 @@ package N2P2.root.child.ingame
             this.dispose();
         }
         
-        public function get inGameStageInfo():InGameStageInfo { return _inGameStageInfo; }
+        public function get inGameStageInfo():StageInfo { return _inGameStageInfo; }
     }
 }
