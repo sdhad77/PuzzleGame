@@ -42,6 +42,7 @@ package N2P2.root.child.title
         {
             if(event.getTouch(this, TouchPhase.BEGAN))
             {
+                (this.root as Game).facebookLogin();
                 (this.root as Game).startWorldMap();
                 clear();
             }

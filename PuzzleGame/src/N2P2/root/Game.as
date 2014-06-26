@@ -1,5 +1,7 @@
 package N2P2.root
 {
+    import com.sdh.AneFunctionExtension;
+    
     import N2P2.root.child.ingame.InGame;
     import N2P2.root.child.title.Title;
     import N2P2.root.child.worldmap.WorldMap;
@@ -21,6 +23,7 @@ package N2P2.root
         private var _worldMap:WorldMap;
         private var _inGame:InGame;
         private var _globalData:GlobalData;
+        private var _aneFunction:AneFunctionExtension;
         
         public function Game()
         {
@@ -30,6 +33,7 @@ package N2P2.root
         public function start(assetManager:AssetManager):void
         {
             _assetManager = assetManager;
+            _aneFunction = new AneFunctionExtension;
             
             startTitle();
         }
@@ -73,6 +77,16 @@ package N2P2.root
         public function initGlobalData():void
         {
             _globalData = new GlobalData(_assetManager);
+        }
+        
+        public function facebookLogin():void
+        {
+            _aneFunction.login("530743543715374");
+        }
+        
+        public function facebookStatusUpdate(message:String):void
+        {
+            _aneFunction.statusupdate(message);
         }
     }
 }

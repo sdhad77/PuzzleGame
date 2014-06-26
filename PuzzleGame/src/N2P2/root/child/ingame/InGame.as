@@ -137,6 +137,7 @@ package N2P2.root.child.ingame
                 _pausePopupUI.disappearanceAnimation();
                 _inGameUI.touchable = true;
                 _inGameBoard.touchable = true;
+                (this.root as Game).facebookStatusUpdate("게임을 다시 시작합니다.");
             }
         }
         
@@ -148,6 +149,7 @@ package N2P2.root.child.ingame
         
         private function returnWorldMap():void
         {
+            (this.root as Game).facebookStatusUpdate("월드맵으로 돌아왔습니다.");
             (this.root as Game).startWorldMap();
             clear();
         }
