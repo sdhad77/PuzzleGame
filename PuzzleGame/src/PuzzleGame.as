@@ -1,13 +1,18 @@
 package
 {
+    import com.sdh.AneFunctionExtension;
+    
+    import flash.desktop.NativeApplication;
     import flash.display.Sprite;
     import flash.geom.Rectangle;
+    import flash.ui.Keyboard;
     
     import N2P2.root.Game;
     import N2P2.utils.EmbeddedAssets;
     
     import starling.core.Starling;
     import starling.events.Event;
+    import starling.events.KeyboardEvent;
     import starling.textures.Texture;
     import starling.textures.TextureAtlas;
     import starling.utils.AssetManager;
@@ -17,9 +22,12 @@ package
     {
         private var myStarling:Starling;
         private var assetManager:AssetManager;
+        private var _aneFunction:AneFunctionExtension;
         
         public function PuzzleGame()
         {
+            _aneFunction = new AneFunctionExtension;
+            
             myStarling = new Starling(Game, stage, new Rectangle(0,0,768,1024));
             myStarling.addEventListener(Event.ROOT_CREATED, onRootCreated);
             myStarling.showStats = true;myStarling.showStatsAt("left","top",2);
@@ -29,6 +37,8 @@ package
         
         private function onRootCreated(event:Event, game:Game):void
         {
+            game.addEventListener(KeyboardEvent.KEY_DOWN, keyPress);
+            
             assetManager = new AssetManager();
             
             assetManager.addTextureAtlas("titleUI", new TextureAtlas(Texture.fromBitmap(new EmbeddedAssets.titleUISheet()), XML(new EmbeddedAssets.titleUIXml())));
@@ -38,6 +48,19 @@ package
             assetManager.addXml("stageInfo", XML(new EmbeddedAssets.stageInfoXml()));
             
             game.start(assetManager);
+        }
+        
+        /**
+         * 눌린 키가 무엇인지 확인하고 해당하는 함수 작동시킴
+         * @param event 키보드 이벤트
+         */
+        private function keyPress(event:KeyboardEvent):void
+        {
+            if(event.keyCode == Keyboard.BACK)
+            {
+                event.preventDefault();
+                if(_aneFunction.backPress("Null") == true) NativeApplication.nativeApplication.exit();
+            }
         }
         
         /**
