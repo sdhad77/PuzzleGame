@@ -28,6 +28,8 @@ package N2P2.utils
         public static const TILE_GHOST:int = 24;
         public static const TILE_HINT:int = 25;
         
+        public static const TILE_POINT:int = 100;
+        
         public static const TWEEN_TIME:Number = 0.2;
         
         public static var TILE_TEXTURE:Vector.<Texture>;
