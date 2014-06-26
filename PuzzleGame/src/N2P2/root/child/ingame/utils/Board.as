@@ -22,9 +22,9 @@ package N2P2.root.child.ingame.utils
      */
     public class Board extends Sprite
     {
-        private var _tiles:Vector.<Vector.<Tile>> = new Vector.<Vector.<Tile>>; //보드에 존재하는 타일
-        private var _inGameStageInfo:StageInfo = new StageInfo;                 //게임 스테이지 정보
-        private var _hintTiles:Sprite = new Sprite;                             //힌트가 저장되는 스프라이트
+        private var _tiles:Vector.<Vector.<Tile>>; //보드에 존재하는 타일
+        private var _inGameStageInfo:StageInfo;    //게임 스테이지 정보
+        private var _hintTiles:Sprite;             //힌트가 저장되는 스프라이트
         
         private var _checker:BoardChecker = new BoardChecker;   //보드에서 제거할 타일이 있는지 체크하는 클래스
         private var _marker:BoardMarker = new BoardMarker;      //제거할 타일, 생성할 타일을 표시를 하는 클래스
@@ -48,9 +48,19 @@ package N2P2.root.child.ingame.utils
             super();
             
             init(stageNum, assetManager);
+            
+            addEventListener(Event.ADDED_TO_STAGE, addedToStage);
         }
         
-        private function init(stageNum:Number, assetManager:AssetManager):void
+        private function addedToStage():void
+        {
+            removeEventListener(Event.ADDED_TO_STAGE, addedToStage);
+            
+            (this.parent as InGame).updatePoint(_inGameStageInfo.point);
+            (this.parent as InGame).updateMoveNum(_inGameStageInfo.moveNum);
+        }
+        
+        public function init(stageNum:Number, assetManager:AssetManager):void
         {
             TweenLite.defaultEase = Linear.easeNone;
             _lastTileMoveTime = getTimer();
@@ -58,6 +68,7 @@ package N2P2.root.child.ingame.utils
             loadGameStage(stageNum, assetManager);
             initTiles();
             initHintTiles();
+            resultClear();
             
             var hintArr:Array = _checker.checkHint(_tiles);
             if(hintArr == null)
@@ -72,6 +83,12 @@ package N2P2.root.child.ingame.utils
                 hintArr = null;
             }
             
+            if(this.parent != null)
+            {
+                (this.parent as InGame).updatePoint(_inGameStageInfo.point);
+                (this.parent as InGame).updateMoveNum(_inGameStageInfo.moveNum);
+            }
+            
             addEventListener(Event.ENTER_FRAME, enterFrame);
         }
         
@@ -82,6 +99,7 @@ package N2P2.root.child.ingame.utils
          */
         private function loadGameStage(stageNum:Number, assetManager:AssetManager):void
         {
+            _inGameStageInfo = new StageInfo;
             _inGameStageInfo.parseStageInfoXml(assetManager.getXml("stageInfo"), stageNum);
         }
         
@@ -93,6 +111,8 @@ package N2P2.root.child.ingame.utils
             var upTileNum:int;
             var leftTileNum:int;
             var tileNum:int;
+            
+            _tiles = new Vector.<Vector.<Tile>>;
             
             for(var i:int=0; i < GlobalData.FIELD_HEIGTH; i++)
             {
@@ -136,6 +156,7 @@ package N2P2.root.child.ingame.utils
          */
         private function initHintTiles():void
         {
+            _hintTiles = new Sprite;
             _hintTiles.touchable = false;
             _hintTiles.visible = false;
             addChild(_hintTiles);

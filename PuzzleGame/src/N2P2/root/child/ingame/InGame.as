@@ -3,6 +3,7 @@ package N2P2.root.child.ingame
     import com.greensock.TweenLite;
     
     import N2P2.root.Game;
+    import N2P2.root.child.ingame.utils.Board;
     import N2P2.utils.GlobalData;
     import N2P2.utils.UserInterface;
     
@@ -12,7 +13,6 @@ package N2P2.root.child.ingame
     import starling.events.TouchPhase;
     import starling.text.TextField;
     import starling.utils.AssetManager;
-    import N2P2.root.child.ingame.utils.Board;
 
     public class InGame extends Sprite
     {
@@ -32,6 +32,9 @@ package N2P2.root.child.ingame
         private var _tfPointPosX:Number;
         private var _tfPointPosY:Number;
         
+        private var _stageNum:Number;
+        private var _assetManager:AssetManager;
+        
         public function InGame()
         {
             super();
@@ -44,6 +47,9 @@ package N2P2.root.child.ingame
         
         private function init(assetManager:AssetManager, stageNum:Number):void
         {
+            _assetManager = assetManager;
+            _stageNum = stageNum;
+            
             _inGameUI = new UserInterface(assetManager.getTextureAtlas("inGameUI"), "inGameUI_");
             _inGameUI.addTouchEventByName("inGameUI_2.png", pausePopupButtonTouch);
             addChild(_inGameUI);
@@ -123,7 +129,15 @@ package N2P2.root.child.ingame
         private function restartGameButtonTouch(event:TouchEvent):void
         {
             var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
-            if(touch != null) this.removeChild(_inGameBoard);
+            if(touch != null)
+            {
+                _inGameBoard.removeChildren();
+                _inGameBoard.init(_stageNum,_assetManager);
+                
+                _pausePopupUI.disappearanceAnimation();
+                _inGameUI.touchable = true;
+                _inGameBoard.touchable = true;
+            }
         }
         
         private function returnWorldMapButtonTouch(event:TouchEvent):void
@@ -205,6 +219,7 @@ package N2P2.root.child.ingame
             _inGameBoard = null;
             _inGameUI.dispose();
             _inGameUI = null;
+            _assetManager = null;
             this.removeEventListeners();
             while(this.numChildren > 0) this.removeChildAt(0);
             this.parent.removeChild(this);
