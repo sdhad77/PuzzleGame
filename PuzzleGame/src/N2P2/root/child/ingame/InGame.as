@@ -32,6 +32,10 @@ package N2P2.root.child.ingame
         private var _tfPointPosX:Number;
         private var _tfPointPosY:Number;
         
+        private var _tfStageName:TextField;
+        private var _tfStageNamePosX:Number;
+        private var _tfStageNamePosY:Number;
+        
         private var _stageNum:Number;
         private var _assetManager:AssetManager;
         
@@ -102,6 +106,15 @@ package N2P2.root.child.ingame
             _tfPoint.x = _tfPointPosX;
             _tfPoint.y = _tfPointPosY - _tfPoint.height/2;
             addChild(_tfPoint);
+            
+            _tfStageNamePosX = GlobalData.TEXTFIELD_STAGENAME_POS_X * this.width;
+            _tfStageNamePosY = GlobalData.TEXTFIELD_STAGENAME_POS_Y * this.height;
+            _tfStageName = new TextField(100, 40, "STAGE " + stageNum.toString(), "Verdana", GlobalData.TEXTFIELD_STAGENAME_SIZE*this.width, 0x0, true);
+            _tfStageName.width = _tfStageName.textBounds.width + 100;
+            _tfStageName.height = _tfStageName.textBounds.height + 10;
+            _tfStageName.x = _tfStageNamePosX;
+            _tfStageName.y = _tfStageNamePosY - _tfStageName.height/2;
+            addChild(_tfStageName);
         }
         
         private function pausePopupButtonTouch(event:TouchEvent):void

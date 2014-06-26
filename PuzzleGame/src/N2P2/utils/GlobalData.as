@@ -14,6 +14,10 @@ package N2P2.utils
         public static const TEXTFIELD_POINT_POS_Y:Number = 0.094;
         public static const TEXTFIELD_POINT_SIZE:Number = 0.039;
         
+        public static const TEXTFIELD_STAGENAME_POS_X:Number = 0.170;
+        public static const TEXTFIELD_STAGENAME_POS_Y:Number = 0.899;
+        public static const TEXTFIELD_STAGENAME_SIZE:Number = 0.043;
+        
         public static const INGAME_STAGE_SCALE:Number = 0.4;
         public static const FIELD_WIDTH:int = 8;
         public static const FIELD_HEIGTH:int = 8;
