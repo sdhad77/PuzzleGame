@@ -59,6 +59,21 @@ package N2P2.root.child.ingame.utils
             }
         }
         
+        public static function getStagePoint(xml:XML, stageNum:int):Array
+        {
+            var stageName:String = (stageNum < 10) ? "stage0" + stageNum.toString() : "stage" + stageNum.toString();
+            
+            for each (var subStage:XML in xml.stage)
+            {
+                if(subStage.attribute("name") == stageName)
+                {
+                    return new Array(parseFloat(subStage.attribute("point1")), parseFloat(subStage.attribute("point2")), parseFloat(subStage.attribute("point3")));
+                }
+            }
+            
+            return null;
+        }
+        
         public function clear():void
         {
             if(_board != null)

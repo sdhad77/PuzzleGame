@@ -1,6 +1,8 @@
 package N2P2.root.child.worldmap
 {
     import N2P2.root.Game;
+    import N2P2.root.child.ingame.utils.StageInfo;
+    import N2P2.utils.GlobalData;
     import N2P2.utils.UserInterface;
     
     import starling.display.DisplayObject;
@@ -69,6 +71,19 @@ package N2P2.root.child.worldmap
             
             for(var i:int=3; i<10; i++) _worldMap.addTouchEventByName("worldMap_0" + i + ".png", stageSelectClick);
             for(i=10; i<18; i++)        _worldMap.addTouchEventByName("worldMap_" + i + ".png", stageSelectClick);
+            for(i=GlobalData.user.clearInfo.length+4; i<18; i++)
+            {
+                if(i < 10)
+                {
+                    _worldMap.getChildByName("worldMap_0" + i + ".png").touchable = false;
+                    _worldMap.getChildByName("worldMap_0" + i + ".png").alpha = 0.5;
+                }
+                else
+                {
+                    _worldMap.getChildByName("worldMap_"  + i + ".png").touchable = false;
+                    _worldMap.getChildByName("worldMap_"  + i + ".png").alpha = 0.5;
+                }
+            }
             
             _mb.addTouchEventByName("worldMapMB_0.png", heartClick);
             _mb.addTouchEventByName("worldMapMB_1.png", heartClick);
@@ -103,6 +118,18 @@ package N2P2.root.child.worldmap
             {
                 var name:String = (event.target as DisplayObject).name;
                 _selectStageNum = Number(name.substring(name.indexOf("_")+1,name.indexOf("."))) - 2;
+                
+                var arr:Array = StageInfo.getStagePoint(_assetManager.getXml("stageInfo"), _selectStageNum);
+                
+                _ssp.getChildByName("stageSelectPopup_09.png").visible = false;
+                _ssp.getChildByName("stageSelectPopup_08.png").visible = false;
+                _ssp.getChildByName("stageSelectPopup_07.png").visible = false;
+                _ssp.getChildByName("stageSelectPopup_06.png").visible = false;
+                
+                if(_selectStageNum != GlobalData.user.clearInfo.length +1)      _ssp.getChildByName("stageSelectPopup_06.png").visible = true;
+                if(GlobalData.user.clearInfo[_selectStageNum-1] >= arr[2])      _ssp.getChildByName("stageSelectPopup_09.png").visible = true;
+                else if(GlobalData.user.clearInfo[_selectStageNum-1] >= arr[1]) _ssp.getChildByName("stageSelectPopup_08.png").visible = true;
+                else if(GlobalData.user.clearInfo[_selectStageNum-1] >= arr[0]) _ssp.getChildByName("stageSelectPopup_07.png").visible = true;
                 
                 _worldMap.touchable = false;
                 _mb.touchable = false;

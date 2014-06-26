@@ -1,5 +1,6 @@
 package N2P2.utils
 {
+    
     import starling.textures.Texture;
     import starling.utils.AssetManager;
 
@@ -33,6 +34,8 @@ package N2P2.utils
         public static const TWEEN_TIME:Number = 0.2;
         
         public static var TILE_TEXTURE:Vector.<Texture>;
+        
+        public static var user:UserInfo = new UserInfo;
         
         public function GlobalData(assetManager:AssetManager)
         {
