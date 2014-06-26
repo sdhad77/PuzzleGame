@@ -12,6 +12,7 @@ package N2P2.root.child.ingame
     import starling.events.TouchPhase;
     import starling.text.TextField;
     import starling.utils.AssetManager;
+    import N2P2.root.child.ingame.utils.Board;
 
     public class InGame extends Sprite
     {

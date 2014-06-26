@@ -1,4 +1,4 @@
-package N2P2.root.child.ingame
+package N2P2.root.child.ingame.utils
 {
     /**
      * 스테이지 정보를 읽어와서 가지고 있는 클래스입니다.</br>

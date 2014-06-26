@@ -1,4 +1,4 @@
-package N2P2.root.child.ingame
+package N2P2.root.child.ingame.utils
 {
     import com.greensock.TweenLite;
     
