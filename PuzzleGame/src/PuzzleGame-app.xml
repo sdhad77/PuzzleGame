@@ -296,4 +296,7 @@
 		]]></InfoAdditions>
         <requestedDisplayResolution>high</requestedDisplayResolution>
     </iPhone>
+<extensions>
+        <extensionID>com.sdh.AneFunctionExtension</extensionID>
+    </extensions>
 </application>
