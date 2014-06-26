@@ -329,6 +329,10 @@ package N2P2.root.child.ingame.utils
                 _crossResult.length = 0;
                 _crossResult = null;
             }
+            _checker = null;
+            _marker = null;
+            _remover = null;
+            _mover = null;
             this.removeEventListeners();
             while(this.numChildren > 0) this.removeChildAt(0);
             this.parent.removeChild(this);
