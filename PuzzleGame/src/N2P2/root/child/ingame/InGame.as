@@ -52,7 +52,7 @@ package N2P2.root.child.ingame
             _stageNum = stageNum;
             
             _inGameUI = new UserInterface(GlobalData.ASSET_MANAGER.getTextureAtlas("inGameUI"), "inGameUI_");
-            _inGameUI.addTouchEventByName("inGameUI_2.png", pausePopupButtonTouch);
+            _inGameUI.addTouchEventByName("inGameUI_2.png", pausePopupButtonClick);
             addChild(_inGameUI);
             
             _inGameBoard = new Board(stageNum);
@@ -66,8 +66,8 @@ package N2P2.root.child.ingame
             _pausePopupUI.visible = false;
             _pausePopupUI.addTouchEventByName("inGameUIPausePopup_1.png", pausePopupClose);//popupclose
             _pausePopupUI.addTouchEventByName("inGameUIPausePopup_2.png", pausePopupClose);//continue
-            _pausePopupUI.addTouchEventByName("inGameUIPausePopup_3.png", restartGameButtonTouch);//restartclose
-            _pausePopupUI.addTouchEventByName("inGameUIPausePopup_4.png", returnWorldMapButtonTouch);//returnclose
+            _pausePopupUI.addTouchEventByName("inGameUIPausePopup_3.png", restartGameButtonClick);//restartclose
+            _pausePopupUI.addTouchEventByName("inGameUIPausePopup_4.png", returnWorldMapButtonClick);//returnclose
             addChild(_pausePopupUI);
             
             _missionFailUI = new UserInterface(GlobalData.ASSET_MANAGER.getTextureAtlas("inGameUI"), "inGameFail_");
@@ -114,7 +114,7 @@ package N2P2.root.child.ingame
             addChild(_tfStageName);
         }
         
-        private function pausePopupButtonTouch(event:TouchEvent):void
+        private function pausePopupButtonClick(event:TouchEvent):void
         {
             var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
             if(touch != null)
@@ -136,7 +136,7 @@ package N2P2.root.child.ingame
             }
         }
         
-        private function restartGameButtonTouch(event:TouchEvent):void
+        private function restartGameButtonClick(event:TouchEvent):void
         {
             var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
             if(touch != null)
@@ -150,7 +150,7 @@ package N2P2.root.child.ingame
             }
         }
         
-        private function returnWorldMapButtonTouch(event:TouchEvent):void
+        private function returnWorldMapButtonClick(event:TouchEvent):void
         {
             var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
             if(touch != null) returnWorldMap();

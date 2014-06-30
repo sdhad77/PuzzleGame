@@ -23,6 +23,7 @@ package N2P2.root.child.worldmap
         private var _mouseButtonDown:Boolean;
         private var _rightSide:Number;
         private var _selectStageNum:int;
+        private var _stageInfo:StageInfo;
         
         public function WorldMap()
         {
@@ -65,8 +66,8 @@ package N2P2.root.child.worldmap
             _worldMap.addTouchEventByName("worldMap_01.png", mapClick);
             _worldMap.addTouchEventByName("worldMap_02.png", mapClick);
             
-            for(var i:int=3; i<10; i++) _worldMap.addTouchEventByName("worldMap_0" + i + ".png", stageSelectClick);
-            for(i=10; i<18; i++)        _worldMap.addTouchEventByName("worldMap_" + i + ".png", stageSelectClick);
+            for(var i:int=3; i<10; i++) _worldMap.addTouchEventByName("worldMap_0" + i + ".png", stageButtonClick);
+            for(i=10; i<18; i++)        _worldMap.addTouchEventByName("worldMap_" + i + ".png", stageButtonClick);
             for(i=GlobalData.user.clearInfo.length+4; i<18; i++)
             {
                 if(i < 10)
@@ -81,33 +82,24 @@ package N2P2.root.child.worldmap
                 }
             }
             
-            _mb.addTouchEventByName("worldMapMB_0.png", heartClick);
-            _mb.addTouchEventByName("worldMapMB_1.png", heartClick);
-            _mb.addTouchEventByName("worldMapMB_2.png", heartClick);
-            _mb.addTouchEventByName("worldMapMB_3.png", heartClick);
-            _mb.addTouchEventByName("worldMapMB_4.png", heartClick);
-            
-            _ssp.addTouchEventByName("stageSelectPopup_04.png", stageSelectPopupClose);
-            _ssp.addTouchEventByName("stageSelectPopup_05.png", itemSelectPopupClick);
+            _ssp.addTouchEventByName("stageSelectPopup_04.png", stagePopupClose);
+            _ssp.addTouchEventByName("stageSelectPopup_05.png", itemSelectPopupButtonClick);
             _ssp.getChildByName("stageSelectPopup_06.png").visible = false; //애니
             _ssp.getChildByName("stageSelectPopup_07.png").visible = false; //별한개
             _ssp.getChildByName("stageSelectPopup_08.png").visible = false; //별두개
             _ssp.getChildByName("stageSelectPopup_09.png").visible = false; //별세개
             
             _isp.addTouchEventByName("itemSelectPopup_04.png", itemSelectPopupClose);
-            _isp.addTouchEventByName("itemSelectPopup_06.png", itemSelectButtonClick); //item1
-            _isp.addTouchEventByName("itemSelectPopup_07.png", itemSelectButtonClick); //item2
-            _isp.addTouchEventByName("itemSelectPopup_08.png", itemSelectButtonClick); //item3
             _isp.addTouchEventByName("itemSelectPopup_09.png", gameStart);
-            
-            _mp.addTouchEventByName("worldMapMP_1.png", menuPopupCloseClick);
             
             //================================================================================
             
             _rightSide = _worldMap.getChildByName("worldMap_01.png").width + _worldMap.getChildByName("worldMap_02.png").width -1;
+            
+            _stageInfo = new StageInfo;
         }
         
-        private function stageSelectClick(event:TouchEvent):void
+        private function stageButtonClick(event:TouchEvent):void
         {
             var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
             if(touch != null) 
@@ -115,17 +107,19 @@ package N2P2.root.child.worldmap
                 var name:String = (event.target as DisplayObject).name;
                 _selectStageNum = Number(name.substring(name.indexOf("_")+1,name.indexOf("."))) - 2;
                 
-                var arr:Array = StageInfo.getStagePoint(GlobalData.ASSET_MANAGER.getXml("stageInfo"), _selectStageNum);
+                _stageInfo.clear();
+                _stageInfo.parseStageInfoXml(GlobalData.ASSET_MANAGER.getXml("stageInfo"), _selectStageNum);
                 
                 _ssp.getChildByName("stageSelectPopup_09.png").visible = false;
                 _ssp.getChildByName("stageSelectPopup_08.png").visible = false;
                 _ssp.getChildByName("stageSelectPopup_07.png").visible = false;
                 _ssp.getChildByName("stageSelectPopup_06.png").visible = false;
                 
-                if(_selectStageNum != GlobalData.user.clearInfo.length +1)      _ssp.getChildByName("stageSelectPopup_06.png").visible = true;
-                if(GlobalData.user.clearInfo[_selectStageNum-1] >= arr[2])      _ssp.getChildByName("stageSelectPopup_09.png").visible = true;
-                else if(GlobalData.user.clearInfo[_selectStageNum-1] >= arr[1]) _ssp.getChildByName("stageSelectPopup_08.png").visible = true;
-                else if(GlobalData.user.clearInfo[_selectStageNum-1] >= arr[0]) _ssp.getChildByName("stageSelectPopup_07.png").visible = true;
+                if(_selectStageNum != GlobalData.user.clearInfo.length +1) _ssp.getChildByName("stageSelectPopup_06.png").visible = true;
+                
+                if     (GlobalData.user.clearInfo[_selectStageNum-1] >= _stageInfo.point3) _ssp.getChildByName("stageSelectPopup_09.png").visible = true;
+                else if(GlobalData.user.clearInfo[_selectStageNum-1] >= _stageInfo.point2) _ssp.getChildByName("stageSelectPopup_08.png").visible = true;
+                else if(GlobalData.user.clearInfo[_selectStageNum-1] >= _stageInfo.point1) _ssp.getChildByName("stageSelectPopup_07.png").visible = true;
                 
                 _worldMap.touchable = false;
                 _mb.touchable = false;
@@ -136,7 +130,7 @@ package N2P2.root.child.worldmap
             }
         }
         
-        private function stageSelectPopupClose(event:TouchEvent):void
+        private function stagePopupClose(event:TouchEvent):void
         {
             var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
             if(touch != null) 
@@ -147,7 +141,7 @@ package N2P2.root.child.worldmap
             }
         }
         
-        private function itemSelectPopupClick(event:TouchEvent):void
+        private function itemSelectPopupButtonClick(event:TouchEvent):void
         {
             var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
             if(touch != null) 
@@ -155,15 +149,6 @@ package N2P2.root.child.worldmap
                 _ssp.visible = false;
                 _ssp.touchable = false;
                 _isp.appearanceAnimation(sspContentsRemove);
-            }
-        }
-        
-        private function itemSelectButtonClick(event:TouchEvent):void
-        {
-            var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
-            if(touch != null) 
-            {
-                trace("item 선택");
             }
         }
         
@@ -185,28 +170,6 @@ package N2P2.root.child.worldmap
             {
                 (this.root as Game).startInGame(_selectStageNum);
                 clear();
-            }
-        }
-        
-        private function heartClick(event:TouchEvent):void
-        {
-            var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
-            if(touch != null) 
-            {
-                _mp.appearanceAnimation();
-                _worldMap.touchable = false;
-                _mb.touchable = false;
-            }
-        }
-        
-        private function menuPopupCloseClick(event:TouchEvent):void
-        {
-            var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
-            if(touch != null) 
-            {
-                _mp.disappearanceAnimation();
-                _worldMap.touchable = true;
-                _mb.touchable = true;
             }
         }
         
@@ -271,6 +234,11 @@ package N2P2.root.child.worldmap
             {
                 _mb.dispose();
                 _mb = null;
+            }
+            if(_stageInfo != null)
+            {
+                _stageInfo.clear();
+                _stageInfo = null;
             }
             
             this.removeEventListeners();
