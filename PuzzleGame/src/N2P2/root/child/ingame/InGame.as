@@ -88,7 +88,7 @@ package N2P2.root.child.ingame
             
             _tfMoveNumPosX = GlobalData.TEXTFIELD_MOVENUM_POS_X * this.width;
             _tfMoveNumPosY = GlobalData.TEXTFIELD_MOVENUM_POS_Y * this.height;
-            _tfMoveNum = new TextField(100, 40, _inGameBoard.inGameStageInfo.moveNum.toString(), "Verdana", GlobalData.TEXTFIELD_MOVENUM_SIZE*this.width, 0xffffff, true);
+            _tfMoveNum = new TextField(100, 40, "0", "Verdana", GlobalData.TEXTFIELD_MOVENUM_SIZE*this.width, 0xffffff, true);
             _tfMoveNum.width = _tfMoveNum.textBounds.width + 100;
             _tfMoveNum.height = _tfMoveNum.textBounds.height + 10;
             _tfMoveNum.x = _tfMoveNumPosX - _tfMoveNum.width/2;
@@ -97,7 +97,7 @@ package N2P2.root.child.ingame
             
             _tfPointPosX = GlobalData.TEXTFIELD_POINT_POS_X * this.width;
             _tfPointPosY = GlobalData.TEXTFIELD_POINT_POS_Y * this.height;
-            _tfPoint = new TextField(100, 40, _inGameBoard.inGameStageInfo.point.toString(), "Verdana", GlobalData.TEXTFIELD_POINT_SIZE*this.width, 0x0, true);
+            _tfPoint = new TextField(100, 40, "0", "Verdana", GlobalData.TEXTFIELD_POINT_SIZE*this.width, 0x0, true);
             _tfPoint.width = _tfPoint.textBounds.width + 100;
             _tfPoint.height = _tfPoint.textBounds.height + 10;
             _tfPoint.x = _tfPointPosX;
