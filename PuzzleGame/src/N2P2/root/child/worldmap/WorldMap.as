@@ -10,7 +10,6 @@ package N2P2.root.child.worldmap
     import starling.events.Touch;
     import starling.events.TouchEvent;
     import starling.events.TouchPhase;
-    import starling.utils.AssetManager;
 
     public class WorldMap extends Sprite
     {
@@ -25,40 +24,37 @@ package N2P2.root.child.worldmap
         private var _rightSide:Number;
         private var _selectStageNum:int;
         
-        private var _assetManager:AssetManager;
-        
         public function WorldMap()
         {
             super();
         }
         
-        public function start(assetManager:AssetManager):void
+        public function start():void
         {
             _mouseButtonDown = false;
-            _assetManager = assetManager;
             
-            drawWorldMap(assetManager);
+            drawWorldMap();
         }
         
-        private function drawWorldMap(assetManager:AssetManager):void
+        private function drawWorldMap():void
         {
-            _worldMap = new UserInterface(assetManager.getTextureAtlas("worldMap"), "worldMap_");
+            _worldMap = new UserInterface(GlobalData.ASSET_MANAGER.getTextureAtlas("worldMap"), "worldMap_");
             addChild(_worldMap);
             
-            _mb = new UserInterface(assetManager.getTextureAtlas("worldMapUI"), "worldMapMB_");
+            _mb = new UserInterface(GlobalData.ASSET_MANAGER.getTextureAtlas("worldMapUI"), "worldMapMB_");
             addChild(_mb);
             
-            _ssp = new UserInterface(assetManager.getTextureAtlas("worldMapUI"), "stageSelectPopup_");
+            _ssp = new UserInterface(GlobalData.ASSET_MANAGER.getTextureAtlas("worldMapUI"), "stageSelectPopup_");
             _ssp.visible = false;
             _ssp.touchable = false;
             addChild(_ssp);
             
-            _isp = new UserInterface(assetManager.getTextureAtlas("worldMapUI"), "itemSelectPopup_");
+            _isp = new UserInterface(GlobalData.ASSET_MANAGER.getTextureAtlas("worldMapUI"), "itemSelectPopup_");
             _isp.visible = false;
             _isp.touchable = false;
             addChild(_isp);
             
-            _mp = new UserInterface(assetManager.getTextureAtlas("worldMapUI"), "worldMapMP_");
+            _mp = new UserInterface(GlobalData.ASSET_MANAGER.getTextureAtlas("worldMapUI"), "worldMapMP_");
             _mp.visible = false;
             _mp.touchable = false;
             addChild(_mp);
@@ -119,7 +115,7 @@ package N2P2.root.child.worldmap
                 var name:String = (event.target as DisplayObject).name;
                 _selectStageNum = Number(name.substring(name.indexOf("_")+1,name.indexOf("."))) - 2;
                 
-                var arr:Array = StageInfo.getStagePoint(_assetManager.getXml("stageInfo"), _selectStageNum);
+                var arr:Array = StageInfo.getStagePoint(GlobalData.ASSET_MANAGER.getXml("stageInfo"), _selectStageNum);
                 
                 _ssp.getChildByName("stageSelectPopup_09.png").visible = false;
                 _ssp.getChildByName("stageSelectPopup_08.png").visible = false;
@@ -133,7 +129,7 @@ package N2P2.root.child.worldmap
                 
                 _worldMap.touchable = false;
                 _mb.touchable = false;
-                _sspContents = new UserInterface(_assetManager.getTextureAtlas("worldMapUI"), "stage" + _selectStageNum.toString() + "_");
+                _sspContents = new UserInterface(GlobalData.ASSET_MANAGER.getTextureAtlas("worldMapUI"), "stage" + _selectStageNum.toString() + "_");
                 _sspContents.name = "contents";
                 _ssp.addChild(_sspContents);
                 _ssp.appearanceAnimation();
@@ -246,8 +242,6 @@ package N2P2.root.child.worldmap
         
         private function clear():void
         {
-            _assetManager = null;
-            
             if(_worldMap != null)
             {
                 _worldMap.dispose();

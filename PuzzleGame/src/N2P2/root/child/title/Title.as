@@ -1,13 +1,13 @@
 package N2P2.root.child.title
 {
     import N2P2.root.Game;
+    import N2P2.utils.GlobalData;
     import N2P2.utils.UserInterface;
     
     import starling.display.Sprite;
     import starling.events.Event;
     import starling.events.TouchEvent;
     import starling.events.TouchPhase;
-    import starling.utils.AssetManager;
 
     public class Title extends Sprite
     {
@@ -18,14 +18,14 @@ package N2P2.root.child.title
             super();
         }
         
-        public function start(assetManager:AssetManager):void
+        public function start():void
         {
-            drawTitle(assetManager);
+            drawTitle();
         }
         
-        private function drawTitle(assetManager:AssetManager):void
+        private function drawTitle():void
         {
-            _ui = new UserInterface(assetManager.getTextureAtlas("titleUI"), "title_");
+            _ui = new UserInterface(GlobalData.ASSET_MANAGER.getTextureAtlas("titleUI"), "title_");
             addChild(_ui);
             
             _ui.addTouchEventByName("title_1.png", startButtonClick);
@@ -42,7 +42,6 @@ package N2P2.root.child.title
         {
             if(event.getTouch(this, TouchPhase.BEGAN))
             {
-                (this.root as Game).facebookLogin();
                 (this.root as Game).startWorldMap();
                 clear();
             }

@@ -12,7 +12,6 @@ package N2P2.root.child.ingame
     import starling.events.TouchEvent;
     import starling.events.TouchPhase;
     import starling.text.TextField;
-    import starling.utils.AssetManager;
 
     public class InGame extends Sprite
     {
@@ -37,34 +36,32 @@ package N2P2.root.child.ingame
         private var _tfStageNamePosY:Number;
         
         private var _stageNum:Number;
-        private var _assetManager:AssetManager;
         
         public function InGame()
         {
             super();
         }
         
-        public function start(assetManager:AssetManager, stageNum:Number):void
+        public function start(stageNum:Number):void
         {
-            init(assetManager, stageNum);
+            init(stageNum);
         }
         
-        private function init(assetManager:AssetManager, stageNum:Number):void
+        private function init(stageNum:Number):void
         {
-            _assetManager = assetManager;
             _stageNum = stageNum;
             
-            _inGameUI = new UserInterface(assetManager.getTextureAtlas("inGameUI"), "inGameUI_");
+            _inGameUI = new UserInterface(GlobalData.ASSET_MANAGER.getTextureAtlas("inGameUI"), "inGameUI_");
             _inGameUI.addTouchEventByName("inGameUI_2.png", pausePopupButtonTouch);
             addChild(_inGameUI);
             
-            _inGameBoard = new Board(stageNum, assetManager);
+            _inGameBoard = new Board(stageNum);
             _inGameBoard.scaleX = _inGameBoard.scaleY = GlobalData.INGAME_STAGE_SCALE;
             _inGameBoard.x = (this.width >> 1) - ((GlobalData.FIELD_WIDTH * GlobalData.TILE_LENGTH_SCALED) >> 1);
             _inGameBoard.y = (this.height >> 1) - ((GlobalData.FIELD_HEIGTH * GlobalData.TILE_LENGTH_SCALED) >> 1);
             addChild(_inGameBoard);
             
-            _pausePopupUI = new UserInterface(assetManager.getTextureAtlas("inGameUI"), "inGameUIPausePopup_");
+            _pausePopupUI = new UserInterface(GlobalData.ASSET_MANAGER.getTextureAtlas("inGameUI"), "inGameUIPausePopup_");
             _pausePopupUI.touchable = false;
             _pausePopupUI.visible = false;
             _pausePopupUI.addTouchEventByName("inGameUIPausePopup_1.png", pausePopupClose);//popupclose
@@ -73,19 +70,19 @@ package N2P2.root.child.ingame
             _pausePopupUI.addTouchEventByName("inGameUIPausePopup_4.png", returnWorldMapButtonTouch);//returnclose
             addChild(_pausePopupUI);
             
-            _missionFailUI = new UserInterface(assetManager.getTextureAtlas("inGameUI"), "inGameFail_");
+            _missionFailUI = new UserInterface(GlobalData.ASSET_MANAGER.getTextureAtlas("inGameUI"), "inGameFail_");
             _missionFailUI.visible = false;
             addChild(_missionFailUI);
             
-            _missionCompleteUI = new UserInterface(assetManager.getTextureAtlas("inGameUI"), "inGameClear_");
+            _missionCompleteUI = new UserInterface(GlobalData.ASSET_MANAGER.getTextureAtlas("inGameUI"), "inGameClear_");
             _missionCompleteUI.visible = false;
             addChild(_missionCompleteUI);
             
-            _inGameClearUI = new UserInterface(assetManager.getTextureAtlas("inGameUI"), "inGameClear2_");
+            _inGameClearUI = new UserInterface(GlobalData.ASSET_MANAGER.getTextureAtlas("inGameUI"), "inGameClear2_");
             _inGameClearUI.visible = false;
             addChild(_inGameClearUI);
             
-            _resetTileUI = new UserInterface(assetManager.getTextureAtlas("inGameUI"), "inGameTileReset_");
+            _resetTileUI = new UserInterface(GlobalData.ASSET_MANAGER.getTextureAtlas("inGameUI"), "inGameTileReset_");
             _resetTileUI.visible = false;
             addChild(_resetTileUI);
             
@@ -145,12 +142,11 @@ package N2P2.root.child.ingame
             if(touch != null)
             {
                 _inGameBoard.removeChildren();
-                _inGameBoard.init(_stageNum,_assetManager);
+                _inGameBoard.init(_stageNum);
                 
                 _pausePopupUI.disappearanceAnimation();
                 _inGameUI.touchable = true;
                 _inGameBoard.touchable = true;
-                (this.root as Game).facebookStatusUpdate("게임을 다시 시작합니다.");
             }
         }
         
@@ -162,7 +158,6 @@ package N2P2.root.child.ingame
         
         private function returnWorldMap():void
         {
-            (this.root as Game).facebookStatusUpdate("월드맵으로 돌아왔습니다.");
             (this.root as Game).startWorldMap();
             clear();
         }
@@ -234,7 +229,6 @@ package N2P2.root.child.ingame
             _inGameBoard = null;
             _inGameUI.dispose();
             _inGameUI = null;
-            _assetManager = null;
             this.removeEventListeners();
             while(this.numChildren > 0) this.removeChildAt(0);
             this.parent.removeChild(this);

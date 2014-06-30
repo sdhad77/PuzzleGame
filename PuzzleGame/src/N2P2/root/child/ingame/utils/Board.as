@@ -13,7 +13,6 @@ package N2P2.root.child.ingame.utils
     import starling.events.Touch;
     import starling.events.TouchEvent;
     import starling.events.TouchPhase;
-    import starling.utils.AssetManager;
     
     /**
      * 게임 보드 클래스입니다.</br>
@@ -43,11 +42,11 @@ package N2P2.root.child.ingame.utils
         private var _verticalResult:Array = new Array;   //보드에서 세로로 검사한 결과가 저장되는 배열.
         private var _crossResult:Array = new Array;      //보드에서  가로세로를 검사한 결과가 저장되는 배열.
         
-        public function Board(stageNum:Number, assetManager:AssetManager)
+        public function Board(stageNum:Number)
         {
             super();
             
-            init(stageNum, assetManager);
+            init(stageNum);
             
             addEventListener(Event.ADDED_TO_STAGE, addedToStage);
         }
@@ -60,12 +59,12 @@ package N2P2.root.child.ingame.utils
             (this.parent as InGame).updateMoveNum(_inGameStageInfo.moveNum);
         }
         
-        public function init(stageNum:Number, assetManager:AssetManager):void
+        public function init(stageNum:Number):void
         {
             TweenLite.defaultEase = Linear.easeNone;
             _lastTileMoveTime = getTimer();
             
-            loadGameStage(stageNum, assetManager);
+            loadGameStage(stageNum);
             initTiles();
             initHintTiles();
             resultClear();
@@ -97,10 +96,10 @@ package N2P2.root.child.ingame.utils
          * @param stageNum 읽어올 스테이지
          * @param assetManager xml이 저장되어있는 매니져
          */
-        private function loadGameStage(stageNum:Number, assetManager:AssetManager):void
+        private function loadGameStage(stageNum:Number):void
         {
             _inGameStageInfo = new StageInfo;
-            _inGameStageInfo.parseStageInfoXml(assetManager.getXml("stageInfo"), stageNum);
+            _inGameStageInfo.parseStageInfoXml(GlobalData.ASSET_MANAGER.getXml("stageInfo"), stageNum);
         }
         
         /**
@@ -209,8 +208,8 @@ package N2P2.root.child.ingame.utils
                         _mouseButtonDown = false;
                         
                         //현재 타일과(지금 터치된 new말고) 화면의 터치 좌표를 비교합니다.
-                        var intervalX:Number = touch.globalX - this.x - ((_currentTileX / GlobalData.TILE_LENGTH_SCALED) + (GlobalData.TILE_LENGTH_SCALED >> 1));
-                        var intervalY:Number = touch.globalY - this.y - ((_currentTileY / GlobalData.TILE_LENGTH_SCALED) + (GlobalData.TILE_LENGTH_SCALED >> 1));
+                        var intervalX:Number = touch.globalX - this.x - ((_currentTileX * GlobalData.TILE_LENGTH_SCALED) + (GlobalData.TILE_LENGTH_SCALED >> 1));
+                        var intervalY:Number = touch.globalY - this.y - ((_currentTileY * GlobalData.TILE_LENGTH_SCALED) + (GlobalData.TILE_LENGTH_SCALED >> 1));
                         
                         _newTileX = _currentTileX;
                         _newTileY = _currentTileY;

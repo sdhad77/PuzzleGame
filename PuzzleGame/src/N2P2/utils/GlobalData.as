@@ -1,6 +1,5 @@
 package N2P2.utils
 {
-    
     import starling.textures.Texture;
     import starling.utils.AssetManager;
 
@@ -38,6 +37,7 @@ package N2P2.utils
         public static const TWEEN_TIME:Number = 0.2;
         
         public static var TILE_TEXTURE:Vector.<Texture>;
+        public static var ASSET_MANAGER:AssetManager;
         
         public static var user:UserInfo = new UserInfo;
         
@@ -48,7 +48,8 @@ package N2P2.utils
         
         private function init(assetManager:AssetManager):void
         {
-            TILE_TEXTURE = assetManager.getTextureAtlas("inGameUI").getTextures("character_");
+            ASSET_MANAGER = assetManager;
+            TILE_TEXTURE = ASSET_MANAGER.getTextureAtlas("inGameUI").getTextures("character_");
         }
     }
 }
