@@ -5,6 +5,7 @@ package N2P2.root.child.ingame.utils
     
     import flash.utils.getTimer;
     
+    import N2P2.root.child.ingame.InGame;
     import N2P2.utils.GlobalData;
     
     import starling.display.Sprite;
@@ -13,11 +14,10 @@ package N2P2.root.child.ingame.utils
     import starling.events.TouchEvent;
     import starling.events.TouchPhase;
     import starling.utils.AssetManager;
-    import N2P2.root.child.ingame.InGame;
     
     /**
      * 게임 보드 클래스입니다.</br>
-     * 게임과 관련된 처리들은 이곳에서 진행되며, 미션 종류에 따라 상송하여 개발할수 있도록 하였습니다.
+     * 게임과 관련된 처리들은 이곳에서 진행되며, 미션 종류에 따라 상속하여 개발할수 있도록 하였습니다.
      * @author 신동환
      */
     public class Board extends Sprite
@@ -75,7 +75,7 @@ package N2P2.root.child.ingame.utils
             {
                 _remover.removeAllTile(_tiles);
                 (this.parent as InGame).resetTile();
-                _mover.moveTiles(_tiles, _inGameStageInfo, boardUpdate);
+                _mover.moveTiles(_tiles, _inGameStageInfo, updateBoard);
             }
             else
             {
@@ -209,8 +209,8 @@ package N2P2.root.child.ingame.utils
                         _mouseButtonDown = false;
                         
                         //현재 타일과(지금 터치된 new말고) 화면의 터치 좌표를 비교합니다.
-                        var intervalX:Number = touch.globalX - this.x - ((_currentTileX << 6) + (GlobalData.TILE_LENGTH_SCALED >> 1));
-                        var intervalY:Number = touch.globalY - this.y - ((_currentTileY << 6) + (GlobalData.TILE_LENGTH_SCALED >> 1));
+                        var intervalX:Number = touch.globalX - this.x - ((_currentTileX / GlobalData.TILE_LENGTH_SCALED) + (GlobalData.TILE_LENGTH_SCALED >> 1));
+                        var intervalY:Number = touch.globalY - this.y - ((_currentTileY / GlobalData.TILE_LENGTH_SCALED) + (GlobalData.TILE_LENGTH_SCALED >> 1));
                         
                         _newTileX = _currentTileX;
                         _newTileY = _currentTileY;
@@ -223,14 +223,14 @@ package N2P2.root.child.ingame.utils
                         {
                             //두개의 타일을 swap시킵니다.
                             touchOff();
-                            _tiles[_currentTileY][_currentTileX].swap(_tiles[_newTileY][_newTileX], boardUpdateForSwap);
+                            _tiles[_currentTileY][_currentTileX].swap(_tiles[_newTileY][_newTileX], updateBoardForSwap);
                         }
                     }
                 }
             }
         }
         
-        private function boardUpdateForSwap():void
+        private function updateBoardForSwap():void
         {
             //이전 update 결과물들을 제거합니다.
             resultClear();
@@ -247,7 +247,7 @@ package N2P2.root.child.ingame.utils
                 (this.parent as InGame).updatePoint(_inGameStageInfo.point);
                 
                 //빈자리로 타일들을 이동시킵니다.
-                _mover.moveTiles(_tiles, _inGameStageInfo, boardUpdate);
+                _mover.moveTiles(_tiles, _inGameStageInfo, updateBoard);
             }
             else
             {
@@ -283,7 +283,7 @@ package N2P2.root.child.ingame.utils
                     _marker.markSpecialTileForSwap(_currentTileX, _currentTileY, _newTileX, _newTileY, _horizontalResult, _verticalResult, _crossResult, _tiles);
                     
                     //빈자리로 타일들을 이동시킵니다.
-                    _mover.moveTiles(_tiles, _inGameStageInfo, boardUpdate);
+                    _mover.moveTiles(_tiles, _inGameStageInfo, updateBoard);
                 }
                 else
                 {
@@ -292,7 +292,7 @@ package N2P2.root.child.ingame.utils
             }
         }
         
-        private function boardUpdate():void
+        private function updateBoard():void
         {
             //이전 update 결과물들을 제거합니다.
             resultClear();
@@ -314,7 +314,7 @@ package N2P2.root.child.ingame.utils
                 _marker.markSpecialTile(_horizontalResult, _verticalResult, _crossResult, _tiles);
                 
                 //빈자리로 타일들을 이동시킵니다.
-                _mover.moveTiles(_tiles, _inGameStageInfo, boardUpdate);
+                _mover.moveTiles(_tiles, _inGameStageInfo, updateBoard);
             }
             else
             {
@@ -341,7 +341,7 @@ package N2P2.root.child.ingame.utils
                     //맞출 타일이 없으면 타일을 리셋합니다.
                     _remover.removeAllTile(_tiles);
                     (this.parent as InGame).resetTile();
-                    _mover.moveTiles(_tiles, _inGameStageInfo, boardUpdate);
+                    _mover.moveTiles(_tiles, _inGameStageInfo, updateBoard);
                 }
                 else
                 {
