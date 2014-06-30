@@ -50,6 +50,7 @@ package N2P2.utils
         {
             ASSET_MANAGER = assetManager;
             TILE_TEXTURE = ASSET_MANAGER.getTextureAtlas("inGameUI").getTextures("character_");
+            user.parseUserInfoXml("0001", GlobalData.ASSET_MANAGER.getXml("userInfo"));
         }
     }
 }
