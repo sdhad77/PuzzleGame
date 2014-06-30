@@ -106,16 +106,14 @@ package N2P2.root.child.worldmap
             {
                 var name:String = (event.target as DisplayObject).name;
                 _selectStageNum = Number(name.substring(name.indexOf("_")+1,name.indexOf("."))) - 2;
-                
-                _stageInfo.clear();
                 _stageInfo.parseStageInfoXml(GlobalData.ASSET_MANAGER.getXml("stageInfo"), _selectStageNum);
+                
+                if(_selectStageNum != GlobalData.user.clearInfo.length +1) _ssp.getChildByName("stageSelectPopup_06.png").visible = true;
+                else                                                       _ssp.getChildByName("stageSelectPopup_06.png").visible = false;
                 
                 _ssp.getChildByName("stageSelectPopup_09.png").visible = false;
                 _ssp.getChildByName("stageSelectPopup_08.png").visible = false;
                 _ssp.getChildByName("stageSelectPopup_07.png").visible = false;
-                _ssp.getChildByName("stageSelectPopup_06.png").visible = false;
-                
-                if(_selectStageNum != GlobalData.user.clearInfo.length +1) _ssp.getChildByName("stageSelectPopup_06.png").visible = true;
                 
                 if     (GlobalData.user.clearInfo[_selectStageNum-1] >= _stageInfo.point3) _ssp.getChildByName("stageSelectPopup_09.png").visible = true;
                 else if(GlobalData.user.clearInfo[_selectStageNum-1] >= _stageInfo.point2) _ssp.getChildByName("stageSelectPopup_08.png").visible = true;
@@ -127,6 +125,7 @@ package N2P2.root.child.worldmap
                 _sspContents.name = "contents";
                 _ssp.addChild(_sspContents);
                 _ssp.appearanceAnimation();
+                _stageInfo.clear();
             }
         }
         
