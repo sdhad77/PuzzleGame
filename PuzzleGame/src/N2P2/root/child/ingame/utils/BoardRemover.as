@@ -4,6 +4,27 @@ package N2P2.root.child.ingame.utils
 
     public class BoardRemover
     {
+        // 싱글톤 관련 변수들
+        private static var _instance:BoardRemover;
+        private static var _creatingSingleton:Boolean = false;
+        
+        public function BoardRemover()
+        {
+            if (!_creatingSingleton){
+                throw new Error("[BoardRemover] 싱글톤 클래스 - new 연산자를 통해 생성 불가");
+            }
+        }
+        
+        public static function get instance():BoardRemover
+        {
+            if (!_instance){
+                _creatingSingleton = true;
+                _instance = new BoardRemover();
+                _creatingSingleton = false;
+            }
+            return _instance;
+        }
+        
         /**
          * 특정 타일을 화면에서 안보이게함 (visible false)
          * @param idx1 인덱스1

@@ -5,6 +5,27 @@ package N2P2.root.child.ingame.utils
 
     public class BoardChecker
     {
+        // 싱글톤 관련 변수들
+        private static var _instance:BoardChecker;
+        private static var _creatingSingleton:Boolean = false;
+        
+        public function BoardChecker()
+        {
+            if (!_creatingSingleton){
+                throw new Error("[BoardChecker] 싱글톤 클래스 - new 연산자를 통해 생성 불가");
+            }
+        }
+        
+        public static function get instance():BoardChecker
+        {
+            if (!_instance){
+                _creatingSingleton = true;
+                _instance = new BoardChecker();
+                _creatingSingleton = false;
+            }
+            return _instance;
+        }
+        
         /**
          * 보드의 행을 검사하는 함수
          * @param index 검사할 행의 번호

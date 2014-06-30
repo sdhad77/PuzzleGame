@@ -6,6 +6,27 @@ package N2P2.root.child.ingame.utils
 
     public class BoardTileMover
     {
+        // 싱글톤 관련 변수들
+        private static var _instance:BoardTileMover;
+        private static var _creatingSingleton:Boolean = false;
+        
+        public function BoardTileMover()
+        {
+            if (!_creatingSingleton){
+                throw new Error("[BoardTileMover] 싱글톤 클래스 - new 연산자를 통해 생성 불가");
+            }
+        }
+        
+        public static function get instance():BoardTileMover
+        {
+            if (!_instance){
+                _creatingSingleton = true;
+                _instance = new BoardTileMover();
+                _creatingSingleton = false;
+            }
+            return _instance;
+        }
+        
         /**
          * 타일을 빈자리로 이동시키는 함수</br>
          * 좌하에서 우,상으로 진행하면서 검사함

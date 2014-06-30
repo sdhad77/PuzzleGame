@@ -6,6 +6,27 @@ package N2P2.root.child.ingame.utils
 
     public class BoardMarker
     {
+        // 싱글톤 관련 변수들
+        private static var _instance:BoardMarker;
+        private static var _creatingSingleton:Boolean = false;
+        
+        public function BoardMarker()
+        {
+            if (!_creatingSingleton){
+                throw new Error("[BoardMarker] 싱글톤 클래스 - new 연산자를 통해 생성 불가");
+            }
+        }
+        
+        public static function get instance():BoardMarker
+        {
+            if (!_instance){
+                _creatingSingleton = true;
+                _instance = new BoardMarker();
+                _creatingSingleton = false;
+            }
+            return _instance;
+        }
+        
         /**
          * 특수 타일을 표시하는 함수
          * @param horizontalArr 가로 검사 결과가 저장된 배열
