@@ -36,6 +36,7 @@ package
             assetManager.addTextureAtlas("worldMapUI", new TextureAtlas(Texture.fromBitmap(new EmbeddedAssets.worldMapUISheet()), XML(new EmbeddedAssets.worldMapUIXml())));
             assetManager.addTextureAtlas("inGameUI", new TextureAtlas(Texture.fromBitmap(new EmbeddedAssets.inGameUISheet()), XML(new EmbeddedAssets.inGameUIXml())));
             assetManager.addXml("stageInfo", XML(new EmbeddedAssets.stageInfoXml()));
+            assetManager.addXml("userInfo", XML(new EmbeddedAssets.userInfoXml()));
             
             game.start(assetManager);
         }

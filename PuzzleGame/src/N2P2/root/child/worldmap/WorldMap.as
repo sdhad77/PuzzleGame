@@ -15,7 +15,7 @@ package N2P2.root.child.worldmap
     {
         private var _worldMap:UserInterface;
         private var _ssp:UserInterface;        //stage Select Popup
-        private var _sspContents:UserInterface;// stage Select Popup 위에 사용할 ui. stage별로 다른 UI사용
+        private var _sspContents:UserInterface;//stage Select Popup 위에 사용할 ui. stage별로 다른 UI사용
         private var _isp:UserInterface;        //item Select Popup
         private var _mb:UserInterface;         //menu Button
         private var _mp:UserInterface;         //menu Popup

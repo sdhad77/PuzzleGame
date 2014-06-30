@@ -28,5 +28,8 @@ package N2P2.utils
         
         [Embed(source="../../../bin/res/system/stageInfo.xml", mimeType="application/octet-stream")]
         public static const stageInfoXml:Class;
+        
+        [Embed(source="../../../bin/res/system/userInfo.xml", mimeType="application/octet-stream")]
+        public static const userInfoXml:Class;
     }
 }
